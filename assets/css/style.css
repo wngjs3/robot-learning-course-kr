@@ -78,43 +78,39 @@ a:hover { text-decoration: underline; }
 /* ---------- 히어로 ---------- */
 .hero {
   position: relative;
-  padding: 88px 0 72px;
-  /* 원본 강의 사이트의 로봇 데모 모자이크 + 흰색 오버레이 */
+  padding: 110px 0 90px;
+  /* 원본 강의 사이트의 로봇 데모 모자이크 — 어두운 오버레이로 선명하게 */
   background:
     linear-gradient(100deg,
-      rgba(255, 255, 255, 0.97) 0%,
-      rgba(255, 255, 255, 0.92) 45%,
-      rgba(255, 255, 255, 0.55) 100%),
-    linear-gradient(to bottom,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(255, 255, 255, 0.35) 80%,
-      #ffffff 100%),
+      rgba(7, 12, 22, 0.88) 0%,
+      rgba(7, 12, 22, 0.72) 50%,
+      rgba(7, 12, 22, 0.42) 100%),
     url("../images/robots.webp") center / cover no-repeat;
-  border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
 .hero-grid-bg { display: none; }
 .hero .container { position: relative; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--accent-soft); color: var(--accent-ink);
+  background: rgba(255, 255, 255, 0.1); color: #e8eefb;
   font-size: 0.82rem; font-weight: 700;
   padding: 6px 14px; border-radius: 999px;
-  border: 1px solid #d8e3fc;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(4px);
   margin-bottom: 22px;
 }
 .hero h1 {
   font-size: clamp(2rem, 4.6vw, 3.2rem);
   font-weight: 800; letter-spacing: -0.03em; line-height: 1.22;
-  max-width: 760px;
+  max-width: 760px; color: #fff;
 }
 .hero h1 .grad {
-  background: linear-gradient(100deg, var(--accent) 10%, #7b5cff 90%);
+  background: linear-gradient(100deg, #9db9ff 10%, #c4adff 90%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .hero p.lead {
   margin-top: 20px; max-width: 640px;
-  color: var(--ink-soft); font-size: 1.08rem;
+  color: rgba(235, 241, 250, 0.88); font-size: 1.08rem;
 }
 .hero-actions { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
 .btn {
@@ -128,10 +124,12 @@ a:hover { text-decoration: underline; }
 .btn-primary:hover { background: var(--accent-ink); color: #fff; }
 .btn-ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
 .hero-meta {
-  margin-top: 40px; display: flex; gap: 28px; flex-wrap: wrap;
-  color: var(--ink-faint); font-size: 0.88rem; font-weight: 600;
+  margin-top: 44px; display: flex; gap: 28px; flex-wrap: wrap;
+  color: rgba(214, 224, 238, 0.75); font-size: 0.88rem; font-weight: 600;
 }
-.hero-meta b { color: var(--ink); font-weight: 800; }
+.hero-meta b, .hero-meta a b { color: #fff; font-weight: 800; }
+.hero-meta a:hover b { color: #9db9ff; }
+.hero-meta a { text-decoration: none; }
 
 /* ---------- 섹션 공통 ---------- */
 section.block { padding: 72px 0; }
