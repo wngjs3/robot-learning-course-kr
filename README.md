@@ -1,7 +1,7 @@
 # Robot Learning 한국어 🤖🇰🇷
 
 > **ETH Zurich — Robot Learning: From Fundamentals to Foundation Models** (2026 봄학기, [Oier Mees](https://www.oiermees.com))
-> 강의의 비공식 한국어 학습 사이트입니다. 원저자의 사전 허락을 받아 제작되었습니다.
+> 강의의 한국어 학습 사이트입니다. 원저자의 사전 허락을 받아 제작되었습니다.
 
 전체 강의 영상(본강의 11개 + 게스트 강연 10개)에 대해 다음을 제공합니다:
 
@@ -25,5 +25,5 @@
 
 - 원저작물(강의, 슬라이드, 영상, 과제) © [Oier Mees](https://www.oiermees.com) & [ETH Zurich CVG](https://cvg.ethz.ch/)
   — [원본 강의 페이지](https://cvg.ethz.ch/lectures/Robot-Learning/) · [공식 GitHub](https://github.com/mees-robot-learning-course/ethz-course-2026)
-- 한국어 번역·사이트 제작: Juheon Choi (KAIST). 번역에는 Google Gemini가 사용되었으며 오역이 있을 수 있습니다.
+- 번역 및 사이트 구축: **Juheon Choi** (KAIST) — Gemini와 Claude를 활용해 제작했습니다. 오역이 있을 수 있습니다.
 - 본 사이트는 교육 목적의 비상업 자료입니다.

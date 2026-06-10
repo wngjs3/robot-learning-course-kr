@@ -120,13 +120,6 @@ const COURSE = {
       ],
       guest: { name: "Lucas Beyer", affil: "Meta Superintelligence Labs", url: "https://lucasb.eyer.be/", key: "guest11", video: "0XB7fNS_ONg" },
     },
-    {
-      week: 12, date: "5월 18일", key: null, video: null,
-      title_ko: "게스트 강연 주간", title_en: "Guest Lectures",
-      slides: null,
-      papers: [],
-      guest: { name: "Dieter Fox", affil: "워싱턴대 교수 & AI2 디렉터", url: "https://homes.cs.washington.edu/~fox/", key: null, video: null },
-    },
   ],
   tutorials: [
     { week: "1주차 · 2월 19일", topic: "PyTorch & NumPy 튜토리얼",
