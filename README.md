@@ -25,5 +25,5 @@
 
 - 원저작물(강의, 슬라이드, 영상, 과제) © [Oier Mees](https://www.oiermees.com) & [ETH Zurich CVG](https://cvg.ethz.ch/)
   — [원본 강의 페이지](https://cvg.ethz.ch/lectures/Robot-Learning/) · [공식 GitHub](https://github.com/mees-robot-learning-course/ethz-course-2026)
-- 번역 및 사이트 구축: **Juheon Choi** (KAIST) — Gemini와 Claude를 활용해 제작했습니다. 오역이 있을 수 있습니다.
+- 번역 및 사이트 구축: [**Juheon Choi**](https://juheonchoi.com) (KAIST) — Gemini와 Claude를 활용해 제작했습니다. 오역이 있을 수 있습니다.
 - 본 사이트는 교육 목적의 비상업 자료입니다.

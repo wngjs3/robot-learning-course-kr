@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>잠재 공간 강화학습을 통한 디퓨전 정책 조향 — Robot Learning 논문 한국어판</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" />
+<link rel="stylesheet" href="../assets/css/style.css" />
+<link rel="stylesheet" href="../assets/css/paper.css" />
+</head>
+<body class="paper-page">
+<div class="paper-shell">
+  <div class="paper-top">
+    <a href="../index.html">← Robot Learning 홈</a>
+  </div>
+  <header class="paper-head">
+    <div class="paper-week">Week 6 · 논문 토론</div>
+    <h1>잠재 공간 강화학습을 통한 디퓨전 정책 조향</h1>
+    <div class="paper-orig-title">Steering Your Diffusion Policy with Latent Space RL <span>— Wagenmaker et al., 2025</span></div>
+    <div class="paper-links">
+      <a class="chip" href="https://arxiv.org/abs/2506.15799" target="_blank" rel="noopener">원문 보기 ↗</a>
+    </div>
+    <p class="paper-note">⚠️ 이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
+    그림·수식은 원문( ar5iv )에서 가져왔으며, 저작권은 원저자에게 있습니다.</p>
+  </header>
+  <article class="paper-body">
+<article class="ltx_document ltx_authors_1line">
+<div class="ltx_para" id="p1">
+<span class="ltx_ERROR undefined">\newtoggle</span>
+<p class="ltx_p">arxiv
+<span class="ltx_ERROR undefined">\togglefalse</span>arxiv
+<span class="ltx_ERROR undefined">\newtoggle</span>arxiv2 <span class="ltx_ERROR undefined">\toggletrue</span>arxiv2
+
+
+</p>
+</div>
+
+<div class="ltx_authors">
+<span class="ltx_creator ltx_role_author">
+<span class="ltx_personname">
+Andrew Wagenmaker 
+<br class="ltx_break"/>UC Berkeley
+&amp;Mitsuhiko Nakamoto<sup class="ltx_sup"><span class="ltx_text ltx_font_italic">∗</span></sup>
+<br class="ltx_break"/>UC Berkeley
+&amp;Yunchu Zhang<sup class="ltx_sup">∗</sup>
+<br class="ltx_break"/>University of Washington
+&amp;Seohong Park 
+<br class="ltx_break"/>UC Berkeley
+&amp;Waleed Yagoub 
+<br class="ltx_break"/>University of Washington
+&amp;Anusha Nagabandi 
+<br class="ltx_break"/>Amazon
+&amp;Abhishek Gupta<sup class="ltx_sup">∗</sup>
+<br class="ltx_break"/>University of Washington
+&amp;Sergey Levine<sup class="ltx_sup">∗</sup>
+<br class="ltx_break"/>UC Berkeley
+</span><span class="ltx_author_notes">Core contributor. Please see appendix for individual contributions. Correspondence to: Andrew Wagenmaker {<span class="ltx_text ltx_font_typewriter">ajwagen@berkeley.edu</span>}.</span></span>
+</div>
+<div class="ltx_abstract">
+<h6 class="ltx_title ltx_title_abstract">초록</h6>
+<p class="ltx_p">인간의 시연(demonstration)으로부터 학습된 로봇 제어 정책은 많은 실제 환경 애플리케이션에서 인상적인 결과를 달성했다. 그러나 새로운 개방형 환경(open-world settings)에서 흔히 발생하는 것처럼 초기 성능이 만족스럽지 않은 시나리오에서, 이러한 행동 모방(behavioral cloning, BC) 기반 학습 정책은 일반적으로 행동을 더욱 개선하기 위해 추가적인 인간 시연을 수집해야 하며, 이는 비용과 시간이 많이 소요되는 과정이다. 이와 대조적으로, 강화학습(reinforcement learning, RL)은 자율적인 온라인 정책 개선을 가능하게 할 것이라는 기대를 모으고 있으나, 일반적으로 요구되는 방대한 샘플 양으로 인해 이를 달성하지 못하는 경우가 많다. 본 연구에서는 효율적인 실제 환경 RL을 통해 BC 학습 정책의 빠른 자율 적응을 가능하게 하기 위한 단계를 밟는다. 특히 최첨단 BC 방법론인 디퓨전 정책(diffusion policies)에 초점을 맞추어, 잠재 노이즈 공간(latent-noise space) 상에서 RL을 실행하여 BC 정책을 적응시키는 <em class="ltx_emph ltx_font_italic">강화학습을 통한 디퓨전 조향</em>(<span class="ltx_text ltx_font_smallcaps">Dsrl</span>)을 제안한다. 우리는 <span class="ltx_text ltx_font_smallcaps">Dsrl</span>이 매우 높은 샘플 효율성을 보이고, BC 정책에 대한 블랙박스 접근만을 필요로 하며, 실제 환경에서 효과적인 자율 정책 개선을 가능하게 함을 보여준다. 나아가, <span class="ltx_text ltx_font_smallcaps">Dsrl</span>은 디퓨전 정책의 미세조정(finetuning)과 관련된 많은 난제들을 회피하여 기본 정책의 가중치를 전혀 수정할 필요가 없게 만든다. 우리는 시뮬레이션 벤치마크, 실제 로봇 작업, 그리고 사전 학습된 범용 정책의 적응에 대해 <span class="ltx_text ltx_font_smallcaps">Dsrl</span>을 실증하여, 실제 정책 개선에서의 샘플 효율성과 효과적인 성능을 보여준다.
+웹사이트: <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://diffusion-steering.github.io" target="_blank" title="">https://diffusion-steering.github.io</a>.</p>
+</div>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section"><span class="ltx_tag ltx_tag_section">1 </span>서론</h2>
+<div class="ltx_para ltx_noindent" id="S1.p1">
+<p class="ltx_p">로봇 러닝 방법론은 제어기 설계의 부담을 인간의 엔지니어링에서 데이터 기반의 엔드투엔드(end-to-end) 학습으로 전환함으로써 많은 실제 애플리케이션에서 인상적인 결과를 달성했다 <cite class="ltx_cite ltx_citemacro_cite">[<span class="ltx_ref ltx_missing_citation ltx_ref_self">stepputtis2020language</span>, <span class="ltx_ref ltx_missing_citation ltx_ref_self">shafiullah2022behavior</span>, <span class="ltx_ref ltx_missing_citation ltx_ref_self">gu2023rt</span>, <span class="ltx_ref ltx_missing_citation ltx_ref_self">team2024octo</span>, <span class="ltx_ref ltx_missing_citation ltx_ref_self">zhao2024aloha</span>, <span class="ltx_ref ltx_missing_citation ltx_ref_self">black2024pi_0</span>]</cite>. 지도 학습을 통해 전문가 데이터로부터 정책을 학습하는 행동 모방(BC)은 대규모 오프라인 시연 데이터셋을 로봇 제어 정책으로 변환하는 데 특히 효과적이었다. 이러한 방법들은 단순성, 확장성, 그리고 디퓨전(diffusion)이나 플로우(flow) 모델 <cite class="ltx_cite ltx_citemacro_cite">[<span class="ltx_ref ltx_missing_citation ltx_ref_self">chi2023diffusion</span>, <span class="ltx_ref ltx_missing_citation ltx_ref_self">black2024pi_0</span>]</cite>부터 자기회귀 트랜스포머(autoregressive transformers) <cite class="ltx_cite ltx_citemacro_cite">[<span class="ltx_ref ltx_missing_citation ltx_ref_self">kim2024openvla</span>]</cite>에 이르는 광범위한 생성 모델 매개변수화에 걸쳐 적용 가능하다는 점 때문에 매력적이다.</p>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section"><span class="ltx_tag ltx_tag_section">2 </span>토의</h2>
+<div class="ltx_para ltx_noindent" id="S2.p1">
+<p class="ltx_p">디퓨전 정책은 실제 로봇 제어 문제에서 광범위한 성공을 거두었으나, 배포 환경에서 이를 개선하기 위한 효율적이고 안정적인 접근법을 개발하는 것은 여전히 지속적인 과제로 남아 있다.
+본 연구에서 우리는 디퓨전 정책의 효율적인 RL 기반 개선을 가능하게 하고 시뮬레이션 및 실제 환경 모두에서 강력한 성능을 보여주는 방법인 <span class="ltx_text ltx_font_smallcaps">Dsrl</span>을 제안했다. 우리는 이 연구가 몇 가지 흥미로운 후속 연구 방향을 제시한다고 믿는다:</p>
+<ul class="ltx_itemize" id="S2.I1">
+<li class="ltx_item" id="S2.I1.i1" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S2.I1.i1.p1">
+<p class="ltx_p">본 연구에서는 입력 노이즈를 최적화하는 데 집중했지만, 예를 들어 정책에 제공되는 입력 관측(observation)이나 프롬프트(prompt)를 수정하는 것도 고려해 볼 수 있다. 이것이 마찬가지로 효과적인 정책 개선으로 이어질 수 있을지, 그리고 어쩌면 자기회귀 트랜스포머 기반 정책에서도 <span class="ltx_text ltx_font_smallcaps">Dsrl</span>과 유사한 개선을 가능하게 할 수 있을까?</p>
+</div>
+</li>
+<li class="ltx_item" id="S2.I1.i2" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S2.I1.i2.p1">
+<p class="ltx_p">우리는 제어 영역에 초점을 맞추었지만, 어떤 목적 함수를 최적화하기 위해 디퓨전 모델의 잠재 노이즈 공간 상에서 RL을 실행하는 <span class="ltx_text ltx_font_smallcaps">Dsrl</span>의 기본 원리는 훨씬 더 넓은 잠재력을 가질 수 있다. 예를 들어, 디퓨전 모델이 큰 성공을 거둔 다른 영역인 이미지 생성이나 단백질 모델링 등에 <span class="ltx_text ltx_font_smallcaps">Dsrl</span>을 적용할 수 있을까?</p>
+</div>
+</li>
+<li class="ltx_item" id="S2.I1.i3" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para ltx_noindent" id="S2.I1.i3.p1">
+<p class="ltx_p">디퓨전 조향의 이론적 성질은 무엇인가? 우리가 사용하는 노이즈 공간 최적화의 표현력(expressivity)이나 디퓨전 정책의 노이즈 공간 구조 및 그 위에서 정책을 학습하는 것의 용이성에 대해 어떠한 주장을 할 수 있을까?</p>
+</div>
+</li>
+</ul>
+</div>
+
+</section>
+</article>
+  </article>
+</div>
+</body>
+</html>
