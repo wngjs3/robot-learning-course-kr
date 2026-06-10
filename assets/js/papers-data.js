@@ -22,6 +22,7 @@ window.__PAPERS_KO = {
  "https://arxiv.org/pdf/2005.07648": "papers/2005.07648.html",
  "https://arxiv.org/abs/2205.06175": "papers/2205.06175.html",
  "https://arxiv.org/abs/2511.14759": "papers/2511.14759.html",
+ "https://arxiv.org/pdf/2408.15980": "papers/2408.15980.html",
  "https://arxiv.org/abs/2305.16291": "papers/2305.16291.html",
  "https://arxiv.org/pdf/2505.08243": "papers/2505.08243.html",
  "http://www.incompleteideas.net/IncIdeas/BitterLesson.html": "papers/bitter-lesson.html"
