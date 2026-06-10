@@ -28,8 +28,8 @@
   const metaRow = document.getElementById("lec-meta-row");
   const metaChips = [];
   metaChips.push(`<a class="chip" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">유튜브 원본 보기 ↗</a>`);
-  if (!isGuest && week.guest && week.guest.key) metaChips.push(`<a class="chip guest-chip" href="lecture.html?id=${week.guest.key}">▶ 이 주의 게스트 강연: ${esc(week.guest.name)}</a>`);
-  if (isGuest && week.key) metaChips.push(`<a class="chip" href="lecture.html?id=${week.key}">📖 이 주의 본강의: ${esc(week.title_ko)}</a>`);
+  if (!isGuest && week.guest && week.guest.key) metaChips.push(`<a class="chip guest-chip" href="lecture.html?id=${week.guest.key}">게스트 강연: ${esc(week.guest.name)}</a>`);
+  if (isGuest && week.key) metaChips.push(`<a class="chip" href="lecture.html?id=${week.key}">본강의: ${esc(week.title_ko)}</a>`);
   metaRow.innerHTML = metaChips.join("");
 
   // 이전/다음
@@ -75,7 +75,7 @@
     el("stage").classList.remove("no-slide");
     showStageSlide(0);
     panels.slides.innerHTML =
-      `<div class="slides-note">🤖 AI(Gemini)가 원본 슬라이드를 한국어로 번역·재생성한 이미지입니다. 클릭하면 해당 구간으로 이동합니다.</div>` +
+      `<div class="slides-note">AI(Gemini)가 원본 슬라이드를 한국어로 번역해 다시 그린 이미지입니다. 클릭하면 해당 구간으로 이동합니다.</div>` +
       SLIDES.map((s, i) =>
         `<div class="slide-item" data-i="${i}" data-start="${s.start}">
            <div class="slide-meta"><span class="ch-time">${fmt(s.start)}</span></div>
@@ -212,11 +212,11 @@
 
     // 요약
     panels.summary.innerHTML = `<div class="summary-pane">
-      <h4>🧭 강의 한눈에 보기</h4>
+      <h4>강의 한눈에 보기</h4>
       <p>${esc(DATA.summary)}</p>
-      <h4>✅ 핵심 포인트</h4>
+      <h4>핵심 포인트</h4>
       <ul class="takeaway-list">${DATA.takeaways.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
-      <h4>📚 핵심 용어</h4>
+      <h4>핵심 용어</h4>
       ${DATA.terms.map((t) => `<div class="term-item"><b>${esc(t.ko)}</b><span class="term-en">${esc(t.term)}</span><p>${esc(t.desc)}</p></div>`).join("")}
     </div>`;
   }

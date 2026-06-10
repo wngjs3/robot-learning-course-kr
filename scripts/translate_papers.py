@@ -187,7 +187,7 @@ PAGE_TMPL = """<!DOCTYPE html>
     <div class="paper-links">
       <a class="chip" href="{orig_url}" target="_blank" rel="noopener">원문 보기 ↗</a>
     </div>
-    <p class="paper-note">⚠️ 이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
+    <p class="paper-note">이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
     그림·수식은 원문( {source_name} )에서 가져왔으며, 저작권은 원저자에게 있습니다.</p>
   </header>
   <article class="paper-body">

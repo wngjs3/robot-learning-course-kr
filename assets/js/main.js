@@ -18,7 +18,7 @@
         ? `<a class="lec-thumb" href="lecture.html?id=${key}">${img}<span class="lec-thumb-play">▶</span></a>`
         : `<span class="lec-thumb">${img}</span>`;
     } else {
-      thumb = `<span class="lec-thumb empty">🎓</span>`;
+      thumb = `<span class="lec-thumb empty"></span>`;
     }
 
     return `<div class="lec-row">
@@ -70,7 +70,6 @@
         <div class="week-head">
           <div class="week-num"><b>${w.week}</b><span>WEEK</span></div>
           <div class="week-main">
-            <div class="week-date">${esc(w.date)}</div>
             <div class="lec-rows">${rows.join("")}</div>
             ${papers}
           </div>
