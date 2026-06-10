@@ -61,15 +61,6 @@ python -c "from pathlib import Path; import numpy as np; from envs.so100_rl_env 
 - **핵심 아이디어와 결과**에 집중하십시오.
 - 제한 시간(5분)을 초과하면 감점 요인이 될 수 있습니다.
 
-### 채점 기준 (Grading)
-
-각 실습당 획득할 수 있는 최대 점수는 다음과 같습니다:
-- **실습 1: MDP**: 10점
-- **실습 2: DQN**: 10점
-- **실습 3: PPO**: 15점
-- **실습 4: SAC**: 15점
-- **비디오 제출**: 50점
-
 ## 실습 1: GridWorld에서의 동적 계획법 (Dynamic Programming in GridWorld)
 
 본 실습에서는 **Cliff Walking** 환경을 사용하여 테이블형(Tabular) MDP에서 **정책 반복(Policy Iteration)** 및 **가치 반복(Value Iteration)**을 구현합니다.
