@@ -237,6 +237,11 @@ a.lec-thumb:hover .lec-thumb-play { opacity: 1; }
 .week-papers ul { margin: 10px 0 2px; padding-left: 18px; }
 .week-papers li { font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 5px; }
 .week-papers li span.auth { color: var(--ink-faint); font-size: 0.82rem; }
+.week-papers li .paper-ko-link {
+  font-size: 0.8rem; font-weight: 800; color: var(--green);
+  background: var(--green-soft); padding: 1px 7px; border-radius: 5px; margin-left: 4px;
+}
+.week-papers li .paper-ko-link:hover { text-decoration: none; background: #d2f3e5; }
 /* ---------- 실습 테이블 ---------- */
 .tut-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 30px;
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }

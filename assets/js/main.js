@@ -45,19 +45,24 @@
       ));
       if (w.guest) {
         const g = w.guest;
+        const sub = `${esc(g.affil)} · <a href="${g.url}" target="_blank" rel="noopener">발표자 홈페이지 ↗</a>`;
         rows.push(lectureRow(
           "게스트", "guest",
           g.key
             ? `<a href="lecture.html?id=${g.key}">${esc(g.name)}</a>`
             : `<a href="${g.url}" target="_blank" rel="noopener">${esc(g.name)}</a>`,
-          esc(g.affil), g.key, g.video
+          sub, g.key, g.video
         ));
       }
 
+      const koMap = window.__PAPERS_KO || {};
       const papers = w.papers.length
         ? `<details class="week-papers">
              <summary><span class="arr">▶</span> 논문 토론 (${w.papers.length}편)</summary>
-             <ul>${w.papers.map((p) => `<li><a href="${p.u}" target="_blank" rel="noopener">${esc(p.t)}</a> <span class="auth">— ${esc(p.a)}</span></li>`).join("")}</ul>
+             <ul>${w.papers.map((p) => {
+               const ko = koMap[p.u] ? ` <a class="paper-ko-link" href="${koMap[p.u]}">[한국어 번역]</a>` : "";
+               return `<li><a href="${p.u}" target="_blank" rel="noopener">${esc(p.t)}</a> <span class="auth">— ${esc(p.a)}</span>${ko}</li>`;
+             }).join("")}</ul>
            </details>`
         : "";
 
