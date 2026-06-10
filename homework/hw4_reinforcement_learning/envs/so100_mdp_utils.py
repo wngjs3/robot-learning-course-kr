@@ -9,8 +9,8 @@ from envs.rotation_utils import (
 
 def reset_robot(default_qpos: np.ndarray) -> np.ndarray:
     """
-    Reset robot joint positions around the default configuration with small
-    uniform noise in [-0.5, 0.5] for each joint.
+    각 관절에 대해 [-0.5, 0.5] 범위의 작은 균등 노이즈를 추가하여 기본 설정 주변으로 로봇 관절 위치를 재설정합니다.
+    
     """
     default_qpos = np.asarray(default_qpos, dtype=np.float64)
     noise = np.random.uniform(-0.5, 0.5, size=default_qpos.shape)
@@ -19,12 +19,13 @@ def reset_robot(default_qpos: np.ndarray) -> np.ndarray:
 
 def reset_target_position(base_pos: np.ndarray) -> np.ndarray:
     """
-    Sample a random target position around the robot base.
+    로봇 베이스 주변의 무작위 목표 위치를 샘플링합니다.
 
-    Target is sampled relative to the base with:
+    목표 위치는 베이스를 기준으로 다음 범위에서 샘플링됩니다:
         x in [0.2, 0.4]
         y in [-0.2, 0.2]
         z in [0.1, 0.4]
+    
     """
     base_pos = np.asarray(base_pos, dtype=np.float64)
     offset = np.random.uniform(
@@ -36,7 +37,8 @@ def reset_target_position(base_pos: np.ndarray) -> np.ndarray:
 
 def process_action(action: np.ndarray, jnt_range: np.ndarray) -> np.ndarray:
     """
-    Map normalized action in [-1, 1] linearly to the physical joint range.
+    [-1, 1] 범위의 정규화된 행동(action)을 물리적 관절 범위로 선형 매핑합니다.
+    
     """
     action = np.asarray(action, dtype=np.float64)
     jnt_range = np.asarray(jnt_range, dtype=np.float64)
@@ -50,11 +52,12 @@ def process_action(action: np.ndarray, jnt_range: np.ndarray) -> np.ndarray:
 
 def compute_reward(ee_tracking_error: float, q_vel: np.ndarray) -> float:
     """
-    Reward for end-effector position tracking.
+    말단 장치(end-effector) 위치 추종에 대한 보상.
 
     dense_reward = exp(-2 * error)
     sparse_reward = 1.0 if error < 0.005 else 0.0
     total_reward = dense_reward + sparse_reward
+    
     """
     reward = np.exp(-10.0 * ee_tracking_error)
     if ee_tracking_error < 0.10:
@@ -65,7 +68,7 @@ def compute_reward(ee_tracking_error: float, q_vel: np.ndarray) -> float:
         reward += 0.5
     if ee_tracking_error < 0.005:
         reward += 0.5
-    reward -= 0.01 * np.max(np.square(q_vel))  # small penalty on joint velocity
+    reward -= 0.01 * np.max(np.square(q_vel))  # 관절 속도에 대한 작은 페널티
     return float(reward)
 
 
@@ -78,15 +81,16 @@ def get_obs(
     target_pos_w: np.ndarray,
 ) -> np.ndarray:
     """
-    Build observation vector in the robot base frame.
+    로봇 베이스 좌표계에서 관측(observation) 벡터를 구성합니다.
 
-    Observation layout:
+    관측 레이아웃:
         [
             qpos,
             ee_pos_base,
             ee_quat_base,
             target_pos_base,
         ]
+    
     """
     qpos = np.asarray(qpos, dtype=np.float64)
     ee_pos_w = np.asarray(ee_pos_w, dtype=np.float64)

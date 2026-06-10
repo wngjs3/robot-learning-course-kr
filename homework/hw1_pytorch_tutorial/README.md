@@ -1,6 +1,4 @@
 # Homework 1: Pytorch tutorial
-**마감일: 05.03.26 23:59 CET**
-**개별적으로 해결해야 합니다. Gradescope에서 중복 코드를 검사합니다.**
 
 ## 환경 설정 (uv) + Jupyter
 

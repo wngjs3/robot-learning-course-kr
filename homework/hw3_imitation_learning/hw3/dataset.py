@@ -1,4 +1,4 @@
-"""Dataset utilities for SO-100 teleop imitation learning."""
+"""SO-100 원격 제어 모방 학습을 위한 데이터셋 유틸리티."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from torch.utils.data import Dataset
 
 @dataclass(frozen=True)
 class Normalizer:
-    """Feature-wise normalizer for states and actions."""
+    """상태(states) 및 행동(actions)을 위한 피처별 정규화기(normalizer)."""
 
     state_mean: np.ndarray
     state_std: np.ndarray
@@ -43,10 +43,11 @@ class Normalizer:
 
 
 def _parse_key_spec(spec: str) -> tuple[str, slice]:
-    """Parse a key spec like ``"state_cube[:3]"`` into (key, col_slice).
+    """``"state_cube[:3]"``과 같은 키 사양을 (key, col_slice) 형태로 파싱합니다.
 
-    Supports slicing notations: ``key``, ``key[:N]``, ``key[M:]``, ``key[M:N]``.
-    Returns the array name and a column slice to apply on axis=1.
+    슬라이싱 표기법을 지원합니다: ``key``, ``key[:N]``, ``key[M:]``, ``key[M:N]``.
+    배열 이름과 axis=1에 적용할 열 슬라이스를 반환합니다.
+    
     """
     if "[" not in spec:
         return spec, slice(None)
@@ -67,25 +68,26 @@ def load_zarr(
     state_keys: list[str] | None = None,
     action_keys: list[str] | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Load states, actions, and episode_ends from a processed .zarr.
+    """처리된 .zarr 파일에서 states, actions, episode_ends를 로드합니다.
 
     Args:
-        zarr_path: Path to the processed .zarr store.
-        state_keys: List of data array key specs to concatenate as the state.
-            Each entry can include an optional column slice, e.g.
+        zarr_path: 처리된 .zarr 저장소의 경로.
+        state_keys: 상태(state)로 연결할 데이터 배열 키 사양의 리스트.
+            각 항목은 선택적으로 열 슬라이스를 포함할 수 있습니다. 예: 
             ``["state_ee_xyz", "state_cube[:3]"]``.
-            If ``None``, falls back to the ``state_key`` attribute in the zarr metadata.
-        action_keys: List of data array key specs to concatenate as the action.
-            Supports column slicing, e.g. ``["action_ee_xyz", "action_gripper"]``.
-            If ``None``, falls back to the ``action_key`` attribute in the zarr metadata.
+            ``None``인 경우, zarr 메타데이터의 ``state_key`` 속성을 기본값으로 사용합니다.
+        action_keys: 행동(action)으로 연결할 데이터 배열 키 사양의 리스트.
+            열 슬라이싱을 지원합니다. 예: ``["action_ee_xyz", "action_gripper"]``.
+            ``None``인 경우, zarr 메타데이터의 ``action_key`` 속성을 기본값으로 사용합니다.
 
     Returns:
         states, actions, episode_ends
+    
     """
     root = zarr.open_group(str(zarr_path), mode="r")
     data = root["data"]
 
-    # ── states: concatenate one or more arrays ────────────────────────
+    # ── states: 하나 이상의 배열을 연결(concatenate)합니다 ────────────────────────
     if state_keys is None:
         sk = root.attrs.get("state_key", "state")
         state_keys = [sk]
@@ -99,7 +101,7 @@ def load_zarr(
         np.concatenate(state_parts, axis=1) if len(state_parts) > 1 else state_parts[0]
     )
 
-    # ── actions: concatenate one or more arrays ───────────────────────
+    # ── actions: 하나 이상의 배열을 연결(concatenate)합니다 ───────────────────────
     if action_keys is None:
         ak = root.attrs.get("action_key", "action")
         action_keys = [ak]
@@ -125,14 +127,15 @@ def load_and_merge_zarrs(
     state_keys: list[str] | None = None,
     action_keys: list[str] | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Load and concatenate data from multiple processed .zarr stores.
+    """여러 개의 처리된 .zarr 저장소에서 데이터를 로드하고 연결합니다.
 
-    Each zarr store is loaded independently via :func:`load_zarr` and the
-    results are concatenated.  Episode-end indices are shifted so they remain
-    globally correct after concatenation.
+    각 zarr 저장소는 :func:`load_zarr`를 통해 독립적으로 로드되며,
+    그 결과들이 연결됩니다. 에피소드 종료(episode-end) 인덱스는 연결 후에도
+    전체 데이터셋 기준에서 올바르게 유지되도록 시프트(shift)됩니다.
 
-    Returns the same ``(states, actions, episode_ends)`` tuple
-    as :func:`load_zarr`.
+    :func:`load_zarr`와 동일한 ``(states, actions, episode_ends)`` 튜플을
+    반환합니다.
+    
     """
     all_states: list[np.ndarray] = []
     all_actions: list[np.ndarray] = []
@@ -156,9 +159,10 @@ def load_and_merge_zarrs(
 
 
 def build_valid_indices(episode_ends: np.ndarray, chunk_size: int) -> np.ndarray:
-    """Return flat indices where a full action chunk of length ``chunk_size`` fits.
+    """길이가 ``chunk_size``인 전체 행동 청크가 들어맞는 평탄화된(flat) 인덱스들을 반환합니다.
 
-    For each episode [start, end) we keep indices start … (end - chunk_size).
+    각 에피소드 [start, end)에 대해 start … (end - chunk_size) 범위의 인덱스를 유지합니다.
+    
     """
     starts = np.concatenate(([0], episode_ends[:-1]))
     indices: list[int] = []
@@ -171,11 +175,12 @@ def build_valid_indices(episode_ends: np.ndarray, chunk_size: int) -> np.ndarray
 
 
 class SO100ChunkDataset(Dataset):
-    """Dataset of (state, action_chunk) pairs with a sliding window of size H.
+    """크기가 H인 슬라이딩 윈도우를 적용한 (state, action_chunk) 쌍의 데이터셋.
 
-    Each sample consists of:
-        state:        (state_dim,)             - state at timestep t
-        action_chunk: (chunk_size, action_dim) - actions [t, t+1, …, t+H-1]
+    각 샘플은 다음으로 구성됩니다:
+        state:        (state_dim,)             - 타임스텝 t에서의 상태
+        action_chunk: (chunk_size, action_dim) - 행동들 [t, t+1, …, t+H-1]
+    
     """
 
     def __init__(

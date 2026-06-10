@@ -1,19 +1,19 @@
-"""Thin wrapper around the MuJoCo SO-100 simulation for evaluation.
+"""평가를 위한 MuJoCo SO-100 시뮬레이션의 얇은 래퍼(Thin wrapper).
 
-Provides a simple API to:
-  - reset to a keyframe
-  - set actuator targets (joint angles)
-  - step the simulation
-  - query the current state (joint angles, EE pose, cube pose)
-  - render camera images
+다음을 위한 간단한 API를 제공합니다:
+  - keyframe으로 리셋
+  - 액추에이터 목표값(관절 각도) 설정
+  - 시뮬레이션 스텝 진행
+  - 현재 상태(관절 각도, EE 포즈, cube 포즈) 쿼리
+  - 카메라 이미지 렌더링
 
-Usage:
+사용법:
     env = SO100SimEnv(xml_path, control_hz=10.0)
     env.reset()
-    obs = env.get_obs()           # dict with "joints", "ee", "cube"
-    env.set_targets(joint_angles) # set position-actuator targets
-    env.step()                    # step the simulation
-    img = env.render("angle")     # render a camera view (BGR)
+    obs = env.get_obs()           # "joints", "ee", "cube"를 포함하는 dict
+    env.set_targets(joint_angles) # 위치 액추에이터 목표값 설정
+    env.step()                    # 시뮬레이션 스텝 진행
+    img = env.render("angle")     # 카메라 뷰 렌더링 (BGR)
 """
 
 from __future__ import annotations
@@ -35,16 +35,16 @@ BIN_HALF_EXTENT_XY = 0.05
 OBSTACLE_BODY_NAME = "obstacle"
 UPPER_OBSTACLE_BODY_NAME = "upper_obstacle"
 
-# ── Obstacle randomization defaults DO NOT MODIFY ──────────────────────────────────
-DEFAULT_OBSTACLE_POS_STD = 0.01  # metres; center-zone Gaussian noise
-DEFAULT_ADVERSARIAL_OBSTACLE_POS_STD = 0.005  # metres; side-zone Gaussian noise
-DEFAULT_OBSTACLE_SHIFT_X = 0.08  # metres; offset for adversarial side zones
-ADVERSARIAL_CENTER_PROB = 0.2  # probability of center zone in adversarial mode
-# ── Default cube position std ────────────────────────────────────────
-DEFAULT_CUBE_POS_STD = 0.006  # metres; 0 = no randomization
+# ── 장애물 무작위화 기본값 수정 금지 ──────────────────────────────────
+DEFAULT_OBSTACLE_POS_STD = 0.01  # 미터 단위; 중앙 영역 가우시안 노이즈
+DEFAULT_ADVERSARIAL_OBSTACLE_POS_STD = 0.005  # 미터 단위; 측면 영역 가우시안 노이즈
+DEFAULT_OBSTACLE_SHIFT_X = 0.08  # 미터 단위; 대립(adversarial) 측면 영역의 오프셋
+ADVERSARIAL_CENTER_PROB = 0.2  # 대립(adversarial) 모드에서 중앙 영역의 확률
+# ── 기본 cube 위치 표준편차(std) ────────────────────────────────────────
+DEFAULT_CUBE_POS_STD = 0.006  # 미터 단위; 0 = 무작위화 없음
 
 
-# ── Multi-cube constants ─────────────────────────────────────────────
+# ── Multi-cube 상수 ─────────────────────────────────────────────
 
 CUBE_COLORS: tuple[str, ...] = ("red", "green", "blue")
 CUBE_JOINT_NAMES: tuple[str, ...] = (
@@ -53,17 +53,17 @@ CUBE_JOINT_NAMES: tuple[str, ...] = (
     "blue_box_joint",
 )
 NUM_CUBES = len(CUBE_COLORS)
-CUBE_FREE_DIM = 7  # pos(3) + quat_wxyz(4) per cube
+CUBE_FREE_DIM = 7  # cube당 pos(3) + quat_wxyz(4)
 ALL_CUBES_DIM = NUM_CUBES * CUBE_FREE_DIM  # 21
 
-# One-hot goal encoding dimension
+# 원핫(One-hot) goal 인코딩 차원
 GOAL_DIM = NUM_CUBES  # 3
 
 
 def build_multicube_slot_templates(
     default_cube_qpos: np.ndarray, default_bin_pos: np.ndarray
 ) -> np.ndarray:
-    """Build qpos templates for the 3 cube slots + 1 bin slot."""
+    """3개의 cube 슬롯 + 1개의 bin 슬롯을 위한 qpos 템플릿을 빌드합니다."""
     bin_slot_qpos = default_cube_qpos[0].copy()
     bin_slot_qpos[:2] = default_bin_pos[:2]
     return np.concatenate([default_cube_qpos, bin_slot_qpos[None, :]], axis=0)
@@ -95,7 +95,7 @@ def sample_multicube_layout(
     cube_pos_std: float,
     shuffle_cubes: bool,
 ) -> tuple[np.ndarray, int, np.ndarray, np.ndarray]:
-    """Sample a non-overlapping multicube+bin layout."""
+    """겹치지 않는 multicube+bin 레이아웃을 샘플링합니다."""
     slot_xy = np.concatenate(
         [default_cube_qpos[:, :2], default_bin_pos[None, :2]],
         axis=0,
@@ -122,7 +122,7 @@ def sample_multicube_layout(
 
 @dataclass
 class BaseSO100SimEnv:
-    """Common MuJoCo SO-100 simulation plumbing shared by all scene variants."""
+    """모든 씬(scene) 변형에서 공유되는 공통 MuJoCo SO-100 시뮬레이션 배관(plumbing) 작업."""
 
     xml_path: Path
     control_hz: float = 10.0
@@ -195,13 +195,13 @@ class BaseSO100SimEnv:
         raise NotImplementedError
 
     def _disable_mocap_weld(self) -> None:
-        """Disable weld constraints so position actuators drive the arm directly."""
+        """선택적 장애물 무작위화가 포함된 단일 cube 씬."""
         for i in range(self.model.neq):
             if self.model.eq_type[i] == mujoco.mjtEq.mjEQ_WELD:
                 self.model.eq_active0[i] = 0
 
     def reset(self, keyframe: str | None = None) -> dict[str, np.ndarray]:
-        """Reset simulation to keyframe and return the initial observation."""
+        """3개의 cube와 goal 조건이 포함된 SO-100 씬."""
         key_name = keyframe or self.keyframe
         key_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_KEY, key_name)
         if key_id == -1:
@@ -219,7 +219,7 @@ class BaseSO100SimEnv:
 
         return self.get_obs()
 
-    # ── state queries ─────────────────────────────────────────────────
+    # ── 상태 쿼리 ─────────────────────────────────────────────────
 
     def get_joint_angles(self) -> np.ndarray:
         return self.data.qpos[self.qpos_idx].copy()
@@ -258,7 +258,7 @@ class BaseSO100SimEnv:
             "goal_pos": self.get_goal_pos(),
         }
 
-    # ── control ───────────────────────────────────────────────────────
+    # ── 제어 ───────────────────────────────────────────────────────
 
     def set_targets(self, joint_targets: np.ndarray) -> None:
         joint_targets = np.asarray(joint_targets, dtype=np.float64)
@@ -287,14 +287,14 @@ class BaseSO100SimEnv:
         hi = self.model.actuator_ctrlrange[:, 1]
         self.data.ctrl[:] = np.clip(self.data.ctrl, lo, hi)
 
-    # ── simulation step ───────────────────────────────────────────────
+    # ── 시뮬레이션 스텝 ───────────────────────────────────────────────
 
     def step(self) -> dict[str, np.ndarray]:
         for _ in range(self.substeps):
             mujoco.mj_step(self.model, self.data)
         return self.get_obs()
 
-    # ── rendering ─────────────────────────────────────────────────────
+    # ── 렌더링 ─────────────────────────────────────────────────────
 
     def render(self, camera_name: str = "angle") -> np.ndarray:
         import cv2
@@ -310,7 +310,7 @@ class BaseSO100SimEnv:
 
 @dataclass
 class SO100SimEnv(BaseSO100SimEnv):
-    """Single-cube scene with optional obstacle randomization."""
+    """위치 액추에이터가 로봇 팔을 직접 구동할 수 있도록 weld 제약 조건을 비활성화합니다."""
 
     cube_pos_std: float = DEFAULT_CUBE_POS_STD
     obstacle_pos_std: float = DEFAULT_OBSTACLE_POS_STD
@@ -399,7 +399,7 @@ class SO100SimEnv(BaseSO100SimEnv):
 
 @dataclass
 class SO100MulticubeSimEnv(BaseSO100SimEnv):
-    """SO-100 scene with 3 cubes and goal conditioning."""
+    """시뮬레이션을 keyframe으로 리셋하고 초기 관측(observation)을 반환합니다."""
 
     goal_cube: str = "red"
     cube_pos_std: float = DEFAULT_CUBE_POS_STD

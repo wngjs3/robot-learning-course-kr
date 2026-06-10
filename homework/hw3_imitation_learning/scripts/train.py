@@ -1,12 +1,10 @@
-"""Training script for SO-100 action-chunking imitation learning.
+"""SO-100 action-chunking 모방 학습을 위한 학습 스크립트.
 
-Imports a model from hw3.model and trains it on
-state -> action-chunk prediction using the processed zarr dataset.
+hw3.model에서 모델을 임포트하고, 가공된 zarr 데이터셋을 사용하여
+state -> action-chunk 예측에 대해 모델을 학습시킵니다.
 
-Usage:
-    python scripts/train.py --zarr datasets/processed/single_cube/processed_ee_xyz.zarr \
-        --state-keys ... \
-        --action-keys ...
+사용법:
+    python scripts/train.py --zarr datasets/processed/single_cube/processed_ee_xyz.zarr         --state-keys ...         --action-keys ...
 """
 
 from __future__ import annotations
@@ -24,10 +22,10 @@ from hw3.dataset import (
 )
 from hw3.model import BasePolicy, build_policy
 
-# TODO: Any imports you want from torch or other libraries we use. Not allowed: libraries we don't use
+# TODO: torch나 우리가 사용하는 다른 라이브러리에서 원하는 임포트를 추가하세요. 허용되지 않음: 우리가 사용하지 않는 라이브러리
 from torch.utils.data import DataLoader, random_split
 
-# TODO: Choose your own hyperparameters!
+# TODO: 자신만의 하이퍼파라미터를 선택하세요!
 EPOCHS = ... 
 BATCH_SIZE = ...
 LR = ...
@@ -46,8 +44,8 @@ def train_one_epoch(
 
     for batch in loader:
         states, action_chunks = batch
-        # TODO: Implement the training step for one batch here.
-        # This mostly: Get states and action_chunks onto the correct device, compute the loss, and step the optimizer.
+        # TODO: 여기에 단일 배치에 대한 학습 단계를 구현하세요.
+        # 주요 작업: states와 action_chunks를 올바른 device로 이동시키고, loss를 계산한 뒤, optimizer의 단계를 진행합니다.
 
     return total_loss / max(n_batches, 1)
 
@@ -64,13 +62,13 @@ def evaluate(
 
     for batch in loader:
         states, action_chunks = batch
-        # TODO: Implement the evaluation step for one batch here.
+        # TODO: 여기에 단일 배치에 대한 평가 단계를 구현하세요.
 
     return total_loss / max(n_batches, 1)
 
 
 def main() -> None:
-    # TODO: You may add any cli arguments that make life easier for you like learning rate etc.
+    # TODO: learning rate 등 편의를 위한 cli 인자를 자유롭게 추가하셔도 됩니다.
     parser = argparse.ArgumentParser(description="Train action-chunking policy.")
     parser.add_argument(
         "--zarr", type=Path, required=True, help="Path to processed .zarr store."
@@ -110,7 +108,7 @@ def main() -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
 
-    # ── load data ─────────────────────────────────────────────────────
+    # ── 데이터 로드 ─────────────────────────────────────────────────────
     zarr_paths = [args.zarr]
     if args.extra_zarr:
         zarr_paths.extend(args.extra_zarr)
@@ -140,7 +138,7 @@ def main() -> None:
     print(f"Dataset: {len(dataset)} samples, chunk_size={args.chunk_size}")
     print(f"  state_dim={states.shape[1]}, action_dim={actions.shape[1]}")
 
-    # ── train / val split ─────────────────────────────────────────────
+    # ── 학습 / 검증 분할 ─────────────────────────────────────────────
     n_val = max(1, int(len(dataset) * VAL_SPLIT))
     n_train = len(dataset) - n_val
     train_ds, val_ds = random_split(
@@ -154,29 +152,29 @@ def main() -> None:
         val_ds, batch_size=BATCH_SIZE, shuffle=False, num_workers=0
     )
 
-    # ── model ─────────────────────────────────────────────────────────
+    # ── 모델 ─────────────────────────────────────────────────────────
     model = build_policy(
         args.policy,
         state_dim=states.shape[1],
         action_dim=actions.shape[1],
-        # TODO: build with your desired specifications
+        # TODO: 원하는 사양으로 빌드하세요
     ).to(device)
 
     n_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Model parameters: {n_params:,}")
 
-    # TODO: implement an optimizer and scheduler
+    # TODO: optimizer와 scheduler를 구현하세요
     # optimizer =
     # scheduler =
 
-    # ── training loop ─────────────────────────────────────────────────
+    # ── 학습 루프 ─────────────────────────────────────────────────
     best_val = float("inf")
 
-    # Derive action space tag from action keys (e.g. "ee_xyz", "joints")
+    # action keys로부터 action space 태그를 도출합니다 (예: "ee_xyz", "joints")
     action_space = "unknown"
     if args.action_keys:
         for k in args.action_keys:
-            base = k.split("[")[0]  # strip column slices
+            base = k.split("[")[0]  # 열 슬라이스 제거
             if base != "action_gripper":
                 action_space = base.removeprefix("action_")
                 break
@@ -189,7 +187,7 @@ def main() -> None:
         n_dagger_eps += z.attrs.get("num_dagger_episodes", 0)
     if n_dagger_eps > 0:
         save_name = f"best_model_{action_space}_{args.policy}_dagger{n_dagger_eps}ep.pt"
-    # Default: checkpoints/<task>/
+    # 기본값: checkpoints/<task>/
     if "multi_cube" in str(args.zarr):
         ckpt_dir = Path("./checkpoints/multi_cube")
     else:

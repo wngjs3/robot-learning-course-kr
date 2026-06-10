@@ -1,6 +1,5 @@
 # Homework 4: Reinforcement Learning
 
-- **마감일: 16.04.26 23:59 CET**  
 - **개별적으로 해결해야 합니다. 표절 검사가 수행됩니다.**   
 
 

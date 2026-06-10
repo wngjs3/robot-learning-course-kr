@@ -51,13 +51,13 @@ class EpisodeLoggingCallback(BaseCallback):
         
         for info in infos:
             if "episode" in info:
-                # Log the tracking error at the end of the episode
+                # 에피소드 종료 시 트래킹 오차(tracking error)를 기록합니다.
                 self.logger.record("rollout/ep_ee_tracking_error", info["ee_tracking_error"])
                     
         return True
 
 class UpdateCheckpointCallback(BaseCallback):
-    """Save the model every N PPO update steps (after each rollout) inside the run's log dir."""
+    """실행 로그 디렉터리 내에 매 N번의 PPO 업데이트 스텝마다(각 롤아웃 이후) 모델을 저장합니다."""
 
     def __init__(self, save_path=None, name_prefix="model", save_freq_updates=10, verbose=0):
         super().__init__(verbose)
@@ -67,7 +67,7 @@ class UpdateCheckpointCallback(BaseCallback):
         self.update_counter = 0
 
     def _on_training_start(self) -> None:
-        # Resolve to the actual run log dir (TensorBoard creates subfolders per run)
+        # 실제 실행 로그 디렉터리를 확인합니다 (TensorBoard는 실행별로 하위 폴더를 생성합니다)
         if self.save_path is None:
             log_dir = self.logger.get_dir()
             if log_dir is None:
@@ -96,10 +96,10 @@ class KLAdaptiveLRCallback(BaseCallback):
         self.lr = init_lr
         self.min_lr, self.max_lr = min_lr, max_lr
         self.up_factor, self.down_factor = up_factor, down_factor
-        self.tol = tol  # acceptable relative band
+        self.tol = tol  # 허용 가능한 상대적 대역(relative band)
 
     def _on_training_start(self):
-        # Override PPO lr schedule with a mutable one we control
+        # PPO lr schedule을 우리가 제어할 수 있는 가변적인 스케줄로 오버라이드합니다
         self.model.lr_schedule = lambda _, lr=self.lr: lr
         self.model._update_learning_rate(self.model.policy.optimizer)
         for group in self.model.policy.optimizer.param_groups:
@@ -107,13 +107,13 @@ class KLAdaptiveLRCallback(BaseCallback):
         return True
 
     def _on_step(self) -> bool:
-        # No per-step logic; required to satisfy BaseCallback abstract method
+        # 스텝별 로직 없음; BaseCallback 추상 메서드를 충족하기 위해 필요함
         return True
 
     def _on_rollout_end(self) -> bool:
         kl = self.logger.name_to_value.get("train/approx_kl")
         if kl is None:
-            return True  # no KL recorded yet
+            return True  # 아직 기록된 KL이 없음
         if kl > self.target_kl * (1 + self.tol):
             self.lr = max(self.min_lr, self.lr * self.down_factor)
         elif kl < self.target_kl * (1 - self.tol):

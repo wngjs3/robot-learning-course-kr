@@ -16,38 +16,38 @@ class SO100TrackEnv(gym.Env):
         self.model = mujoco.MjModel.from_xml_path(str(self.xml_path))
         self.data = mujoco.MjData(self.model)
 
-        # Define Observation and Action Spaces
+        # 관측 및 액션 공간 정의
         obs = self._get_obs()
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=obs.shape, dtype=np.float64)
         self.action_space = spaces.Box(low=-1, high=1, shape=(6,), dtype=np.float32)
         
-        # Rendering
+        # 렌더링
         self.render_mode = render_mode
         self.viewer = None
 
-        # Timestep & Episode
-        self.sim_timestep = self.model.opt.timestep # 0.002s (500 Hz)
-        self.ctrl_decimation = 50 # makes control frequency 10 Hz
+        # 타임스텝 및 에피소드
+        self.sim_timestep = self.model.opt.timestep # 0.002초 (500 Hz)
+        self.ctrl_decimation = 50 # 제어 주기를 10 Hz로 설정
         self.ctrl_timestep = self.sim_timestep * self.ctrl_decimation # 0.1
         self.max_episode_length_s = 10
-        self.max_episode_length = int(self.max_episode_length_s / self.ctrl_timestep) # 100 steps per episode
+        self.max_episode_length = int(self.max_episode_length_s / self.ctrl_timestep) # 에피소드당 100 스텝
         self.current_step = 0
 
-        # Deafult robot home position
+        # 기본 로봇 홈 포지션
         self.default_qpos = np.array([0.0, -1.57, 1.0, 1.0, 0.0, 0.02239])
 
-        # Evaluation metrics
+        # 평가 메트릭
         self.ee_tracking_error = 0.0
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed, options=options)
         mujoco.mj_resetData(self.model, self.data)
 
-        # Reset Robot to home position
+        # 로봇을 홈 포지션으로 리셋
         self.data.qpos[:] = reset_robot(self.default_qpos)
         mujoco.mj_forward(self.model, self.data)
 
-        # Reset target position around robot base
+        # 로봇 베이스 주변으로 목표 위치 리셋
         base_pos = self.data.body("Base").xpos.copy()
         self.data.mocap_pos[0] = reset_target_position(base_pos)
 
@@ -77,7 +77,7 @@ class SO100TrackEnv(gym.Env):
         if self.render_mode == "human":
             self.render()
 
-        # Extra info as metrics for evaluation
+        # 평가 메트릭용 추가 정보
         info = {"ee_tracking_error": self.ee_tracking_error.item()}
         return obs, reward, terminated, truncated, info
 
@@ -95,7 +95,7 @@ class SO100TrackEnv(gym.Env):
             return
         if self.viewer is None:
             self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
-        # Update the viewer's copy of the data
+        # 뷰어의 데이터 복사본 업데이트
         self.viewer.sync()
 
     def close(self):

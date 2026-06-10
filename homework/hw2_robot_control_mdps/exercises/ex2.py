@@ -6,18 +6,19 @@ def generate_quintic_spline_waypoints(start, end, num_points):
     """
     TODO:
 
-    Steps:
-    1. Generate `num_points` linearly spaced time steps `s` between 0 and 1.
-    2. Apply the quintic time scaling polynomial function which can be found in the slides to get `f_s`.
-    3. Interpolate between `start` and `end` using `start + (end - start) * f_s`.
+    단계:
+    1. 0과 1 사이에 선형 간격으로 배치된 `num_points`개의 시간 단계 `s`를 생성합니다.
+    2. 슬라이드에 나와 있는 5차 시간 스케일링 다항식 함수를 적용하여 `f_s`를 구합니다.
+    3. `start + (end - start) * f_s`를 사용하여 `start`와 `end` 사이를 보간합니다.
     
     Args:
-        start (np.ndarray): Starting waypoint.
-        end (np.ndarray): Ending waypoint.
-        num_points (int): Number of points in the trajectory.
+        start (np.ndarray): 시작 웨이포인트.
+        end (np.ndarray): 종료 웨이포인트.
+        num_points (int): 궤적의 포인트 수.
         
     Returns:
-        np.ndarray: Generated waypoints.
+        np.ndarray: 생성된 웨이포인트.
+    
     """
     raise NotImplementedError()
 
@@ -25,24 +26,25 @@ def generate_quintic_spline_waypoints(start, end, num_points):
 def pid_control(tracking_error_history, timestep, Kp=150.0, Ki=0.0, Kd=0.01):
     """
     TODO:
-    Compute the PID control signal based on the tracking error history.
+    추적 오차 이력을 기반으로 PID 제어 신호를 계산합니다.
     
-    Steps:
-    1. The Proportional (P) term is the most recent error.
-    2. The Integral (I) term is the sum of all past errors, multiplied by the simulation timestep.
-    3. The Derivative (D) term is the rate of change of the error (difference between the last two errors divided by the timestep).
-       If there is only one error in history, the D term should be zero.
-    4. Compute the final control signal: Kp * P + Ki * I + Kd * D.
+    단계:
+    1. 비례(P) 항은 가장 최근의 오차입니다.
+    2. 적분(I) 항은 모든 과거 오차의 합에 시뮬레이션 timestep을 곱한 값입니다.
+    3. 미분(D) 항은 오차의 변화율(마지막 두 오차의 차이를 timestep으로 나눈 값)입니다.
+       이전에 기록된 오차가 하나만 있는 경우, D 항은 0이어야 합니다.
+    4. 최종 제어 신호를 계산합니다: Kp * P + Ki * I + Kd * D.
     
     Args:
-        tracking_error_history (np.ndarray): History of tracking errors.
-        timestep (float): Simulation timestep.
-        Kp (float): Proportional gain.
-        Ki (float): Integral gain.
-        Kd (float): Derivative gain.
+        tracking_error_history (np.ndarray): 추적 오차 이력.
+        timestep (float): 시뮬레이션 timestep.
+        Kp (float): 비례 이득.
+        Ki (float): 적분 이득.
+        Kd (float): 미분 이득.
         
     Returns:
-        np.ndarray: Control signal.
+        np.ndarray: 제어 신호.
+    
     """
     raise NotImplementedError()
             

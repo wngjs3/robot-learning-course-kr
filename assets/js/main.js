@@ -80,7 +80,6 @@
         <td style="white-space:nowrap;color:var(--ink-faint);font-weight:700;">${esc(t.week)}</td>
         <td style="font-weight:700;">${esc(t.topic)}</td>
         <td><a href="${t.url}" target="_blank" rel="noopener">한국어판 코드 ↗</a> &nbsp;·&nbsp; <a href="${t.orig}" target="_blank" rel="noopener" style="color:var(--ink-faint);">원본</a></td>
-        <td><span class="due-badge">~ ${esc(t.due)}</span></td>
       </tr>`).join("");
   }
 })();

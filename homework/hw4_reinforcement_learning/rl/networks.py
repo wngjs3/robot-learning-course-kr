@@ -17,7 +17,8 @@ def build_mlp(
     output_activation=nn.Identity,
 ) -> nn.Sequential:
     """
-    Build a simple MLP.
+    간단한 MLP를 구축합니다.
+    
     """
     layers = []
     prev_dim = input_dim
@@ -35,7 +36,8 @@ def build_mlp(
 
 class ValueNet(nn.Module):
     """
-    State-value network V(s), used by PPO.
+    PPO에서 사용하는 상태 가치 네트워크 V(s)입니다.
+    
     """
 
     def __init__(self, obs_dim: int, hidden_sizes: Sequence[int]):
@@ -48,7 +50,8 @@ class ValueNet(nn.Module):
 
 class QNet(nn.Module):
     """
-    Action-value network Q(s, a), used by SAC.
+    SAC에서 사용하는 행동 가치 네트워크 Q(s, a)입니다.
+    
     """
 
     def __init__(self, obs_dim: int, act_dim: int, hidden_sizes: Sequence[int]):
@@ -62,7 +65,8 @@ class QNet(nn.Module):
 
 class DoubleQNet(nn.Module):
     """
-    Double Q-network for SAC, which consists of two QNets.
+    두 개의 QNet으로 구성된 SAC용 Double Q-network입니다.
+    
     """
 
     def __init__(self, obs_dim: int, act_dim: int, hidden_sizes: Sequence[int]):
@@ -78,11 +82,12 @@ class DoubleQNet(nn.Module):
 
 class GaussianActor(nn.Module):
     """
-    Gaussian policy for PPO.
+    PPO용 가우시안 정책입니다.
 
-    Outputs a Normal distribution with:
+    출력은 다음과 같은 정규분포(Normal distribution)입니다:
         mean = network(obs)
-        std  = exp(log_std), where log_std is a learned parameter vector
+        std  = exp(log_std), 여기서 log_std는 학습 가능한 파라미터 벡터입니다.
+    
     """
 
     @property
@@ -104,7 +109,7 @@ class GaussianActor(nn.Module):
         self.distribution = None
 
     def forward(self):
-        # GaussianActor does not support forward pass
+        # GaussianActor는 forward 패스를 지원하지 않습니다
         pass
         
     def update_distribution(self, obs: torch.Tensor):
@@ -114,9 +119,14 @@ class GaussianActor(nn.Module):
 
     def act(self, obs: torch.Tensor) -> torch.Tensor:
         """
-        Returns:
-            action: sampled or deterministic action
-            log_prob: log pi(a|s)
+    SAC용 Squashed 가우시안 정책입니다.
+
+    샘플링 파이프라인:
+        u ~ Normal(mu, std)
+        a = tanh(u)
+
+    반환되는 action은 [-1, 1] 범위에 있습니다.
+    
         """
         self.update_distribution(obs)
         return self.distribution.sample()
@@ -130,13 +140,10 @@ class GaussianActor(nn.Module):
 
 class SquashedGaussianActor(nn.Module):
     """
-    Squashed Gaussian policy for SAC.
-
-    Sampling pipeline:
-        u ~ Normal(mu, std)
-        a = tanh(u)
-
-    Returned action is in [-1, 1].
+        반환값:
+            action: 샘플링되었거나 결정론적인(deterministic) action
+            log_prob: log pi(a|s)
+        
     """
 
     def __init__(self, obs_dim: int, act_dim: int, hidden_sizes: Sequence[int]):
@@ -156,15 +163,16 @@ class SquashedGaussianActor(nn.Module):
 
     def act(self, obs: torch.Tensor):
         """
-        Returns:
-            action: tanh-squashed action in [-1, 1]
-            log_prob: corrected log-probability
+        반환값:
+            action: [-1, 1] 범위로 tanh-squashed된 action
+            log_prob: 보정된 로그 확률(log-probability)
+        
         """
         self.update_distribution(obs)
         raw_action = self.distribution.rsample()
         action = torch.tanh(raw_action)
 
-        # Calculate log_prob with tanh correction
+        # tanh 보정을 적용하여 log_prob 계산
         log_prob = self.distribution.log_prob(raw_action)
         # log|d(action)/d(raw_action)| = log(1 - tanh(raw_action)^2)
         log_prob -= torch.log(1.0 - action.pow(2) + 1e-6)
@@ -178,5 +186,5 @@ class SquashedGaussianActor(nn.Module):
         return action
 
     def forward(self):
-        # SquashedGaussianActor does not support forward pass
+        # SquashedGaussianActor는 forward 패스를 지원하지 않습니다
         pass

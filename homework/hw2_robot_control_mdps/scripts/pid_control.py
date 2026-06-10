@@ -46,7 +46,7 @@ if __name__ == "__main__":
         keypoint_id += 1
     total_waypoints = np.vstack(total_waypoints)
 
-    # set to initial position
+    # 초기 위치로 설정
     target_qpos = ik_track(model, data, site_name, total_waypoints[0])
     data.qpos[:] = target_qpos
     mujoco.mj_forward(model, data)

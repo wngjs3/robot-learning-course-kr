@@ -1,15 +1,13 @@
-"""DAgger interactive evaluation: run a trained policy with human takeover.
+"""DAgger 대화형 평가: 인간 개입(takeover) 기능과 함께 학습된 정책을 실행합니다.
 
-Runs policy inference in the obstacle scene.  At any time you (the expert) can press the takeover key to assume manual control.  While in
-takeover mode every timestep is recorded into a zarr store (same format as
-record_teleop_demos.py).  Pressing the takeover key again or ending the
-episode hands control back to the policy.
+장애물 씬에서 정책 추론을 실행합니다. 언제든지 전문가(사용자)가 개입 키를 눌러 수동 제어로 전환할 수 있습니다.
+개입 모드에 있는 동안 모든 타임스텝은 zarr 저장소에 기록됩니다(record_teleop_demos.py와 동일한 형식).
+개입 키를 다시 누르거나 에피소드가 종료되면 제어권이 다시 정책으로 넘어갑니다.
 
-Collected data is saved under datasets/raw/single_cube/dagger/ and can
-later be merged with the original demonstrations for retraining via
-compute_actions.py which will produce a merged .zarr dataset to train on.
+수집된 데이터는 datasets/raw/single_cube/dagger/ 아래에 저장되며,
+이후 compute_actions.py를 통해 기존 데모 데이터와 병합하여 재학습에 사용할 수 있습니다. 이는 학습을 위한 병합된 .zarr 데이터셋을 생성합니다.
 
-Usage:
+사용법:
     python scripts/dagger_eval.py \\
         --checkpoint checkpoints/single_cube/best_model_ee_xyz_obstacle.pt \\
         --num-episodes 10
@@ -50,7 +48,7 @@ from so101_gym.constants import ASSETS_DIR
 XML_PATH = ASSETS_DIR / "so100_transfer_cube_obstacle_ee.xml"
 
 
-# ── main DAgger loop ─────────────────────────────────────────────────
+# ── 메인 DAgger 루프 ─────────────────────────────────────────────────
 
 
 def run_dagger_episode(
@@ -68,11 +66,12 @@ def run_dagger_episode(
     total: int = 0,
     headless: bool = False,
 ) -> tuple[bool, int, bool, bool]:
-    """Run one DAgger episode: policy runs, human can take over at any time.
+    """하나의 DAgger 에피소드를 실행합니다: 정책이 실행되며, 인간이 언제든지 개입할 수 있습니다.
 
-    Returns (success, n_takeover_steps, aborted, replay).
+    반환값: (success, n_takeover_steps, aborted, replay).
+    
     """
-    # Save RNG state so that the caller can restore it for a replay
+    # 호출자가 리플레이를 위해 복원할 수 있도록 RNG 상태를 저장
     rng_state_before_reset = env.rng.bit_generator.state
     obs = env.reset()
 
@@ -81,14 +80,14 @@ def run_dagger_episode(
     success = False
     human_control = False
     n_takeover_steps = 0
-    recording_this_episode = False  # track if we recorded anything
-    # Grace period: after success is detected during human control, keep
-    # running for GRACE_SECS more so at least one full chunk is recorded.
+    recording_this_episode = False  # 기록된 데이터가 있는지 추적
+    # 유예 기간: 인간 제어 중 성공이 감지된 후, 최소 하나의 전체 청크가
+    # 기록되도록 GRACE_SECS 동안 계속 실행합니다.
     GRACE_SECS = 1.7
-    grace_steps_remaining: int | None = None  # None = not in grace period
+    grace_steps_remaining: int | None = None  # None = 유예 기간이 아님
 
     while step < max_steps or human_control:
-        # ── keyboard handling (skipped in headless mode) ─────────────
+        # ── 키보드 처리 (헤드리스 모드에서는 건너뜀) ─────────────
         if not headless:
             k_raw = cv2.waitKeyEx(1)
         else:
@@ -97,40 +96,40 @@ def run_dagger_episode(
             action_name = key_to_action.get(k_raw)
 
             if action_name == "escape":
-                # Discard current episode data and abort
+                # 현재 에피소드 데이터를 폐기하고 중단
                 if recording_this_episode:
                     writer.discard_episode()
                     print("  Episode discarded on escape.")
                 return success, n_takeover_steps, True, False  # aborted
 
             if action_name == "record":
-                # Toggle human takeover mode
+                # 인간 개입(takeover) 모드 토글
                 human_control = not human_control
                 if human_control:
                     print("  >>> HUMAN TAKEOVER — you are now controlling the arm")
                     print("      Press your 'record' key again to hand back to policy")
-                    action_queue.clear()  # drop any queued policy actions
+                    action_queue.clear()  # 대기열에 있는 모든 정책 액션 제거
                     recording_this_episode = True
                 else:
                     print("  <<< POLICY RESUMED")
 
             if action_name == "reset":
-                # Replay: discard data and repeat with identical randomization
+                # 리플레이: 데이터를 폐기하고 동일한 무작위성(randomization)으로 반복
                 if recording_this_episode:
                     writer.discard_episode()
                     print("  Episode discarded — replaying same scenario.")
-                # Restore RNG so next reset() reproduces the same episode
+                # 다음 reset()이 동일한 에피소드를 재현하도록 RNG 복원
                 env.rng.bit_generator.state = rng_state_before_reset
                 return False, 0, False, True  # replay=True
 
-            # Enter key (13 / 0x0D) = skip to next episode
+            # Enter 키 (13 / 0x0D) = 다음 에피소드로 건너뛰기
             if k_raw == 13 or k_raw == 0x0D:
                 if recording_this_episode:
                     writer.discard_episode()
                     print("  Episode discarded — skipping to next.")
                 return False, 0, False, False  # replay=False
 
-            # If in human control, apply movement keys
+            # 인간 제어 상태인 경우, 이동 키 적용
             if human_control and action_name is not None:
                 handle_teleop_key(
                     action_name,
@@ -140,9 +139,9 @@ def run_dagger_episode(
                     env.act_ids[env._jaw_idx],
                 )
 
-        # ── record state BEFORE step (if human is controlling) ────────
+        # ── step 이전 상태 기록 (인간이 제어 중인 경우) ────────
         if human_control:
-            # Record current state for DAgger
+            # DAgger를 위한 현재 상태 기록
             joints = env.get_joint_angles()
             ee_state = env.get_ee_state()
             cube_state = env.get_cube_state()
@@ -161,7 +160,7 @@ def run_dagger_episode(
             )
             n_takeover_steps += 1
 
-        # ── policy inference (if not in human control) ────────────────
+        # ── 정책 추론 (인간 제어 상태가 아닌 경우) ────────────────
         if not human_control:
             if not action_queue:
                 chunk = infer_action_chunk(
@@ -176,26 +175,26 @@ def run_dagger_episode(
             action = action_queue.pop(0)
             apply_action(env, action, action_keys)
 
-        # ── step simulation ───────────────────────────────────────────
+        # ── 시뮬레이션 step 실행 ───────────────────────────────────────────
         obs = env.step()
         step += 1
 
-        # ── check termination ─────────────────────────────────────────
+        # ── 종료 조건 확인 ─────────────────────────────────────────
         success = check_success(env)
         if success:
             if human_control and grace_steps_remaining is None:
-                # Start grace period so we keep recording
+                # 기록을 계속 유지하기 위해 유예 기간 시작
                 grace_steps_remaining = int(GRACE_SECS / env.dt_ctrl)
                 print(f"  Cube in bin! Recording {grace_steps_remaining} more "
                       f"steps ({GRACE_SECS}s grace period)...")
             elif not human_control:
-                # Policy mode — terminate immediately
+                # 정책 모드 — 즉시 종료
                 if recording_this_episode:
                     writer.end_episode()
                     print(f"  DAgger episode saved ({n_takeover_steps} takeover steps)")
                 return success, n_takeover_steps, False, False
 
-        # Tick down grace period
+        # 유예 기간 카운트다운
         if grace_steps_remaining is not None:
             grace_steps_remaining -= 1
             if grace_steps_remaining <= 0:
@@ -211,7 +210,7 @@ def run_dagger_episode(
                 print(f"  DAgger episode saved ({n_takeover_steps} takeover steps)")
             return False, n_takeover_steps, False, False
 
-        # ── render (skip in headless mode) ────────────────────────
+        # ── 렌더링 (헤드리스 모드에서는 건너뜀) ────────────────────────
         if headless:
             continue
 
@@ -225,7 +224,7 @@ def run_dagger_episode(
             img, status, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2
         )
 
-        # Success rate
+        # 성공률
         if total > 0:
             rate = successes / total * 100
             sr_text = f"Success: {successes}/{total} ({rate:.0f}%)"
@@ -234,7 +233,7 @@ def run_dagger_episode(
         color = (0, 255, 0) if success else (0, 0, 255)
         cv2.putText(img, sr_text, (10, 95), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
 
-        # DAgger info
+        # DAgger 정보
         dagger_text = (
             f"DAgger steps: {n_takeover_steps} | Episodes saved: {writer.num_episodes}"
         )
@@ -242,7 +241,7 @@ def run_dagger_episode(
             img, dagger_text, (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 200, 0), 2
         )
 
-        # Mode indicator
+        # 모드 표시기
         if human_control:
             cv2.putText(
                 img, "HUMAN", (10, 165), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3
@@ -252,7 +251,7 @@ def run_dagger_episode(
                 img, "POLICY", (10, 165), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3
             )
 
-        # Hint
+        # 힌트
         def _label_for(act):
             for code, a in key_to_action.items():
                 if a == act:
@@ -283,7 +282,7 @@ def run_dagger_episode(
         cv2.imshow("DAgger Eval", img)
         time.sleep(env.dt_ctrl)
 
-    # Episode ended by reaching max_steps
+    # max_steps에 도달하여 에피소드 종료됨
     if recording_this_episode:
         writer.end_episode()
         print(f"  DAgger episode saved ({n_takeover_steps} takeover steps)")
@@ -341,15 +340,15 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
 
-    # Load model
+    # 모델 로드
     model, normalizer, chunk_size, state_keys, action_keys = load_checkpoint(
         args.checkpoint, device
     )
 
-    # Decide on use_mocap
+    # use_mocap 사용 여부 결정
     use_mocap = not any("action_joints" in k for k in action_keys)
 
-    # Scene
+    # 씬(Scene)
     print(f"Scene: {XML_PATH.name}")
 
     env = SO100SimEnv(
@@ -361,12 +360,12 @@ def main():
         seed=args.seed,
     )
 
-    # Keymap
+    # 키맵
     km_path = args.keymap or DEFAULT_KEYMAP_PATH
     key_to_action = load_keymap(km_path)
     print(f"Loaded keymap from {km_path}")
 
-    # DAgger output zarr
+    # DAgger 출력 zarr
     if args.output_dir:
         out_dir = args.output_dir
     else:
@@ -411,9 +410,9 @@ def main():
                 break
 
             if replay:
-                # RNG already restored inside run_dagger_episode
+                # run_dagger_episode 내부에서 RNG가 이미 복원됨
                 print("  Replaying same episode...")
-                ep -= 1  # don't count this attempt
+                ep -= 1  # 이번 시도는 횟수에 포함하지 않음
                 continue
 
             total_takeover_steps += n_takeover

@@ -1,8 +1,8 @@
-"""Interactive key configuration for the SO-100 teleop recorder.
+"""SO-100 원격제어 레코더를 위한 대화형 키 설정.
 
-Opens a small OpenCV window and walks you through each action one-by-one.
-Press the key you want to assign to each action (look for our recommended keys).  The result is saved as
-a JSON file that is loaded automatically throughout the homework.
+작은 OpenCV 창을 열고 각 액션을 하나씩 안내합니다.
+각 액션에 할당할 키를 누르세요 (추천 키 참고). 결과는
+과제 전반에서 자동으로 로드되는 JSON 파일로 저장됩니다.
 
 Usage:
     python scripts/configure_keys.py
@@ -17,11 +17,11 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-# Default output location (next to this script)
+# 기본 출력 위치 (이 스크립트와 같은 위치)
 DEFAULT_KEYMAP_PATH = Path(__file__).resolve().parent.parent / "hw3" / "keymap.json"
 
-# Every configurable action with a human-readable description and its default
-# (raw_code, ascii_code) — used both as documentation and as fallback.
+# 사람이 읽을 수 있는 설명과 기본값을 포함한 설정 가능한 모든 액션
+# (raw_code, ascii_code) — 문서화 및 폴백(fallback)용으로 모두 사용됨.
 ACTIONS: list[tuple[str, str]] = [
     ("move_up", "Move EE up (+Z) (recommended: UP ARROW)"),
     ("move_down", "Move EE down (-Z) (recommended: DOWN ARROW)"),
@@ -53,7 +53,7 @@ WINDOW_H = 200
 def draw_prompt(
     action_name: str, description: str, index: int, total: int
 ) -> np.ndarray:
-    """Create a prompt image asking the user to press a key."""
+    """사용자에게 키를 누르도록 요청하는 프롬프트 이미지 생성."""
     img = np.zeros((WINDOW_H, WINDOW_W, 3), dtype=np.uint8)
     cv2.putText(
         img,
@@ -95,7 +95,7 @@ def draw_prompt(
 
 
 def draw_assigned(action_name: str, raw: int, ascii_code: int) -> np.ndarray:
-    """Show confirmation after a key was captured."""
+    """키가 캡처된 후 확인 메시지 표시."""
     img = np.zeros((WINDOW_H, WINDOW_W, 3), dtype=np.uint8)
     label = chr(ascii_code) if 32 <= ascii_code <= 126 else "<special>"
     cv2.putText(
@@ -129,7 +129,7 @@ def draw_assigned(action_name: str, raw: int, ascii_code: int) -> np.ndarray:
 
 
 def run_configuration(output_path: Path) -> None:
-    """Walk through all actions and capture keys interactively."""
+    """모든 액션을 차례대로 진행하며 대화형으로 키를 캡처."""
     cv2.namedWindow("Key Configuration", cv2.WINDOW_AUTOSIZE)
 
     keymap: dict[str, dict] = {}
@@ -139,9 +139,9 @@ def run_configuration(output_path: Path) -> None:
         prompt = draw_prompt(action_name, description, i, total)
         cv2.imshow("Key Configuration", prompt)
 
-        # Wait for a key press (block until a key is pressed)
+        # 키 입력 대기 (키가 눌릴 때까지 블로킹)
         while True:
-            k_raw = cv2.waitKeyEx(0)  # 0 = wait forever
+            k_raw = cv2.waitKeyEx(0)  # 0 = 무한 대기
             if k_raw != -1:
                 break
 
@@ -157,14 +157,14 @@ def run_configuration(output_path: Path) -> None:
 
         print(f"  [{i + 1}/{total}] {action_name:20s} -> '{label}' (raw={k_raw})")
 
-        # Brief confirmation
+        # 간단한 확인 메시지
         confirm = draw_assigned(action_name, k_raw, k_ascii)
         cv2.imshow("Key Configuration", confirm)
         cv2.waitKey(500)
 
     cv2.destroyAllWindows()
 
-    # Save
+    # 저장
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump(keymap, f, indent=2)
@@ -175,9 +175,10 @@ def run_configuration(output_path: Path) -> None:
 
 
 def load_keymap(path: Path | None = None) -> dict[str, int]:
-    """Load a keymap JSON and return {action_name: raw_keycode}.
+    """keymap JSON을 로드하고 {action_name: raw_keycode}를 반환.
 
-    If no file exists, returns an empty dict (caller should use defaults).
+    파일이 존재하지 않으면 빈 dict를 반환 (호출자는 기본값을 사용해야 함).
+    
     """
     if path is None:
         path = DEFAULT_KEYMAP_PATH

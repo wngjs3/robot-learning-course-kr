@@ -1,6 +1,6 @@
 """
-Evaluation script for DQN on CartPole-v1.
-Supports both quantitative evaluation and GUI playback.
+CartPole-v1 환경에서 DQN을 평가하기 위한 스크립트.
+정량적 평가와 GUI 재생을 모두 지원합니다.
 """
 
 import sys
@@ -20,7 +20,7 @@ from exercises.ex2_dqn_config import DQN_PARAMETERS
 
 
 def evaluate_policy(env, agent, num_episodes):
-    """Evaluate a trained policy for several episodes."""
+    """학습된 정책을 여러 에피소드 동안 평가합니다."""
     returns = []
     lengths = []
 
@@ -50,7 +50,7 @@ def evaluate_policy(env, agent, num_episodes):
 
 
 def summarize_metrics(returns, lengths, success_threshold):
-    """Compute summary metrics for evaluation."""
+    """평가를 위한 요약 메트릭을 계산합니다."""
     returns_np = np.array(returns, dtype=np.float32)
     lengths_np = np.array(lengths, dtype=np.int32)
 
@@ -110,7 +110,7 @@ def main():
     if args.play and args.record_video:
         raise ValueError("--play and --record_video cannot be used at the same time.")
 
-    # Hyperparameters
+    # 하이퍼파라미터
     hidden_dim = DQN_PARAMETERS["hidden_dim"]
     seed = DQN_PARAMETERS["seed"]
 
@@ -127,7 +127,7 @@ def main():
     if not model_path.exists():
         raise FileNotFoundError(f"Checkpoint not found: {model_path}")
 
-    # Render mode
+    # 렌더링 모드
     if args.play:
         render_mode = "human"
     elif args.record_video:
@@ -137,7 +137,7 @@ def main():
 
     env = CartPoleWrapper(seed=seed, render_mode=render_mode)
 
-    # Video recording
+    # 비디오 녹화
     if args.record_video:
         video_dir = ROOT_DIR / "logs" / "dqn" / "videos"
         video_dir.mkdir(parents=True, exist_ok=True)
@@ -153,7 +153,7 @@ def main():
     if args.play:
         print("Play mode enabled: opening GUI window...")
 
-    # Agent
+    # 에이전트
     agent = DQN(
         state_dim=env.state_dim,
         hidden_dim=hidden_dim,
@@ -168,7 +168,7 @@ def main():
     agent.load(str(model_path))
     print(f"Loaded checkpoint from: {model_path}")
 
-    # Evaluation
+    # 평가
     returns, lengths = evaluate_policy(
         env=env,
         agent=agent,

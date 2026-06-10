@@ -30,7 +30,7 @@ if __name__ == "__main__":
     args = parse_args()
 
     if args.num_envs > 1:
-        # Wrap in a vectorized environment for parallel simulation
+        # 병렬 시뮬레이션을 위해 벡터화된 환경(vectorized environment)으로 래핑
         start_method = "spawn" if sys.platform == "win32" else "forkserver"
         envs = SubprocVecEnv([make_env() for _ in range(args.num_envs)], start_method=start_method)
         envs = VecMonitor(envs)
@@ -46,7 +46,7 @@ if __name__ == "__main__":
             vf_coef=1.0
         )
     else:
-        # Create a single environment for debug with rendering
+        # 렌더링을 포함한 디버그용 단일 환경 생성
         env = SO100TrackEnv(xml_path=XML_PATH, render_mode="human")
         model = PPO(
             "MlpPolicy",
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         verbose=0,
     )
 
-    # Train for a target number of PPO update steps (each update = n_steps * n_envs transitions)
+    # 목표 PPO 업데이트 단계 수만큼 학습 (각 업데이트 = n_steps * n_envs 트랜지션)
     total_update_steps = args.max_iterations
     rollout_batch_size = model.n_steps * model.n_envs
     total_timesteps = total_update_steps * rollout_batch_size
@@ -82,11 +82,11 @@ if __name__ == "__main__":
                               KLAdaptiveLRCallback(target_kl=0.05, init_lr=1e-3, min_lr=1e-5, max_lr=1e-3)]
                     )
     finally:
-        # Ensure environments cleanly close GL contexts
+        # 환경이 GL 컨텍스트를 깔끔하게 닫도록 보장
         if envs_ref is not None:
             envs_ref.close()
 
-    # Save the final model
+    # 최종 모델 저장
     log_dir = model.logger.get_dir()
     if log_dir is None:
         raise ValueError("Logger directory is not set; cannot save final model")

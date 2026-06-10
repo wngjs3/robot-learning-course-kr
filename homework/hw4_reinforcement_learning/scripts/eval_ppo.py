@@ -1,6 +1,6 @@
 """
-Evaluation script for PPO on the SO100 position tracking task.
-Supports quantitative evaluation and GUI playback.
+SO100 위치 추적 태스크에 대한 PPO 평가 스크립트.
+정량적 평가 및 GUI 재생을 지원합니다.
 """
 
 import sys
@@ -22,11 +22,12 @@ from rl.common import set_seed
 
 def find_latest_checkpoint(log_root: Path) -> Path:
     """
-    Find the checkpoint from the most recently modified PPO run directory,
-    and within that run select the checkpoint with the largest iteration number.
+    가장 최근에 수정된 PPO 실행 디렉토리에서 체크포인트를 찾고,
+    해당 실행 디렉토리 내에서 반복 횟수(iteration number)가 가장 큰 체크포인트를 선택합니다.
 
-    Expected structure:
+    예상 디렉토리 구조:
         logs/ppo/<run_name>/iter_<N>.pt
+    
     """
     if not log_root.exists():
         raise FileNotFoundError(f"PPO log directory not found: {log_root}")

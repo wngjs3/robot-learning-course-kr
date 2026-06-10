@@ -13,7 +13,8 @@ class ReplayBatch:
 
 class ReplayBuffer:
     """
-    A simple FIFO replay buffer for off-policy algorithms such as SAC.
+    SAC와 같은 오프폴리시(off-policy) 알고리즘을 위한 간단한 FIFO 리플레이 버퍼.
+    
     """
 
     def __init__(self, obs_dim: int, act_dim: int, max_size: int, device: torch.device):
@@ -70,8 +71,9 @@ class RolloutBatch:
 
 class RolloutBuffer:
     """
-    Rollout buffer for on-policy algorithms such as PPO.
-    Stores one rollout of fixed length.
+    PPO와 같은 온폴리시(on-policy) 알고리즘을 위한 롤아웃 버퍼.
+    고정된 길이의 1회 롤아웃 데이터를 저장합니다.
+    
     """
 
     def __init__(
@@ -127,8 +129,9 @@ class RolloutBuffer:
 
     def compute_returns(self, last_val: float) -> None:
         """
-        Compute GAE-Lambda advantages and rewards-to-go returns for the current trajectory.
-        Should be called at the end of a rollout or when an episode ends.
+        현재 궤적(trajectory)에 대한 GAE-Lambda 어드밴티지(advantage) 및 리턴(rewards-to-go)을 계산합니다.
+        롤아웃이 끝나거나 에피소드가 종료될 때 호출되어야 합니다.
+        
         """
         advantage = 0
         for step in reversed(range(self.max_size)):
@@ -146,8 +149,9 @@ class RolloutBuffer:
 
     def get(self, device: torch.device) -> RolloutBatch:
         """
-        Get all data from the buffer. Buffer must be full.
-        Advantages are normalized here.
+        버퍼에서 모든 데이터를 가져옵니다. 버퍼가 가득 차 있어야 합니다.
+        어드밴티지는 여기서 정규화됩니다.
+        
         """
         if self.ptr != self.max_size:
             raise ValueError(
@@ -165,7 +169,7 @@ class RolloutBuffer:
             ret=self.ret_buf,
             adv=self.adv_buf,
         )
-        # Reset buffer
+        # 버퍼 초기화
         self.ptr = 0
 
         return batch

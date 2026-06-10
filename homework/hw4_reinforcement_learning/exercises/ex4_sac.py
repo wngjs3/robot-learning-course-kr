@@ -42,25 +42,26 @@ class SACUpdateStats:
 
 class SACAgent:
     """
-    Soft Actor-Critic (SAC) agent for continuous control.
+    연속적 제어(continuous control)를 위한 Soft Actor-Critic (SAC) 에이전트.
 
-    Main components:
-      - a squashed Gaussian policy actor
-      - two Q-networks (double Q-learning)
-      - two target Q-networks
-      - entropy regularization with automatic temperature tuning
+    주요 구성 요소:
+      - squashed Gaussian 정책 actor
+      - 두 개의 Q-네트워크 (double Q-learning)
+      - 두 개의 타겟 Q-네트워크
+      - 자동 온도 조절을 포함한 엔트로피 정규화
     
-    SAC optimizes:
+    SAC 최적화 식:
       
-    Critic target:
+    Critic 타겟:
         y = r + gamma * (1 - done) *
             [ min(Q1_target(s', a'), Q2_target(s', a')) - alpha * log pi(a'|s') ]
 
-    Actor objective:
+    Actor 목적 함수:
         J_pi = E[ alpha * log pi(a|s) - min(Q1(s, a), Q2(s, a)) ]
 
-    Temperature objective:
+    온도(Temperature) 목적 함수:
         J_alpha = E[ -log_alpha * (log pi(a|s) + target_entropy) ]
+    
     """
 
     def __init__(
@@ -90,7 +91,7 @@ class SACAgent:
             self.device
         )
 
-        # Copy weights to target critics initially
+        # 초기에 타겟 critic으로 가중치 복사
         self.critic_target.load_state_dict(self.critic.state_dict())
 
         for p in self.critic_target.q1.parameters():
@@ -116,62 +117,66 @@ class SACAgent:
     @property
     def alpha(self) -> torch.Tensor:
         """
-        Temperature parameter alpha = exp(log_alpha).
+        온도 파라미터 alpha = exp(log_alpha).
+        
         """
         return self.log_alpha.exp()
 
     def sample_action(self, obs: torch.Tensor):
         """
-        Sample an action for environment interaction.
+        환경과의 상호작용을 위해 행동을 샘플링합니다.
 
-        Returns:
-            action (torch.Tensor): action within [-1, 1] due to tanh squashing
+        반환값:
+            action (torch.Tensor): tanh squashing으로 인해 [-1, 1] 범위 내에 있는 행동
+        
         """
         with torch.no_grad():
-            # TODO: Sample an action from the actor for environment interaction.
-            #
-            # Hint:
-            # - self.actor.act(obs) returns (action, log_prob)
-            # - Here you only need the sampled action
+            # TODO: 환경과의 상호작용을 위해 actor로부터 행동을 샘플링하세요.
+            # 
+            # 힌트:
+            # - self.actor.act(obs)는 (action, log_prob)을 반환합니다
+            # - 여기서는 샘플링된 action만 필요합니다
             action = ...
 
         return action
 
     def predict_action(self, obs: torch.Tensor):
         """
-        Deterministic action for evaluation.
+        평가를 위한 결정론적(deterministic) 행동.
+        
         """
         return self.actor.act_inference(obs)
 
     def compute_critic_loss(self, obs, act, rew, next_obs, done) -> torch.Tensor:
         """
-        Compute the SAC critic loss.
+        SAC critic 손실을 계산합니다.
 
-        Critic target:
+        Critic 타겟:
             y = r + gamma * (1 - done) *
                 [ min(Q1_target(s', a'), Q2_target(s', a')) - alpha * log pi(a'|s') ]
 
-        Args:
-            obs (torch.Tensor): current observations
-            act (torch.Tensor): actions taken
-            rew (torch.Tensor): rewards
-            next_obs (torch.Tensor): next observations
-            done (torch.Tensor): done flags
+        인자:
+            obs (torch.Tensor): 현재 관측값
+            act (torch.Tensor): 취해진 행동
+            rew (torch.Tensor): 보상
+            next_obs (torch.Tensor): 다음 관측값
+            done (torch.Tensor): 종료 여부 플래그
 
-        Returns:
-            torch.Tensor: critic loss
+        반환값:
+            torch.Tensor: critic 손실
+        
         """
         with torch.no_grad():
-            # TODO: Compute the target Q value for SAC.
-            #
-            # Hint:
-            # 1. Sample next_action and next_logp from the current actor
-            # 2. Compute target Q-values using self.critic_target
-            # 3. Take the minimum of the two target critics
-            # 4. Subtract alpha * next_logp to account for entropy regularization
-            # 5. Build the Bellman target:
+            # TODO: SAC를 위한 타겟 Q 값을 계산하세요.
+            # 
+            # 힌트:
+            # 1. 현재 actor로부터 next_action과 next_logp를 샘플링합니다
+            # 2. self.critic_target을 사용하여 타겟 Q 값들을 계산합니다
+            # 3. 두 타겟 critic 중 최솟값을 취합니다
+            # 4. 엔트로피 정규화를 고려하기 위해 alpha * next_logp를 뺍니다
+            # 5. 벨만 타겟을 구축합니다:
             #       rew + gamma * (1 - done) * q_next
-            # 6. Compute the MSE losses against the target Q value for both Q-networks, average them to get critic_loss
+            # 6. 두 Q-네트워크에 대해 타겟 Q 값과의 MSE 손실을 계산하고, 이를 평균하여 critic_loss를 구합니다
             next_action, next_logp = ...
             q1_next, q2_next = ...
             q_next = ...
@@ -184,25 +189,26 @@ class SACAgent:
 
     def compute_actor_loss(self, obs, act_new, logp_new) -> torch.Tensor:
         """
-        Compute the SAC actor loss.
+        SAC actor 손실을 계산합니다.
 
-        Actor objective:
+        Actor 목적 함수:
             J_pi = E[ alpha * log pi(a|s) - min(Q1(s, a), Q2(s, a)) ]
 
-        Args:
-            obs (torch.Tensor): current observations
-            act_new (torch.Tensor): newly sampled actions from current policy
-            logp_new (torch.Tensor): log probabilities of sampled actions
+        인자:
+            obs (torch.Tensor): 현재 관측값
+            act_new (torch.Tensor): 현재 정책으로부터 새로 샘플링된 행동
+            logp_new (torch.Tensor): 샘플링된 행동의 로그 확률
 
-        Returns:
-            torch.Tensor: actor loss
+        반환값:
+            torch.Tensor: actor 손실
+        
         """
-        # TODO: Compute the SAC actor loss.
-        #
-        # Hint:
-        # 1. Evaluate both critics at (obs, act_new)
-        # 2. Take the minimum Q-value
-        # 3. Use the objective:
+        # TODO: SAC actor 손실을 계산하세요.
+        # 
+        # 힌트:
+        # 1. (obs, act_new)에서 두 critic을 모두 평가합니다
+        # 2. 최소 Q 값을 취합니다
+        # 3. 다음 목적 함수를 사용합니다:
         #       mean(alpha * logp_new - q_new)
         q1_new, q2_new = ...
         q_new = ...
@@ -212,37 +218,39 @@ class SACAgent:
 
     def compute_alpha_loss(self, logp_new) -> torch.Tensor:
         """
-        Compute the SAC temperature loss.
+        SAC 온도(temperature) 손실을 계산합니다.
 
-        Temperature objective:
+        온도 목적 함수:
             J_alpha = E[ -log_alpha * (log pi(a|s) + target_entropy) ]
 
-        Args:
-            logp_new (torch.Tensor): log probabilities of newly sampled actions
+        인자:
+            logp_new (torch.Tensor): 새로 샘플링된 행동의 로그 확률
 
-        Returns:
-            torch.Tensor: alpha loss
+        반환값:
+            torch.Tensor: alpha 손실
+        
         """
-        # TODO: Compute the SAC temperature loss.
-        #
-        # Hint:
-        # - Use self.log_alpha, not self.alpha
-        # - Detach (logp_new + target_entropy) so alpha update does not backprop
+        # TODO: SAC 온도(temperature) 손실을 계산하세요.
+        # 
+        # 힌트:
+        # - self.alpha가 아닌 self.log_alpha를 사용하세요
+        # - alpha 업데이트가 actor를 통해 역전파되지 않도록 (logp_new + target_entropy)를 detach하세요
         #   through the actor
-        # - Take the mean over the batch
+        # - 배치에 대해 평균을 취합니다
         alpha_loss = ...
 
         return alpha_loss
 
     def soft_update_targets(self) -> None:
         """
-        Polyak averaging for the target network:
+        타겟 네트워크를 위한 Polyak 평균화:
             target <- tau * online + (1 - tau) * target
+        
         """
-        # TODO: Soft-update the target critic parameters.
-        #
-        # Hint:
-        # For each pair of parameters:
+        # TODO: 타겟 critic 파라미터를 소프트 업데이트하세요.
+        # 
+        # 힌트:
+        # 각 파라미터 쌍에 대해:
         #   target_param <- (1 - tau) * target_param + tau * param
         with torch.no_grad():
             for target_param, param in zip(
@@ -252,17 +260,18 @@ class SACAgent:
 
     def update(self, batch: ReplayBatch) -> SACUpdateStats:
         """
-        One SAC update step:
-          1. update critic
-          2. update actor
-          3. update alpha
-          4. soft-update target critics
+        하나의 SAC 업데이트 단계:
+          1. critic 업데이트
+          2. actor 업데이트
+          3. alpha 업데이트
+          4. 타겟 critic 소프트 업데이트
 
-        Args:
-            batch (ReplayBatch): mini-batch sampled from replay buffer
+        인자:
+            batch (ReplayBatch): 리플레이 버퍼에서 샘플링된 미니 배치
 
-        Returns:
-            SACUpdateStats: statistics of this update step
+        반환값:
+            SACUpdateStats: 이번 업데이트 단계의 통계치
+        
         """
         obs = batch.obs
         act = batch.act
@@ -270,14 +279,14 @@ class SACAgent:
         next_obs = batch.next_obs
         done = batch.done
 
-        # TODO: Complete one SAC update step.
-        #
-        # Hint:
-        # 1. Compute critic_loss and update critic parameters
-        # 2. Sample new actions from the actor on current obs
-        # 3. Compute actor_loss and update actor parameters
-        # 4. Compute alpha_loss and update log_alpha
-        # 5. Soft-update the target critics
+        # TODO: 하나의 SAC 업데이트 단계를 완료하세요.
+        # 
+        # 힌트:
+        # 1. critic_loss를 계산하고 critic 파라미터를 업데이트합니다
+        # 2. 현재 obs에 대해 actor로부터 새로운 행동들을 샘플링합니다
+        # 3. actor_loss를 계산하고 actor 파라미터를 업데이트합니다
+        # 4. alpha_loss를 계산하고 log_alpha를 업데이트합니다
+        # 5. 타겟 critic들을 소프트 업데이트합니다
         critic_loss = ...
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
@@ -295,7 +304,7 @@ class SACAgent:
         alpha_loss.backward()
         self.alpha_optimizer.step()
 
-        # TODO: Soft-update the target critics
+        # TODO: 타겟 critic들을 소프트 업데이트합니다
         ...
 
         return SACUpdateStats(
@@ -307,7 +316,8 @@ class SACAgent:
 
     def save(self, path) -> None:
         """
-        Save model parameters and optimizer states.
+        모델 파라미터 및 옵티마이저 상태를 저장합니다.
+        
         """
         checkpoint = {
             "actor": self.actor.state_dict(),
@@ -322,7 +332,8 @@ class SACAgent:
 
     def load(self, path) -> None:
         """
-        Load model parameters and optimizer states.
+        모델 파라미터 및 옵티마이저 상태를 불러옵니다.
+        
         """
         checkpoint = torch.load(path, map_location=self.device)
 
@@ -338,7 +349,8 @@ class SACAgent:
 
     def train_mode(self) -> None:
         """
-        Set modules to training mode.
+        모듈들을 학습(training) 모드로 설정합니다.
+        
         """
         self.actor.train()
         self.critic.train()
@@ -347,7 +359,8 @@ class SACAgent:
 
     def eval_mode(self) -> None:
         """
-        Set modules to evaluation mode.
+        모듈들을 평가(evaluation) 모드로 설정합니다.
+        
         """
         self.actor.eval()
         self.critic.eval()

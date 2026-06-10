@@ -28,7 +28,7 @@ class SO100RLEnv(gym.Env):
         self.render_mode = render_mode
         self.viewer = None
 
-        # Timing
+        # 타이밍
         self.sim_timestep = self.model.opt.timestep
         self.ctrl_decimation = 50
         self.ctrl_timestep = self.sim_timestep * self.ctrl_decimation
@@ -36,16 +36,16 @@ class SO100RLEnv(gym.Env):
         self.max_episode_length = int(self.max_episode_length_s / self.ctrl_timestep)
         self.current_step = 0
 
-        # Default robot configuration
+        # 기본 로봇 설정
         self.default_qpos = np.array(
             [0.0, -1.57, 1.0, 1.0, 0.0, 0.02239],
             dtype=np.float64,
         )
 
-        # Evaluation metric
+        # 평가 지표
         self.ee_tracking_error = 0.0
 
-        # Spaces
+        # 공간 (Spaces)
         obs = self._get_obs()
         self.observation_space = spaces.Box(
             low=-np.inf,
@@ -60,7 +60,7 @@ class SO100RLEnv(gym.Env):
             dtype=np.float32,
         )
 
-        # Convenience attributes
+        # 편의용 속성
         self.state_dim = self.observation_space.shape[0]
         self.action_dim = self.action_space.shape[0]
 

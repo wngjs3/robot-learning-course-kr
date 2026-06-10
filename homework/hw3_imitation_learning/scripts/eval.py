@@ -1,7 +1,6 @@
-"""Evaluate a trained policy in the MuJoCo SO-100 simulation.
+"""MuJoCo SO-100 시뮬레이션에서 학습된 정책을 평가합니다.
 
-Supports both single-cube and multicube scenes. Use --multicube to run the
-multicube goal-conditioned setup.
+single-cube 및 multicube 씬을 모두 지원합니다. multicube 목표 조건부(goal-conditioned) 설정을 실행하려면 --multicube를 사용하세요.
 """
 
 from __future__ import annotations
@@ -51,10 +50,11 @@ def run_episode(
     headless: bool,
     multicube: bool,
 ) -> tuple[bool, bool, str | None]:
-    """Run one evaluation episode.
+    """하나의 평가 에피소드를 실행합니다.
 
-    Returns (success, aborted, wrong_cube_color).
-    wrong_cube_color is only set for multicube episodes.
+    (success, aborted, wrong_cube_color)를 반환합니다.
+    wrong_cube_color는 multicube 에피소드에만 설정됩니다.
+    
     """
     obs = env.reset()
     action_queue: list[np.ndarray] = []
@@ -168,10 +168,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--headless", action="store_true", help="Run without rendering.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducible cube spawns.")
 
-    # single-cube args
+    # single-cube 인수
     parser.add_argument("--adversarial-obstacle", action="store_true", help="Use adversarial three-zone obstacle placement.")
 
-    # multicube args
+    # multicube 인수
     parser.add_argument("--goal-cube", type=str, default="all", choices=["red", "green", "blue", "all"], help="Goal colour for multicube ('all' cycles evenly).")
     parser.add_argument("--no-shuffle", action="store_true", help="Disable multicube slot shuffling.")
 

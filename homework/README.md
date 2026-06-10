@@ -11,4 +11,6 @@ README와 노트북의 설명만 한국어로 번역되었습니다 (원문은 `
 | [hw3_imitation_learning](hw3_imitation_learning/) | 모방 학습 | [원본 링크](https://github.com/mees-robot-learning-course/ethz-course-2026/tree/main/hw3_imitation_learning) |
 | [hw4_reinforcement_learning](hw4_reinforcement_learning/) | 강화 학습 | [원본 링크](https://github.com/mees-robot-learning-course/ethz-course-2026/tree/main/hw4_reinforcement_learning) |
 
+코드 주석과 노트북 설명도 한국어로 번역되어 있어 한국 학습자가 바로 읽고 실습할 수 있습니다.
+
 원저작물 © Oier Mees & ETH Zurich — [공식 저장소](https://github.com/mees-robot-learning-course/ethz-course-2026)

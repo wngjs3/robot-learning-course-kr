@@ -20,7 +20,8 @@ class PPOUpdateStats:
 
 class PPOAgent:
     """
-    Proximal Policy Optimization (PPO) agent for continuous action spaces.
+    연속적인 행동 공간을 위한 Proximal Policy Optimization (PPO) 에이전트.
+    
     """
 
     def __init__(
@@ -59,7 +60,7 @@ class PPOAgent:
         self.actor = GaussianActor(obs_dim, act_dim, hidden_sizes).to(self.device)
         self.critic = ValueNet(obs_dim, hidden_sizes).to(self.device)
 
-        # Combined optimizer for actor and critic
+        # actor 및 critic을 위한 통합 옵티마이저
         self.optimizer = optim.Adam(
             chain(self.actor.parameters(), self.critic.parameters()),
             lr=self.learning_rate,
@@ -67,29 +68,30 @@ class PPOAgent:
 
     def select_action(self, obs: torch.Tensor):
         """
-        Sample an action from the current policy.
+        현재 정책으로부터 행동을 샘플링합니다.
 
         Args:
-            obs (torch.Tensor): observation tensor
+            obs (torch.Tensor): 관측 텐서
 
         Returns:
-            action (torch.Tensor): sampled action
-            action_clipped (torch.Tensor): action clipped into [-1, 1]
-            value (float): critic prediction V(s)
-            action_log_prob (float): log pi(a|s)
-            action_mu (torch.Tensor): mean of Gaussian policy
-            action_std (torch.Tensor): std of Gaussian policy
+            action (torch.Tensor): 샘플링된 행동
+            action_clipped (torch.Tensor): [-1, 1] 범위로 클리핑된 행동
+            value (float): critic 예측값 V(s)
+            action_log_prob (float): 로그 확률 log pi(a|s)
+            action_mu (torch.Tensor): 가우시안 정책의 평균
+            action_std (torch.Tensor): 가우시안 정책의 표준편차
+        
         """
         with torch.inference_mode():
-            # TODO: Sample an action from the actor and compute the
-            # corresponding outputs.
-            #
-            # You should:
-            # 1. sample an action with self.actor.act(obs)
-            # 2. clip the action into [-1, 1]
-            # 3. compute the action log probability
-            # 4. read the current policy mean and std
-            # 5. compute the state value from the critic
+            # TODO: actor로부터 행동을 샘플링하고 이에 대응하는
+            # 출력을 계산하십시오.
+            # 
+            # 수행해야 할 작업:
+            # 1. self.actor.act(obs)로 행동 샘플링
+            # 2. 행동을 [-1, 1] 범위로 클리핑
+            # 3. 행동의 로그 확률 계산
+            # 4. 현재 정책의 평균(mean)과 표준편차(std) 읽기
+            # 5. critic으로부터 상태 가치 계산
             action = ...
             action_clipped = ...
             action_log_prob = ...
@@ -101,35 +103,37 @@ class PPOAgent:
 
     def predict_action(self, obs: torch.Tensor):
         """
-        Deterministic action for evaluation.
+        평가를 위한 결정론적(deterministic) 행동.
+        
         """
         action = self.actor.act_inference(obs)
         return torch.clamp(action, -1.0, 1.0)
 
     def compute_kl_mean(self, old_mu_batch, old_std_batch, mu_batch, std_batch):
         """
-        Compute the mean KL divergence between two Gaussian action distributions.
+        두 가우시안 행동 분포 간의 평균 KL divergence를 계산합니다.
 
         Args:
-            old_mu_batch (torch.Tensor): old policy mean
-            old_std_batch (torch.Tensor): old policy std
-            mu_batch (torch.Tensor): new policy mean
-            std_batch (torch.Tensor): new policy std
+            old_mu_batch (torch.Tensor): 이전 정책의 평균
+            old_std_batch (torch.Tensor): 이전 정책의 표준편차
+            mu_batch (torch.Tensor): 새 정책의 평균
+            std_batch (torch.Tensor): 새 정책의 표준편차
 
         Returns:
-            torch.Tensor: scalar mean KL divergence
+            torch.Tensor: 스칼라 평균 KL divergence
+        
         """
-        # TODO: Implement the KL divergence between two Gaussian action distributions.
-        #
-        # Hint:
-        # For each action dimension:
+        # TODO: 두 가우시안 행동 분포 간의 KL divergence를 구현하십시오.
+        # 
+        # 힌트:
+        # 각 행동 차원별:
         #   KL = log(std / old_std)
         #        + (old_std^2 + (old_mu - mu)^2) / (2 * std^2)
         #        - 0.5
-        #
-        # Then:
-        # - sum over action dimensions
-        # - average over the mini-batch
+        # 
+        # 그 다음:
+        # - 행동 차원에 대해 합산(sum)
+        # - 미니배치에 대해 평균(average)
         kl_per_dim = ...
         kl_per_sample = ...
     
@@ -138,7 +142,8 @@ class PPOAgent:
 
     def adjust_learning_rate(self, kl, current_lr, min_lr=1e-5, max_lr=1e-3):
         """
-        Adjust learning rate according to KL divergence.
+        KL divergence에 따라 학습률을 조정합니다.
+        
         """
         new_lr = current_lr
         if kl > self.target_kl * 2.0:
@@ -149,23 +154,24 @@ class PPOAgent:
 
     def compute_surrogate_loss(self, logp_batch, old_logp_batch, adv_batch):
         """
-        Compute the PPO clipped surrogate loss.
+        PPO clipped surrogate loss를 계산합니다.
 
         Args:
-            logp_batch (torch.Tensor): new log probabilities
-            old_logp_batch (torch.Tensor): old log probabilities
-            adv_batch (torch.Tensor): advantage estimates
+            logp_batch (torch.Tensor): 새 로그 확률
+            old_logp_batch (torch.Tensor): 이전 로그 확률
+            adv_batch (torch.Tensor): 어드밴티지(advantage) 추정치
 
         Returns:
-            torch.Tensor: scaled surrogate loss
+            torch.Tensor: 스케일링된 surrogate loss
+        
         """
-        # TODO: Implement PPO clipped surrogate objective.
-        #
-        # Hint:
+        # TODO: PPO clipped surrogate objective를 구현하십시오.
+        # 
+        # 힌트:
         # 1. ratio = exp(new_logp - old_logp)
         # 2. clipped_ratio = clamp(ratio, 1 - clip_ratio, 1 + clip_ratio)
         # 3. objective = min(ratio * adv, clipped_ratio * adv)
-        # 4. PPO minimizes loss, so use the negative mean objective
+        # 4. PPO는 손실(loss)을 최소화하므로, 음의 평균 objective를 사용하십시오.
         ratio = ...
         clipped_ratio = ...
         surrogate_loss = ...
@@ -174,17 +180,18 @@ class PPOAgent:
 
     def compute_value_loss(self, val_batch, old_val_batch, ret_batch):
         """
-        Compute value loss with clipping.
+        클리핑이 적용된 value loss를 계산합니다.
+        
         """
-        # TODO: Implement PPO value loss with clipping.
-        #
-        # Hint:
-        # 1. Compute unclipped value loss: (val - ret)^2
-        # 2. Clip value prediction:
+        # TODO: 클리핑이 적용된 PPO value loss를 구현하십시오.
+        # 
+        # 힌트:
+        # 1. 클리핑되지 않은 value loss 계산: (val - ret)^2
+        # 2. 가치 예측 클리핑:
         #    old_val + clamp(val - old_val, -clip_ratio, clip_ratio)
-        # 3. Compute clipped loss
-        # 4. Take max of clipped and unclipped loss
-        # 5. Take mean and scale by value_loss_coeff
+        # 3. 클리핑된 손실 계산
+        # 4. 클리핑된 손실과 클리핑되지 않은 손실 중 최댓값 선택
+        # 5. 평균을 구하고 value_loss_coeff로 스케일링
         value_loss_unclipped = ...
         value_clipped = ...
         value_loss_clipped = ...
@@ -194,15 +201,17 @@ class PPOAgent:
 
     def compute_entropy_loss(self, entropy_batch):
         """
-        Compute entropy regularization term.
+        엔트로피 정규화 항을 계산합니다.
+        
         """
-        # TODO: Implement PPO entropy loss.
-        # Hint: PPO maximizes entropy
+        # TODO: PPO entropy loss를 구현하십시오.
+        # 힌트: PPO는 엔트로피를 최대화합니다.
         return ...
 
     def mini_batch_generator(self, batch) -> Generator:
         """
-        Generate mini-batches of data for PPO update.
+        PPO 업데이트를 위한 데이터 미니배치를 생성합니다.
+        
         """
         for _ in range(self.n_epochs):
             indices = torch.randperm(
@@ -224,13 +233,14 @@ class PPOAgent:
 
     def update(self, rollout_batch) -> PPOUpdateStats:
         """
-        Update PPO actor and critic using a full rollout batch.
+        전체 롤아웃 배치를 사용하여 PPO actor 및 critic을 업데이트합니다.
 
         Args:
-            rollout_batch: a full batch collected from environment interaction
+            rollout_batch: 환경과의 상호작용을 통해 수집된 전체 배치
 
         Returns:
-            PPOUpdateStats: statistics averaged over all mini-batch updates
+            PPOUpdateStats: 모든 미니배치 업데이트에 대해 평균을 낸 통계치
+        
         """
         mean_kl = 0
         mean_surrogate_loss = 0
@@ -255,16 +265,16 @@ class PPOAgent:
             val_batch = self.critic(obs_batch)
             entropy_batch = self.actor.entropy
 
-            # TODO: Complete one PPO update step.
-            #
-            # You should:
-            # 1. compute KL divergence between old and new policy
-            # 2. adjust the learning rate and update optimizer.param_groups
-            # 3. compute surrogate loss
-            # 4. compute value loss
-            # 5. compute entropy loss
-            # 6. sum them into the final loss
-            # 7. zero grad, backward, gradient clipping, optimizer step
+            # TODO: 하나의 PPO 업데이트 단계를 완료하십시오.
+            # 
+            # 수행해야 할 작업:
+            # 1. 이전 정책과 새 정책 간의 KL divergence 계산
+            # 2. 학습률을 조정하고 optimizer.param_groups 업데이트
+            # 3. surrogate loss 계산
+            # 4. value loss 계산
+            # 5. entropy loss 계산
+            # 6. 이들을 합산하여 최종 손실 계산
+            # 7. zero grad, backward, gradient clipping, optimizer step 수행
             kl = ...
             self.learning_rate = ...
             for param_group in self.optimizer.param_groups:
@@ -299,7 +309,8 @@ class PPOAgent:
 
     def save(self, path) -> None:
         """
-        Save model parameters and optimizer state.
+        모델 파라미터와 옵티마이저 상태를 저장합니다.
+        
         """
         checkpoint = {
             "actor": self.actor.state_dict(),
@@ -310,7 +321,8 @@ class PPOAgent:
 
     def load(self, path) -> None:
         """
-        Load model parameters and optimizer state.
+        모델 파라미터와 옵티마이저 상태를 불러옵니다.
+        
         """
         checkpoint = torch.load(path, map_location=self.device)
         self.actor.load_state_dict(checkpoint["actor"])
@@ -319,14 +331,16 @@ class PPOAgent:
 
     def train_mode(self) -> None:
         """
-        Set actor and critic to training mode.
+        actor와 critic을 훈련(training) 모드로 설정합니다.
+        
         """
         self.actor.train()
         self.critic.train()
 
     def eval_mode(self) -> None:
         """
-        Set actor and critic to evaluation mode.
+        actor와 critic을 평가(evaluation) 모드로 설정합니다.
+        
         """
         self.actor.eval()
         self.critic.eval()

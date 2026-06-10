@@ -1,5 +1,4 @@
 # Imitation Learning
-**DEADLINE: 26th March 2026 23.59**
 ---
 
 ## Introduction

@@ -1,4 +1,4 @@
-"""Model definitions for SO-100 imitation policies."""
+"""SO-100 모방 정책을 위한 모델 정의."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from torch import nn
 
 
 class BasePolicy(nn.Module, metaclass=abc.ABCMeta):
-    """Base class for action chunking policies."""
+    """액션 청킹(action chunking) 정책의 기본 클래스."""
 
     def __init__(self, state_dim: int, action_dim: int, chunk_size: int) -> None:
         super().__init__()
@@ -20,25 +20,25 @@ class BasePolicy(nn.Module, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def compute_loss(self, state: torch.Tensor, action_chunk: torch.Tensor) -> torch.Tensor:
-        """Compute training loss for a batch."""
+        """MSE 손실을 사용하여 액션 청크를 예측합니다.
+
+    상태 벡터를 평탄화된 액션 청크(chunk_size * action_dim)로 매핑하고
+    이를 (B, chunk_size, action_dim) 크기로 재구성하는 단순 MLP입니다.
+        """
         raise NotImplementedError
 
     @abc.abstractmethod
     def sample_actions(self, state: torch.Tensor) -> torch.Tensor:
-        """Generate a chunk of actions with shape (batch, chunk_size, action_dim)."""
+        """multicube 씬을 위한 목표 조건부(goal-conditioned) 정책."""
         raise NotImplementedError
 
 
-# TODO: Students implement ObstaclePolicy here.
+# TODO: 학생들은 여기에 ObstaclePolicy를 구현하십시오.
 class ObstaclePolicy(BasePolicy):
-    """Predicts action chunks with an MSE loss.
-
-    A simple MLP that maps a state vector to a flat action chunk
-    (chunk_size * action_dim) and reshapes to (B, chunk_size, action_dim).
-    """
+    """배치에 대한 학습 손실(training loss)을 계산합니다."""
 
     def forward(self) -> torch.Tensor:
-        """Return predicted action chunk of shape (B, chunk_size, action_dim)."""
+        """(batch, chunk_size, action_dim) 크기의 액션 청크를 생성합니다."""
         raise NotImplementedError
 
     def compute_loss(self, state: torch.Tensor, action_chunk: torch.Tensor) -> torch.Tensor:
@@ -48,9 +48,9 @@ class ObstaclePolicy(BasePolicy):
         raise NotImplementedError
 
 
-# TODO: Students implement MultiTaskPolicy here.
+# TODO: 학생들은 여기에 MultiTaskPolicy를 구현하십시오.
 class MultiTaskPolicy(BasePolicy):
-    """Goal-conditioned policy for the multicube scene."""
+    """(B, chunk_size, action_dim) 크기의 예측된 액션 청크를 반환합니다."""
 
     def compute_loss(self, state: torch.Tensor, action_chunk: torch.Tensor) -> torch.Tensor:
         raise NotImplementedError
@@ -59,7 +59,7 @@ class MultiTaskPolicy(BasePolicy):
         raise NotImplementedError
 
     def forward(self) -> torch.Tensor:
-        """Return predicted action chunk of shape (B, chunk_size, action_dim)."""
+        """(B, chunk_size, action_dim) 크기의 예측된 액션 청크를 반환합니다."""
         raise NotImplementedError
 
 
@@ -77,12 +77,12 @@ def build_policy(
         return ObstaclePolicy(
             action_dim=action_dim,
             state_dim=state_dim,
-            # TODO: Build with your chosen specifications
+            # TODO: 선택한 사양으로 빌드하십시오.
         )
     if policy_type == "multitask":
         return MultiTaskPolicy(
             action_dim=action_dim,
             state_dim=state_dim,
-            # TODO: Build with your chosen specifications
+            # TODO: 선택한 사양으로 빌드하십시오.
         )
     raise ValueError(f"Unknown policy type: {policy_type}")

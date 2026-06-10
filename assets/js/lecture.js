@@ -23,7 +23,7 @@
   const subEn = isGuest ? `${week.guest.affil} · Week ${week.week} Guest Spotlight` : week.title_en;
   document.getElementById("lec-title").innerHTML = `${esc(titleKo)}<span class="en" id="lec-title-en">${esc(subEn)}</span>`;
   document.getElementById("crumb-here").textContent = titleKo;
-  document.title = `${titleKo} — Robot Learning 한국어`;
+  document.title = `${titleKo} — Robot Learning`;
 
   const metaRow = document.getElementById("lec-meta-row");
   const metaChips = [];

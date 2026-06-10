@@ -12,14 +12,15 @@ from scripts.utils import quat_mul, quat_conjugate, quat_normalize, rot_mat_to_q
 
 def reset_robot(default_qpos: np.ndarray) -> np.ndarray:
     """
-    TODO: Implement robot reset to its default joint positions with some small uniform noise (-0.5, 0.5).
-    You can add random noise to the default joint positions using np.random.uniform.
+    TODO: 약간의 균일 노이즈(-0.5, 0.5)를 추가하여 로봇을 기본 관절 위치로 리셋하는 기능을 구현하세요.
+    np.random.uniform을 사용하여 기본 관절 위치에 무작위 노이즈를 추가할 수 있습니다.
     
-    Inputs:
-    - default_qpos: np.ndarray. The default joint positions. Dimensionality: 1D array, Shape: (num_joints,).
+    입력:
+    - default_qpos: np.ndarray. 기본 관절 위치. 차원: 1D 배열, 형상: (num_joints,).
 
-    Returns:
-    - reset_qpos: np.ndarray. The joint positions to reset the robot to. Dimensionality: 1D array, Shape: (num_joints,).
+    반환:
+    - reset_qpos: np.ndarray. 로봇을 리셋할 관절 위치. 차원: 1D 배열, 형상: (num_joints,).
+    
     """
     raise NotImplementedError()
     
@@ -27,35 +28,37 @@ def reset_robot(default_qpos: np.ndarray) -> np.ndarray:
 
 def reset_target_position(base_pos: np.ndarray) -> np.ndarray:
     """
-    TODO: Sample and compute a new random target position relative to the base from uniform distribution.
-    The ranges for the uniform distribution are given by the following arrays:
+    TODO: 균일 분포로부터 베이스 기준의 새로운 무작위 목표 위치를 샘플링하고 계산하세요.
+    균일 분포의 범위는 다음 배열로 주어집니다:
     - x: [0.2, 0.4]
     - y: [-0.2, 0.2]
     - z: [0.1, 0.4]
 
-    Inputs:
-    - base_pos: np.ndarray. The 3D position of the robot's base. Dimensionality: 1D array, Shape: (3,).
+    입력:
+    - base_pos: np.ndarray. 로봇 베이스의 3D 위치. 차원: 1D 배열, 형상: (3,).
     
-    Returns:
-    - target_pos: np.ndarray. The 3D position of the target relative to the base. Dimensionality: 1D array, Shape: (3,).
+    반환:
+    - target_pos: np.ndarray. 베이스 기준 목표물의 3D 위치. 차원: 1D 배열, 형상: (3,).
+    
     """
     raise NotImplementedError()
 
 
 def process_action(action: np.ndarray, jnt_range: np.ndarray) -> np.ndarray:
     """
-    TODO: Convert normalized actions [-1, 1] to target joint positions.
+    TODO: 정규화된 액션 [-1, 1]을 목표 관절 위치로 변환하세요.
     
-    You should map the normalized action [-1, 1] to the actual joint range defined by jnt_range. The mapping should be linear,
-    where -1 corresponds to the lower limit of the joint and 1 corresponds to the upper limit of the joint, 
-    and 0 corresponds to the midpoint of the joint range.
+    정규화된 액션 [-1, 1]을 jnt_range로 정의된 실제 관절 범위로 매핑해야 합니다. 매핑은 선형적이어야 하며,
+    -1은 관절의 하한값, 1은 관절의 상한값,
+    그리고 0은 관절 범위의 중간값에 대응해야 합니다.
 
-    Inputs:
-    - action: np.ndarray. Normalized actions from the policy. Dimensionality: 1D array, Shape: (num_joints,).
-    - jnt_range: np.ndarray. Lower and upper limits for joints. Dimensionality: 2D array, Shape: (num_joints, 2).
+    입력:
+    - action: np.ndarray. 정책(policy)으로부터 얻은 정규화된 액션. 차원: 1D 배열, 형상: (num_joints,).
+    - jnt_range: np.ndarray. 관절의 하한 및 상한값. 차원: 2D 배열, 형상: (num_joints, 2).
 
-    Returns:
-    - target_qpos: np.ndarray. Target joint positions to apply as control. Dimensionality: 1D array, Shape: (num_joints,).
+    반환:
+    - target_qpos: np.ndarray. 제어로 적용할 목표 관절 위치. 차원: 1D 배열, 형상: (num_joints,).
+    
     """
     raise NotImplementedError()
 
@@ -63,50 +66,52 @@ def process_action(action: np.ndarray, jnt_range: np.ndarray) -> np.ndarray:
 def compute_reward(ee_tracking_error: float) -> float:
     """
     TODO: 
-    Calculate the reward based on the distance (error) to the target. 
-    Remember from the lecture slides that there are different types of rewards, e.g. dense and sparse. 
-    In reward design, it is often useful to combine these approaches. 
-    We do not expect you to take into account any advanced reward engineering in this exercise, such as penalizing large velocity and acceleration.
-    You can design your own reward function for the bonus question.
+    목표물까지의 거리(오차)를 기반으로 보상을 계산하세요.
+    강의 슬라이드에서 배웠듯이 보상에는 다양한 유형(예: dense, sparse)이 있습니다.
+    보상 설계 시 이러한 접근 방식을 결합하는 것이 유용한 경우가 많습니다.
+    이번 과제에서는 큰 속도 및 가속도에 대한 패널티 부여와 같은 고급 보상 엔지니어링까지 고려하는 것은 요구하지 않습니다.
+    보너스 문제를 위해 자신만의 보상 함수를 직접 설계해 볼 수 있습니다.
 
-    Descrtion of the reward function:
+    보상 함수의 설명:
     - dense_reward = exp(-2 * ee_tracking_error)
-    - sparse_reward = 1.0 if ee_tracking_error < 0.005 else 0.0
+    - sparse_reward = ee_tracking_error < 0.005 일 때 1.0, 그렇지 않으면 0.0
     - reward = dense_reward + sparse_reward
 
-    Inputs:
-    - ee_tracking_error: float. Distance between end-effector and target point. Dimensionality: scalar
+    입력:
+    - ee_tracking_error: float. 엔드이펙터와 목표 지점 사이의 거리. 차원: 스칼라
 
-    Returns:
-    - reward: float. The computed reward based on the tracking error. Dimensionality: scalar
+    반환:
+    - reward: float. 추적 오차를 기반으로 계산된 보상. 차원: 스칼라
+    
     """
     raise NotImplementedError()
 
 
 def get_obs(qpos: np.ndarray, ee_pos_w: np.ndarray, ee_rot_w: np.ndarray, base_pos_w: np.ndarray, base_rot_w: np.ndarray, target_pos_w: np.ndarray) -> np.ndarray:
     """
-    TODO: Extract the observation vector from the environment robot state variables. 
+    TODO: 환경의 로봇 상태 변수로부터 관측(observation) 벡터를 추출하세요.
 
-     Note that in Mujoco, states can be directly accessed in the world frame. But for policy genealization, it is important to represent 
-     the states in the robot's base frame instead of the world frame, so that the policy can be invariant to the robot's absolute position in the world.
+     Mujoco에서는 상태를 월드 프레임에서 직접 접근할 수 있습니다. 하지만 정책 일반화(policy generalization)를 위해서는
+     상태를 월드 프레임 대신 로봇의 베이스 프레임으로 표현하는 것이 중요합니다. 그래야 정책이 월드 내 로봇의 절대적 위치에 무관하게 유지될 수 있습니다.
     
-    Inputs:
-    - qpos: np.ndarray. Current joint positions. Dimensionality: 1D array, Shape: (num_joints,).
-    - ee_pos_w: np.ndarray. Current end-effector 3D position in world frame. Dimensionality: 1D array, Shape: (3,).
-    - ee_rot_w: np.ndarray. Current end-effector 3D rotation matrix in world frame. Dimensionality: 2D array, Shape: (3, 3).
-    - base_pos_w: np.ndarray. Current base 3D position in world frame. Dimensionality: 1D array, Shape: (3,).
-    - base_rot_w: np.ndarray. Current base 3D rotation matrix in world frame. Dimensionality: 2D array, Shape: (3, 3).
-    - target_pos_w: np.ndarray. Current target 3D position in world frame. Dimensionality: 1D array, Shape: (3,).
+    입력:
+    - qpos: np.ndarray. 현재 관절 위치. 차원: 1D 배열, 형상: (num_joints,).
+    - ee_pos_w: np.ndarray. 월드 프레임 기준 현재 엔드이펙터의 3D 위치. 차원: 1D 배열, 형상: (3,).
+    - ee_rot_w: np.ndarray. 월드 프레임 기준 현재 엔드이펙터의 3D 회전 행렬. 차원: 2D 배열, 형상: (3, 3).
+    - base_pos_w: np.ndarray. 월드 프레임 기준 현재 베이스의 3D 위치. 차원: 1D 배열, 형상: (3,).
+    - base_rot_w: np.ndarray. 월드 프레임 기준 현재 베이스의 3D 회전 행렬. 차원: 2D 배열, 형상: (3, 3).
+    - target_pos_w: np.ndarray. 월드 프레임 기준 현재 목표물의 3D 위치. 차원: 1D 배열, 형상: (3,).
 
-    Returns:
-    - obs: np.ndarray. The observation vector containing the following robot state variables in order:
+    반환:
+    - obs: np.ndarray. 다음 로봇 상태 변수들을 순서대로 포함하는 관측 벡터:
         [
-            - joint positions (qpos)
-            - end-effector position in robot's base frame (ee_pos_base)
-            - end-effector quaternion in robot's base frame, must be normalized to represent a valid rotation (ee_quat_base)
-            - target position in robot's base frame (target_pos_base)
+            - 관절 위치 (qpos)
+            - 로봇 베이스 프레임 기준 엔드이펙터 위치 (ee_pos_base)
+            - 로봇 베이스 프레임 기준 엔드이펙터 쿼터니언, 유효한 회전을 나타내도록 반드시 정규화되어야 함 (ee_quat_base)
+            - 로봇 베이스 프레임 기준 목표 위치 (target_pos_base)
         ]
 
-    Hints: You can use the provided functions quat_mul, quat_conjugate, quat_normalize, rot_mat_to_quat for quaternion operations.
+    힌트: 쿼터니언 연산을 위해 제공된 함수 quat_mul, quat_conjugate, quat_normalize, rot_mat_to_quat를 사용할 수 있습니다.
+    
     """
     raise NotImplementedError()

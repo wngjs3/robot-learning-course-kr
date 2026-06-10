@@ -1,5 +1,5 @@
 """
-Training script for SAC on the SO100 position tracking task.
+SO100 위치 추적 태스크에 대한 SAC 학습 스크립트.
 """
 
 import sys

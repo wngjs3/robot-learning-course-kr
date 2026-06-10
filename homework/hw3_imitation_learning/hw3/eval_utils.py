@@ -1,14 +1,14 @@
-"""Shared utilities for policy evaluation (``eval.py``, ``dagger_eval.py``).
+"""정책 평가(``eval.py``, ``dagger_eval.py``)를 위한 공통 유틸리티.
 
-Provides:
-- ``ZARR_KEY_TO_OBS`` — mapping from zarr array names to sim observation extractors.
-- ``parse_key_spec`` — split ``"key[:3]"`` into ``("key", slice(None, 3))``.
-- ``load_checkpoint`` — load model, normalizer and metadata from a ``.pt`` file.
-- ``obs_to_state`` — assemble a flat state vector from the sim obs dict.
-- ``action_key_dim`` — dimension of each action key base name.
-- ``apply_action`` — apply a single predicted delta action to the sim.
-- ``check_success`` — is the cube inside the bin?
-- ``check_cube_out_of_bounds`` — has the cube left the workspace?
+제공 기능:
+- ``ZARR_KEY_TO_OBS`` — zarr 배열 이름에서 sim 관측(observation) 추출기로의 매핑.
+- ``parse_key_spec`` — ``"key[:3]"``을 ``("key", slice(None, 3))``으로 분할.
+- ``load_checkpoint`` — ``.pt`` 파일에서 모델, 정규화기(normalizer) 및 메타데이터 로드.
+- ``obs_to_state`` — sim obs 딕셔너리로부터 평탄화된 state 벡터 조립.
+- ``action_key_dim`` — 각 action key 기본 이름의 차원.
+- ``apply_action`` — 시뮬레이션에 단일 예측 delta action 적용.
+- ``check_success`` — 큐브가 빈(bin) 안에 있는지 여부 확인.
+- ``check_cube_out_of_bounds`` — 큐브가 작업 공간(workspace)을 벗어났는지 여부 확인.
 """
 
 from __future__ import annotations
@@ -22,11 +22,11 @@ from hw3.dataset import Normalizer
 from hw3.model import build_policy
 from hw3.sim_env import CUBE_COLORS, SO100MulticubeSimEnv, SO100SimEnv
 
-# ── quaternion / euler helpers (wxyz convention) ──────────────────────────────
+# ── quaternion / euler 헬퍼 함수 (wxyz 컨벤션) ──────────────────────────────
 
 
 def _euler_to_quat(euler: np.ndarray) -> np.ndarray:
-    """Convert Euler angles (roll, pitch, yaw) to a wxyz unit quaternion."""
+    """Euler 각도(roll, pitch, yaw)를 wxyz 단위 quaternion으로 변환."""
     roll, pitch, yaw = euler[0], euler[1], euler[2]
     cr, sr = np.cos(roll / 2), np.sin(roll / 2)
     cp, sp = np.cos(pitch / 2), np.sin(pitch / 2)
@@ -39,7 +39,7 @@ def _euler_to_quat(euler: np.ndarray) -> np.ndarray:
 
 
 def _quat_multiply(q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
-    """Hamilton product of two wxyz quaternions."""
+    """두 wxyz quaternion의 Hamilton 곱."""
     w1, x1, y1, z1 = q1[0], q1[1], q1[2], q1[3]
     w2, x2, y2, z2 = q2[0], q2[1], q2[2], q2[3]
     return np.array([
@@ -49,7 +49,7 @@ def _quat_multiply(q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
         w1*z2 + x1*y2 - y1*x2 + z1*w2,
     ], dtype=q1.dtype)
 
-# ── zarr key → obs mapping ───────────────────────────────────────────
+# ── zarr key → obs 매핑 ───────────────────────────────────────────
 
 ZARR_KEY_TO_OBS: dict[str, callable] = {
     "state_ee_xyz": lambda obs: obs["ee_pos"],
@@ -68,11 +68,11 @@ ZARR_KEY_TO_OBS: dict[str, callable] = {
 }
 
 
-# ── key spec parsing ─────────────────────────────────────────────────
+# ── key spec 파싱 ─────────────────────────────────────────────────
 
 
 def parse_key_spec(spec: str) -> tuple[str, slice]:
-    """Parse ``"key[:3]"`` into ``("key", slice(None, 3))``."""
+    """``"key[:3]"``을 파싱하여 ``("key", slice(None, 3))``으로 반환."""
     if "[" not in spec:
         return spec, slice(None)
     name, rest = spec.split("[", 1)
@@ -85,18 +85,19 @@ def parse_key_spec(spec: str) -> tuple[str, slice]:
     raise ValueError(f"Invalid key spec: {spec!r}")
 
 
-# ── checkpoint loading ────────────────────────────────────────────────
+# ── 체크포인트 로딩 ────────────────────────────────────────────────
 
 
 def load_checkpoint(
     ckpt_path: Path,
     device: torch.device,
 ) -> tuple[torch.nn.Module, Normalizer, int, list[str], list[str]]:
-    """Load model, normalizer, chunk_size, state_keys and action_keys.
+    """모델, 정규화기(normalizer), chunk_size, state_keys, action_keys를 로드합니다.
 
-    All required metadata is read from the checkpoint itself.
+    필요한 모든 메타데이터는 체크포인트 자체에서 읽어옵니다.
 
-    Returns ``(model, normalizer, chunk_size, state_keys, action_keys)``.
+    ``(model, normalizer, chunk_size, state_keys, action_keys)``를 반환합니다.
+    
     """
     ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
 
@@ -140,11 +141,11 @@ def load_checkpoint(
     return model, normalizer, chunk_size, state_keys, action_keys
 
 
-# ── state assembly ────────────────────────────────────────────────────
+# ── state 조립 ────────────────────────────────────────────────────
 
 
 def obs_to_state(obs: dict[str, np.ndarray], state_keys: list[str]) -> np.ndarray:
-    """Assemble a flat state vector from the sim obs dict using the training key specs."""
+    """학습 key spec을 사용하여 sim obs 딕셔너리로부터 평탄화된 state 벡터를 조립합니다."""
     parts: list[np.ndarray] = []
     for spec in state_keys:
         name, col_slice = parse_key_spec(spec)
@@ -159,7 +160,7 @@ def obs_to_state(obs: dict[str, np.ndarray], state_keys: list[str]) -> np.ndarra
     return np.concatenate(parts).astype(np.float32)
 
 
-# ── inference helpers ────────────────────────────────────────────────
+# ── 추론(inference) 헬퍼 함수 ────────────────────────────────────────────────
 
 
 def infer_action_chunk(
@@ -169,7 +170,7 @@ def infer_action_chunk(
     state_keys: list[str],
     device: torch.device,
 ) -> np.ndarray:
-    """Run one policy forward pass and return a denormalized action chunk."""
+    """정책의 순방향 패스(forward pass)를 한 번 실행하고 역정규화된 action chunk를 반환합니다."""
     state = obs_to_state(obs, state_keys)
     state_norm = normalizer.normalize_state(state)
     state_t = torch.from_numpy(state_norm).float().unsqueeze(0).to(device)
@@ -183,11 +184,11 @@ def infer_action_chunk(
     return chunk
 
 
-# ── action helpers ────────────────────────────────────────────────────
+# ── action 헬퍼 함수 ────────────────────────────────────────────────────
 
 
 def action_key_dim(key_name: str) -> int:
-    """Return the expected raw dimension for a given action key base name."""
+    """주어진 action key 기본 이름에 대해 기대되는 raw 차원을 반환합니다."""
     dims = {
         "action_ee_xyz": 3,
         "action_ee_full": 6,
@@ -198,14 +199,15 @@ def action_key_dim(key_name: str) -> int:
 
 
 def apply_action(env: SO100SimEnv, action: np.ndarray, action_keys: list[str]) -> None:
-    """Apply a single predicted delta action to the simulation.
+    """시뮬레이션에 단일 예측 delta action을 적용합니다.
 
-    The model predicts **relative changes** (deltas) for ee/joint actions.
-    This function splits the predicted vector back into per-key segments,
-    reads the current state from the sim, adds the delta, and applies
-    the resulting absolute target.
+    모델은 ee/joint action에 대해 **상대적인 변화량**(delta)을 예측합니다.
+    이 함수는 예측된 벡터를 다시 key별 세그먼트로 분할하고,
+    시뮬레이션에서 현재 state를 읽어 delta를 더한 뒤,
+    그 결과로 나온 절대 목표치(absolute target)를 적용합니다.
 
-    Gripper actions are applied as-is (absolute control commands, not deltas).
+    그리퍼(gripper) action은 있는 그대로 적용됩니다(delta가 아닌 절대 제어 명령).
+    
     """
     offset = 0
     for spec in action_keys:
@@ -232,10 +234,10 @@ def apply_action(env: SO100SimEnv, action: np.ndarray, action_keys: list[str]) -
             current_pos_target = env.data.mocap_pos[env.mocap_id].copy()
             current_quat_target = env.data.mocap_quat[env.mocap_id].copy()
             env.set_mocap_pos(current_pos_target + full_vec[:3])
-            # Convert euler delta → quaternion, then compose with current orientation
+            # euler delta → quaternion 변환 후 현재 orientation과 합성
             delta_quat = _euler_to_quat(full_vec[3:6])
             new_quat = _quat_multiply(delta_quat, current_quat_target)
-            new_quat /= np.linalg.norm(new_quat)  # renormalize
+            new_quat /= np.linalg.norm(new_quat)  # 정규화 재수행
             env.set_mocap_quat(new_quat)
         elif name == "action_gripper":
             env.set_gripper(float(full_vec[0]))
@@ -248,15 +250,16 @@ def apply_action(env: SO100SimEnv, action: np.ndarray, action_keys: list[str]) -
             env.set_targets(new_targets)
 
 
-# ── success / bounds checking ─────────────────────────────────────────
+# ── 성공 / 경계 벗어남(bounds) 검사 ─────────────────────────────────────────
 
 
 def check_success(
     env: SO100SimEnv, xy_thresh: float = 0.05, z_thresh: float = 0.04
 ) -> bool:
-    """Check whether the cube is inside the bin.
+    """큐브가 빈(bin) 안에 있는지 확인합니다.
 
-    Uses the current bin centre from the simulation.
+    시뮬레이션의 현재 빈 중심(bin centre)을 사용합니다.
+    
     """
     cube = env.get_cube_state()[:3]
     if isinstance(env, SO100MulticubeSimEnv):
@@ -273,7 +276,7 @@ def check_cube_out_of_bounds(
     y_range: tuple[float, float] = (0.1, 1.1),
     z_min: float = -0.01,
 ) -> bool:
-    """Return True if the cube has fallen off the table or left the workspace."""
+    """큐브가 테이블에서 떨어졌거나 작업 공간(workspace)을 벗어난 경우 True를 반환합니다."""
     cube = env.get_cube_state()[:3]
     if cube[2] < z_min:
         return True
@@ -289,10 +292,11 @@ def check_wrong_cube_in_bin(
     xy_thresh: float = 0.04,
     z_thresh: float = 0.04,
 ) -> str | None:
-    """Check whether a non-goal cube is inside the bin.
+    """목표가 아닌(non-goal) 큐브가 빈(bin) 안에 있는지 확인합니다.
 
-    Returns the colour name of the first wrong cube found in the bin,
-    or ``None`` if no wrong cube is present.
+    빈 안에서 발견된 첫 번째 잘못된 큐브의 색상 이름을 반환하며,
+    잘못된 큐브가 없으면 ``None``을 반환합니다.
+    
     """
     bin_center = env.get_goal_pos()[:2]
     goal_idx = env._goal_index

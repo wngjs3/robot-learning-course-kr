@@ -7,7 +7,8 @@ import torch
 
 def set_seed(seed: int) -> None:
     """
-    Set random seed for Python, NumPy, and PyTorch.
+    Python, NumPy, PyTorch의 랜덤 시드를 설정합니다.
+    
     """
     random.seed(seed)
     np.random.seed(seed)
@@ -18,7 +19,8 @@ def set_seed(seed: int) -> None:
 
 def ensure_dir(path) -> Path:
     """
-    Create directory if it does not exist and return it as a Path object.
+    디렉터리가 존재하지 않으면 생성하고, 이를 Path 객체로 반환합니다.
+    
     """
     path = Path(path)
     path.mkdir(parents=True, exist_ok=True)

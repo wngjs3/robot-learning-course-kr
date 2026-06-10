@@ -23,19 +23,19 @@ def parse_args():
 
 
 def main():
-    """Run value iteration on Cliff Walking and save the resulting plots."""
+    """Cliff Walking에서 가치 반복(value iteration)을 실행하고 결과 플롯을 저장합니다."""
     args = parse_args()
     env = CliffWalkingEnv(slip_chance=args.slip_chance)
 
     agent = ValueIteration(env, theta=1e-3, gamma=0.9)
     value_fn, policy = agent.value_iteration()
 
-    # Save logs relative to the project root
+    # 프로젝트 루트를 기준으로 로그 저장
     project_root = Path(__file__).resolve().parents[1]
     log_dir = project_root / "logs" / "mdp"
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    # Format slip value nicely
+    # 미끄러짐(slip) 값을 보기 좋게 포맷팅
     slip_str = f"{args.slip_chance:.2f}".rstrip("0").rstrip(".")
 
     plot_value_function(

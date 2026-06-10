@@ -1,5 +1,5 @@
 """
-Training script for DQN on CartPole-v1.
+CartPole-v1에 대한 DQN 학습 스크립트.
 """
 
 import sys
@@ -21,7 +21,8 @@ from exercises.ex2_dqn_config import DQN_PARAMETERS
 def train_off_policy_agent(env, agent, num_episodes, replay_buffer,
                            minimal_size, batch_size):
     """
-    Train an off-policy agent with a replay buffer.
+    리플레이 버퍼를 사용하여 오프폴리시(off-policy) 에이전트를 학습시킵니다.
+    
     """
     return_list = []
 
@@ -63,7 +64,7 @@ def train_off_policy_agent(env, agent, num_episodes, replay_buffer,
 
 
 def main():
-    # Hyperparameters
+    # 하이퍼파라미터
     lr = DQN_PARAMETERS["lr"]
     epsilon = DQN_PARAMETERS["epsilon"]
     target_update = DQN_PARAMETERS["target_update"]
@@ -76,24 +77,24 @@ def main():
     batch_size = DQN_PARAMETERS["batch_size"]
     seed = DQN_PARAMETERS["seed"]
 
-    # Random seeds
+    # 랜덤 시드
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
 
-    # Device
+    # 디바이스
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     if device.type == "cuda":
         print(f"GPU name: {torch.cuda.get_device_name(0)}")
 
-    # Environment
+    # 환경
     env = CartPoleWrapper(seed=seed)
 
-    # Replay buffer
+    # 리플레이 버퍼
     replay_buffer = ReplayBuffer(buffer_size)
 
-    # Agent
+    # 에이전트
     agent = DQN(
         state_dim=env.state_dim,
         hidden_dim=hidden_dim,
@@ -105,7 +106,7 @@ def main():
         device=device,
     )
 
-    # Train
+    # 학습
     return_list = train_off_policy_agent(
         env=env,
         agent=agent,
@@ -117,7 +118,7 @@ def main():
 
     env.close()
 
-    # Logging
+    # 로깅
     log_dir = ROOT_DIR / "logs" / "dqn"
     model_dir = log_dir / "models"
     result_dir = log_dir / "results"
@@ -125,12 +126,12 @@ def main():
     model_dir.mkdir(parents=True, exist_ok=True)
     result_dir.mkdir(parents=True, exist_ok=True)
 
-    # Save model
+    # 모델 저장
     model_path = model_dir / "dqn_cartpole.pth"
     agent.save(model_path)
     print(f"Model saved to: {model_path}")
 
-    # Plot raw training curve
+    # 원시 학습 곡선 플롯
     episodes_list = list(range(len(return_list)))
     plt.figure()
     plt.plot(episodes_list, return_list)

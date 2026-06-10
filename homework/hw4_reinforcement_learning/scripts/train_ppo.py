@@ -1,5 +1,5 @@
 """
-Training script for PPO on the SO100 position tracking task.
+SO100 위치 추적 태스크를 위한 PPO 학습 스크립트.
 """
 
 import sys
@@ -124,7 +124,7 @@ def main():
                 done = terminated or timeout
 
                 if timeout:
-                    # bootstrap value at the end of trajectory
+                    # 궤적(trajectory) 끝에서의 부트스트랩 값
                     reward += gamma * agent.critic(next_obs).item()
 
                 buffer.store(

@@ -1,22 +1,20 @@
-"""Read recorded teleop .zarr datasets and compute actions for imitation learning.
+"""기록된 원격 조종(teleop) .zarr 데이터셋을 읽고 모방 학습을 위한 액션을 계산합니다.
 
-Actions are defined as the relative change (delta) between consecutive states:
+액션은 연속된 상태 사이의 상대적인 변화량(delta)으로 정의됩니다:
     a_t = s_{t+1} - s_{t}
-The last timestep of every episode is dropped (no future state available).
+각 에피소드의 마지막 타임스텝은 제외됩니다 (참조할 미래 상태가 없기 때문).
 
-For the gripper, actions are the control commands recorded during teleop since we need to 
-push the gripper even more close to apply a force to the cube which can only be recorded from the 
-control input not the state.
+그리퍼의 경우, 큐브에 힘을 가하기 위해 그리퍼를 더 꽉 닫아야 하며, 이는 상태가 아닌 제어 입력에서만 기록될 수 있으므로 원격 조종 중 기록된 제어 명령을 액션으로 사용합니다.
 
-Three action spaces are supported (chosen via --action-space):
+세 가지 액션 공간을 지원합니다 (--action-space로 선택):
 
-  ee       - EE xyz position delta (3-dim)
-  ee_full  - EE full pose delta: delta_pos(3) + delta_euler(3) (6-dim)
-  joints   - Joint angle deltas excluding Jaw (5-dim)
+  ee       - EE xyz 위치 변화량 (3차원)
+  ee_full  - EE 전체 포즈 변화량: delta_pos(3) + delta_euler(3) (6차원)
+  joints   - Jaw를 제외한 관절 각도 변화량 (5차원)
 
-Gripper actions are stored as a separate ``action_gripper`` array in all modes.
+그리퍼 액션은 모든 모드에서 별도의 ``action_gripper`` 배열로 저장됩니다.
 
-Usage examples:
+사용 예시:
     python scripts/compute_actions.py --action-space ee
     python scripts/compute_actions.py --action-space ee_full
     python scripts/compute_actions.py --action-space joints
@@ -31,16 +29,16 @@ from pathlib import Path
 import numpy as np
 import zarr
 
-# ── quaternion helpers (wxyz convention) ──────────────────────────────
+# ── 쿼터니언 헬퍼 함수 (wxyz 컨벤션) ──────────────────────────────
 
 
 def quat_conjugate(q: np.ndarray) -> np.ndarray:
-    """Conjugate of unit quaternion(s) in wxyz format (= inverse for unit quats)."""
+    """wxyz 포맷의 단위 쿼터니언의 켤레(conjugate)를 구합니다 (단위 쿼터니언의 역원과 동일)."""
     return np.stack([q[..., 0], -q[..., 1], -q[..., 2], -q[..., 3]], axis=-1)
 
 
 def quat_multiply(q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
-    """Hamilton product of two quaternion arrays in wxyz format."""
+    """wxyz 포맷의 두 쿼터니언 배열의 해밀턴 곱(Hamilton product)을 구합니다."""
     w1, x1, y1, z1 = q1[..., 0], q1[..., 1], q1[..., 2], q1[..., 3]
     w2, x2, y2, z2 = q2[..., 0], q2[..., 1], q2[..., 2], q2[..., 3]
     return np.stack(
@@ -55,16 +53,16 @@ def quat_multiply(q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
 
 
 def quat_to_euler(q: np.ndarray) -> np.ndarray:
-    """Convert wxyz quaternion(s) to Euler angles (roll, pitch, yaw)."""
+    """wxyz 쿼터니언을 오일러 각도(roll, pitch, yaw)로 변환합니다."""
     w, x, y, z = q[..., 0], q[..., 1], q[..., 2], q[..., 3]
-    # roll (x-axis)
+    # 롤 (x축)
     sinr_cosp = 2.0 * (w * x + y * z)
     cosr_cosp = 1.0 - 2.0 * (x * x + y * y)
     roll = np.arctan2(sinr_cosp, cosr_cosp)
-    # pitch (y-axis)
+    # 피치 (y축)
     sinp = np.clip(2.0 * (w * y - z * x), -1.0, 1.0)
     pitch = np.arcsin(sinp)
-    # yaw (z-axis)
+    # 요 (z축)
     siny_cosp = 2.0 * (w * z + x * y)
     cosy_cosp = 1.0 - 2.0 * (y * y + z * z)
     yaw = np.arctan2(siny_cosp, cosy_cosp)
@@ -72,10 +70,11 @@ def quat_to_euler(q: np.ndarray) -> np.ndarray:
 
 
 def _ee_full_delta(s_curr: np.ndarray, s_next: np.ndarray) -> np.ndarray:
-    """Compute ee_full action: delta_pos(3) + delta_euler(3).
+    """ee_full 액션을 계산합니다: delta_pos(3) + delta_euler(3).
 
-    States are (L, 7): [x, y, z, qw, qx, qy, qz].
-    Returns (L, 6): [dx, dy, dz, droll, dpitch, dyaw].
+    상태(States) 형태는 (L, 7): [x, y, z, qw, qx, qy, qz].
+    반환(Returns) 형태는 (L, 6): [dx, dy, dz, droll, dpitch, dyaw].
+    
     """
     pos_delta = s_next[:, :3] - s_curr[:, :3]
     q_rel = quat_multiply(s_next[:, 3:], quat_conjugate(s_curr[:, 3:]))
@@ -83,8 +82,8 @@ def _ee_full_delta(s_curr: np.ndarray, s_next: np.ndarray) -> np.ndarray:
     return np.concatenate([pos_delta, euler_delta], axis=-1)
 
 
-# ── action-space naming config (do NOT modify) ────────────────────────
-# Maps CLI choice → (action_label, state_label, key suffix for output arrays)
+# ── 액션 공간 명명 설정 (수정 금지) ────────────────────────
+# CLI 선택 → (action_label, state_label, 출력 배열용 키 접미사) 매핑
 _ACTION_SPACE_LABELS: dict[str, tuple[str, str, str]] = {
     "ee": ("ee_pos_xyz(3)", "ee_pos_xyz(3)", "ee_xyz"),
     "ee_full": ("delta_pos(3)+delta_euler(3)", "ee_pos(3)+quat_wxyz(4)", "ee_full"),
@@ -95,28 +94,29 @@ _ACTION_SPACE_LABELS: dict[str, tuple[str, str, str]] = {
 def select_action_space(
     action_space: str, merged: dict[str, np.ndarray]
 ) -> tuple[np.ndarray, str, str, str]:
-    """Select and slice the state array for the chosen action space.
+    """선택한 액션 공간에 맞는 상태 배열을 선택하고 슬라이싱합니다.
 
     Parameters
     ----------
     action_space : str
-        One of ``"ee"``, ``"ee_full"``, ``"joints"``.
+        ``"ee"``, ``"ee_full"``, ``"joints"`` 중 하나.
     merged : dict
-        Merged data from :func:`load_and_merge_zarrs`.  Relevant keys are
-        ``"state_ee"`` (N, 7) with columns [x, y, z, qw, qx, qy, qz] and
-        ``"state_joints"`` (N, 6) with columns for each joint angle
-        (the last column is the Jaw / gripper and should be excluded).
+        :func:`load_and_merge_zarrs`에서 병합된 데이터. 관련 키는
+        [x, y, z, qw, qx, qy, qz] 열을 가진 ``"state_ee"`` (N, 7) 및
+        각 관절 각도 열을 가진 ``"state_joints"`` (N, 6)입니다
+        (마지막 열은 Jaw / 그리퍼이므로 제외해야 함).
 
     Returns
     -------
     raw_states : np.ndarray
-        (N, D) array of the selected state columns.
+        선택된 상태 열의 (N, D) 배열.
     action_label : str
-        Human-readable action dimension description.
+        사람이 읽을 수 있는 액션 차원 설명.
     state_label : str
-        Human-readable state dimension description.
+        사람이 읽을 수 있는 상태 차원 설명.
     sa_suffix : str
-        Key suffix for output arrays (provided, do not change).
+        출력 배열용 키 접미사 (제공됨, 변경 금지).
+    
     """
     action_label, state_label, sa_suffix = _ACTION_SPACE_LABELS[action_space]
 
@@ -133,7 +133,7 @@ def select_action_space(
 
 
 def get_episode_ranges(episode_ends: np.ndarray) -> list[tuple[int, int]]:
-    """Return (start, end) index pairs for each episode."""
+    """각 에피소드의 (시작, 종료) 인덱스 쌍을 반환합니다."""
     starts = np.concatenate([[0], episode_ends[:-1]])
     return list(zip(starts.tolist(), episode_ends.tolist()))
 
@@ -143,17 +143,18 @@ def compute_actions_for_episodes(
     episode_ranges: list[tuple[int, int]],
     action_fn=None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Compute delta actions and return aligned states, actions, episode_ends, and keep indices.
+    """변화량 액션을 계산하고 정렬된 상태, 액션, episode_ends, 유지할 인덱스를 반환합니다.
 
-    For each episode of length L we keep L-1 transitions:
-        state[t] -> action = action_fn(state[t], state[t+1])   for t in [start, end-2]
-    Default (action_fn=None) uses simple subtraction: state[t+1] - state[t].
+    길이가 L인 각 에피소드에 대해 L-1개의 전이(transition)를 유지합니다:
+        state[t] -> action = action_fn(state[t], state[t+1])   (t 범위: [start, end-2])
+    기본값 (action_fn=None)은 단순 차를 사용합니다: state[t+1] - state[t].
 
     Returns:
-        out_states:       (N', D) - states with the last step of each episode removed
-        out_actions:      (N', D) - corresponding delta actions
-        out_episode_ends: (num_episodes,) - cumulative end indices for the trimmed data
-        keep_idx:         (N',) - original indices of kept timesteps (for aligning other arrays)
+        out_states:       (N', D) - 각 에피소드의 마지막 단계가 제거된 상태 배열
+        out_actions:      (N', D) - 이에 대응하는 변화량 액션 배열
+        out_episode_ends: (num_episodes,) - 잘라낸 데이터의 누적 종료 인덱스
+        keep_idx:         (N',) - 유지된 타임스텝의 원본 인덱스 (다른 배열 정렬용)
+    
     """
     out_states_list: list[np.ndarray] = []
     out_actions_list: list[np.ndarray] = []
@@ -164,7 +165,7 @@ def compute_actions_for_episodes(
     for start, end in episode_ranges:
         ep_states = states[start:end]  # (L, D)
         if ep_states.shape[0] < 2:
-            continue  # skip degenerate episodes
+            continue  # 비정상(degenerate) 에피소드 제외
         out_states_list.append(ep_states[:-1])
         if action_fn is not None:
             out_actions_list.append(action_fn(ep_states[:-1], ep_states[1:]))
@@ -186,25 +187,25 @@ def trim_to_transitions(
     *,
     skip_keys: set[str],
 ) -> dict[str, np.ndarray]:
-    """Trim auxiliary arrays to the kept transition indices.
+    """보조 배열들을 유지된 전이 인덱스에 맞게 잘라냅니다.
 
-    Applies ``keep_idx`` to every array in *merged* (except those in
-    *skip_keys* and ``"episode_ends"``), and renames ``state_ee`` to
-    ``state_ee_full`` (to avoid collisions with the ee-xyz state key).
+    *merged*의 모든 배열(*skip_keys* 및 ``"episode_ends"`` 제외)에 ``keep_idx``를 적용하고,
+    ``state_ee``의 이름을 ``state_ee_full``로 변경합니다 (ee-xyz 상태 키와의 충돌 방지).
 
     Parameters
     ----------
     merged : dict
-        Raw merged data from :func:`load_and_merge_zarrs`.
+        :func:`load_and_merge_zarrs`에서 얻은 원본 병합 데이터.
     keep_idx : (N',) array
-        Indices of kept timesteps (returned by :func:`compute_actions_for_episodes`).
+        유지할 타임스텝의 인덱스 (:func:`compute_actions_for_episodes`에 의해 반환됨).
     skip_keys : set[str]
-        Keys that have already been written and should be skipped.
+        이미 기록되어 건너뛰어야 할 키 세트.
 
     Returns
     -------
     dict[str, np.ndarray]
-        Trimmed arrays with their final destination names.
+        최종 대상 이름으로 변경되고 잘라내진 배열들.
+    
     """
     trimmed: dict[str, np.ndarray] = {}
 
@@ -212,11 +213,11 @@ def trim_to_transitions(
         if key == "episode_ends":
             continue
         if key.startswith("_"):
-            continue  # skip internal metadata (e.g. _num_dagger_episodes)
+            continue  # 내부 메타데이터 제외 (예: _num_dagger_episodes)
 
         dest_name = key
         if dest_name == "state_ee":
-            dest_name = "state_ee_full"  # avoid collision with state_ee_xyz
+            dest_name = "state_ee_full"  # state_ee_xyz와의 충돌 방지
         elif dest_name in ("pos_cube_red", "pos_cube_green", "pos_cube_blue"):
             dest_name = f"original_{dest_name}"
 
@@ -230,11 +231,12 @@ def trim_to_transitions(
 
 
 def load_and_merge_zarrs(zarr_paths: list[Path]) -> dict[str, np.ndarray]:
-    """Load and concatenate data from multiple zarr stores.
+    """여러 zarr 저장소의 데이터를 로드하고 병합합니다.
 
-    Returns a dict with keys:
+    다음 키를 포함하는 딕셔너리를 반환합니다:
         state_joints, state_ee, state_cube, episode_ends,
-        and images_<cam> for each camera found.
+        그리고 발견된 각 카메라에 대한 images_<cam>.
+    
     """
     all_data: dict[str, list[np.ndarray]] = {}
     cumulative_offset = 0
@@ -254,7 +256,7 @@ def load_and_merge_zarrs(zarr_paths: list[Path]) -> dict[str, np.ndarray]:
         tag = " [dagger]" if is_dagger else ""
         print(f"  {zpath.name}: {ep_ends.size} episode(s), {n_steps} steps{tag}")
 
-        # Shift episode_ends by the running offset
+        # 누적 오프셋만큼 episode_ends 이동
         all_data.setdefault("episode_ends", []).append(ep_ends + cumulative_offset)
         all_data.setdefault("_dagger_ep_counts", []).append(
             ep_ends.size if is_dagger else 0
@@ -269,10 +271,10 @@ def load_and_merge_zarrs(zarr_paths: list[Path]) -> dict[str, np.ndarray]:
     merged: dict[str, np.ndarray] = {}
     for key, arrays in all_data.items():
         if key == "_dagger_ep_counts":
-            continue  # not an array, handled separately
+            continue  # 배열이 아니므로 별도로 처리
         merged[key] = np.concatenate(arrays, axis=0)
 
-    # Propagate dagger episode count as a plain int (not an ndarray)
+    # dagger 에피소드 개수를 일반 int로 전달 (ndarray 아님)
     merged["_num_dagger_episodes"] = sum(all_data.get("_dagger_ep_counts", [0]))
 
     return merged
@@ -302,14 +304,14 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    # ── discover zarr stores ──────────────────────────────────────────
+    # ── zarr 저장소 탐색 ──────────────────────────────────────────
     zarr_paths = sorted(args.datasets_dir.rglob("*.zarr"))
     if not zarr_paths:
         print(f"No .zarr stores found under {args.datasets_dir}")
         return
     print(f"Found {len(zarr_paths)} zarr store(s):")
 
-    # ── load & merge ──────────────────────────────────────────────────
+    # ── 로드 및 병합 ──────────────────────────────────────────────────
     merged = load_and_merge_zarrs(zarr_paths)
     episode_ends = merged["episode_ends"]
     episode_ranges = get_episode_ranges(episode_ends)
@@ -320,7 +322,7 @@ def main() -> None:
         f"\nMerged: {n_episodes} episodes ({n_dagger_episodes} dagger), {n_total} total steps"
     )
 
-    # ── select state array for the chosen action space ────────────────
+    # ── 선택한 액션 공간에 대한 상태 배열 선택 ────────────────
     raw_states, action_label, state_label, sa_suffix = select_action_space(
         args.action_space, merged
     )
@@ -328,7 +330,7 @@ def main() -> None:
         f"Action space: {args.action_space}, state_dim={raw_states.shape[1]} ({state_label}), action=({action_label})"
     )
 
-    # ── compute next-state actions ────────────────────────────────────
+    # ── 다음 상태 기반 액션 계산 ────────────────────────────────────
     action_fn = _ee_full_delta if args.action_space == "ee_full" else None
     states, actions, new_ep_ends, keep_idx = compute_actions_for_episodes(
         raw_states,
@@ -340,15 +342,15 @@ def main() -> None:
         f"across {new_ep_ends.size} episodes"
     )
 
-    # ── align gripper actions (recorded ctrl, not computed) ───────────
+    # ── 그리퍼 액션 정렬 (계산값이 아닌 기록된 제어 명령) ───────────
     raw_action_gripper = merged.get("action_gripper")
     if raw_action_gripper is not None:
         action_gripper_trimmed = raw_action_gripper[keep_idx]
-    # ── write output zarr ─────────────────────────────────────────────
+    # ── 출력 zarr 쓰기 ─────────────────────────────────────────────
     if args.output is not None:
         out_path = args.output
     else:
-        # Default: datasets/processed/<task>/processed_<action-space>.zarr
+        # 기본값: datasets/processed/<task>/processed_<action-space>.zarr
         base_dir = Path("./datasets/processed")
         if "multi_cube" in str(args.datasets_dir):
             base_dir = base_dir / "multi_cube"
@@ -369,7 +371,7 @@ def main() -> None:
     state_key = f"state_{sa_suffix}"
     action_key = f"action_{sa_suffix}"
 
-    # State & action for ee/joints
+    # ee/관절에 대한 상태(state) 및 액션(action)
     out_data.create_array(
         state_key, data=states.astype(np.float32), compressors=compressors
     )
@@ -377,25 +379,25 @@ def main() -> None:
         action_key, data=actions.astype(np.float32), compressors=compressors
     )
 
-    # Gripper action (recorded control command, aligned to the same timesteps)
+    # 그리퍼 액션 (동일한 타임스텝에 정렬되어 기록된 제어 명령)
     out_data.create_array(
         "action_gripper",
         data=action_gripper_trimmed.astype(np.float32),
         compressors=compressors,
     )
 
-    # Episode ends
+    # 에피소드 종료 지점 (episode_ends)
     out_meta.create_array(
         "episode_ends", data=new_ep_ends.astype(np.int64), compressors=compressors
     )
 
-    # Trim and copy auxiliary arrays (images, cube state, original states, gripper state)
+    # 보조 배열 잘라내기 및 복사 (이미지, 큐브 상태, 원본 상태, 그리퍼 상태)
     already_written = {state_key, action_key, "action_gripper"}
     aux_arrays = trim_to_transitions(merged, keep_idx, skip_keys=already_written)
     for dest_name, data in aux_arrays.items():
         out_data.create_array(dest_name, data=data, compressors=compressors)
 
-    # Metadata
+    # 메타데이터
     out_root.attrs["action_space"] = args.action_space
     out_root.attrs["action_dim"] = int(actions.shape[1])
     out_root.attrs["action_spec"] = action_label

@@ -7,3 +7,4 @@ __pycache__/
 data/slides/*/raw/
 data/slides/*/ko/
 .claude/
+*.comments.done

@@ -1,12 +1,12 @@
-"""Shared utilities for teleop recording and DAgger data collection.
+"""원격 조작(teleop) 녹화 및 DAgger 데이터 수집을 위한 공유 유틸리티.
 
-Provides:
-- ``ZarrEpisodeWriter`` — incremental zarr writer for state/action data.
-- ``rotate_quaternion`` — quaternion rotation helper.
-- ``load_keymap`` — load a ``keymap.json`` into a ``{raw_keycode: action_name}`` dict.
-- ``handle_teleop_key`` — apply a single teleop movement action to the sim.
-- ``compose_camera_views`` — arrange rendered camera images in a 2‑row layout.
-- Common constants (``JOINT_NAMES``, ``CAMERA_NAMES``, etc.)
+제공 기능:
+- ``ZarrEpisodeWriter`` — 상태/액션 데이터를 위한 점진적(incremental) zarr 기록기.
+- ``rotate_quaternion`` — 쿼터니언 회전 헬퍼 함수.
+- ``load_keymap`` — ``keymap.json``을 ``{raw_keycode: action_name}`` 딕셔너리로 로드.
+- ``handle_teleop_key`` — 단일 원격 조작 이동 액션을 시뮬레이션에 적용.
+- ``compose_camera_views`` — 렌더링된 카메라 이미지를 2행 레이아웃으로 배치.
+- 공통 상수 (``JOINT_NAMES``, ``CAMERA_NAMES`` 등)
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ import numpy as np
 import pyquaternion as pyq
 import zarr
 
-# ── constants ─────────────────────────────────────────────────────────
+# ── 상수 (constants) ──────────────────────────────────────────────────
 
 JOINT_NAMES: tuple[str, ...] = (
     "Rotation",
@@ -36,17 +36,17 @@ CAMERA_NAMES: tuple[str, ...] = ("left_wrist", "angle", "top")
 DEFAULT_KEYMAP_PATH: Path = Path(__file__).resolve().parent / "keymap.json"
 
 CUBE_JOINT_NAME: str = "red_box_joint"
-CUBE_DIM: int = 7  # free joint: pos(3) + quat_wxyz(4)
-OBSTACLE_DIM: int = 3  # obstacle xyz position
+CUBE_DIM: int = 7  # 자유 관절(free joint): pos(3) + quat_wxyz(4)
+OBSTACLE_DIM: int = 3  # 장애물 xyz 위치
 
 
-# ── quaternion rotation ───────────────────────────────────────────────
+# ── 쿼터니언 회전 (quaternion rotation) ───────────────────────────────
 
 
 def rotate_quaternion(
     quat_wxyz: np.ndarray, axis_xyz, angle_deg: float
 ) -> np.ndarray:
-    """Rotate *quat_wxyz* around *axis_xyz* by *angle_deg* degrees."""
+    """*quat_wxyz*를 *axis_xyz* 축 기준으로 *angle_deg* 도만큼 회전합니다."""
     angle_rad = np.deg2rad(angle_deg)
     axis_xyz = np.asarray(axis_xyz, dtype=np.float64)
     axis_xyz = axis_xyz / np.linalg.norm(axis_xyz)
@@ -55,11 +55,11 @@ def rotate_quaternion(
     return q.elements  # wxyz
 
 
-# ── keymap loading ────────────────────────────────────────────────────
+# ── 키맵 로드 (keymap loading) ────────────────────────────────────────
 
 
 def load_keymap(km_path: Path | None = None) -> dict[int, str]:
-    """Load a ``keymap.json`` file and return ``{raw_keycode: action_name}``."""
+    """``keymap.json`` 파일을 로드하여 ``{raw_keycode: action_name}``을 반환합니다."""
     km_path = km_path or DEFAULT_KEYMAP_PATH
     if not km_path.exists():
         raise FileNotFoundError(
@@ -71,7 +71,7 @@ def load_keymap(km_path: Path | None = None) -> dict[int, str]:
     return {int(entry["raw"]): action_name for action_name, entry in km_data.items()}
 
 
-# ── teleop key dispatch ──────────────────────────────────────────────
+# ── 원격 조작 키 처리 (teleop key dispatch) ───────────────────────────
 
 
 def handle_teleop_key(
@@ -81,20 +81,21 @@ def handle_teleop_key(
     mocap_id: int,
     jaw_act_idx: int,
 ) -> None:
-    """Apply a single teleop movement action to the MuJoCo simulation.
+    """단일 원격 조작 이동 액션을 MuJoCo 시뮬레이션에 적용합니다.
 
     Parameters
     ----------
     action_name : str
-        Action identifier (``"move_up"``, ``"rot_x_pos"``, ``"gripper_open"``, …).
+        액션 식별자 (``"move_up"``, ``"rot_x_pos"``, ``"gripper_open"``, …).
     data : mujoco.MjData
-        Active simulation data (modified in-place).
+        활성화된 시뮬레이션 데이터 (내부에서 직접 수정됨).
     model : mujoco.MjModel
-        MuJoCo model (used for ctrl range clamping).
+        MuJoCo 모델 (ctrl 범위 제한에 사용됨).
     mocap_id : int
-        Index into ``data.mocap_pos`` / ``data.mocap_quat``.
+        ``data.mocap_pos`` / ``data.mocap_quat``의 인덱스.
     jaw_act_idx : int
-        Actuator index for the jaw/gripper.
+        조(jaw)/그리퍼의 액추에이터 인덱스.
+    
     """
     if action_name == "move_up":
         data.mocap_pos[mocap_id, 2] += 0.01
@@ -144,24 +145,25 @@ def handle_teleop_key(
         data.ctrl[:] = np.clip(data.ctrl, lo, hi)
 
 
-# ── camera view composition ──────────────────────────────────────────
+# ── 카메라 뷰 합성 (camera view composition) ──────────────────────────
 
 
 def compose_camera_views(
     images: dict[str, np.ndarray],
     camera_names: tuple[str, ...] = CAMERA_NAMES,
 ) -> np.ndarray:
-    """Arrange rendered camera images in a 2‑row layout.
+    """렌더링된 카메라 이미지를 2행 레이아웃으로 배치합니다.
 
-    Top row = first two cameras side-by-side, bottom = third camera (padded).
-    Each image is labelled with the camera name.
+    첫 번째 행 = 첫 두 카메라를 나란히 배치, 두 번째 행 = 세 번째 카메라 (패딩 처리됨).
+    각 이미지에는 카메라 이름으로 라벨이 지정됩니다.
 
     Parameters
     ----------
     images : dict[str, np.ndarray]
-        Mapping from camera name → BGR uint8 image.
+        카메라 이름 → BGR uint8 이미지 매핑.
     camera_names : tuple[str, ...]
-        Order of cameras (first two go on top, rest on bottom row).
+        카메라 순서 (처음 두 개는 첫 행에, 나머지는 두 번째 행에 배치).
+    
     """
     views = []
     for cam in camera_names:
@@ -187,11 +189,12 @@ def compose_camera_views(
 
 @dataclass
 class ZarrEpisodeWriter:
-    """Incremental zarr writer for teleop / DAgger state/action data.
+    """원격 조작 / DAgger 상태 및 액션 데이터를 위한 점진적 zarr 기록기.
 
-    Buffers incoming timesteps and flushes to disk every *flush_every* steps.
-    Supports ``end_episode()`` to finalise an episode and ``discard_episode()``
-    to roll back all data since the last completed episode.
+    입력되는 타임스텝 데이터를 버퍼링하고 매 *flush_every* 단계마다 디스크로 플러시합니다.
+    에피소드를 완료하는 ``end_episode()`` 및 마지막으로 완료된 에피소드 이후의 모든 데이터를
+    롤백하는 ``discard_episode()``를 지원합니다.
+    
     """
 
     path: Path
@@ -202,7 +205,7 @@ class ZarrEpisodeWriter:
     obstacle_dim: int = 3
     flush_every: int = 12
 
-    # ── internal state (populated by __post_init__) ───────────────────
+    # ── 내부 상태 (__post_init__에 의해 채워짐) ───────────────────────────
     root: zarr.Group = field(init=False, repr=False)
     state_joints_arr: zarr.Array = field(init=False, repr=False)
     state_ee_arr: zarr.Array = field(init=False, repr=False)
@@ -287,23 +290,23 @@ class ZarrEpisodeWriter:
         self._action_gripper_buf = []
         self._state_obstacle_buf = []
 
-    # ── convenience attributes ────────────────────────────────────────
+    # ── 편의용 속성 (convenience attributes) ──────────────────────────────
 
     def set_attrs(self, **attrs) -> None:
-        """Store arbitrary metadata on the zarr root group."""
+        """zarr 루트 그룹에 임의의 메타데이터를 저장합니다."""
         for k, v in attrs.items():
             self.root.attrs[k] = v
 
     @property
     def num_steps_total(self) -> int:
-        """Total timesteps written (including unflushed buffer)."""
+        """기록된 총 타임스텝 수 (플러시되지 않은 버퍼 포함)."""
         return int(self.state_joints_arr.shape[0]) + len(self._state_joints_buf)
 
     @property
     def num_episodes(self) -> int:
         return int(self.ep_ends_arr.shape[0])
 
-    # ── append / flush / episode management ───────────────────────────
+    # ── 추가 / 플러시 / 에피소드 관리 ─────────────────────────────────────
 
     def append(
         self,
@@ -314,7 +317,7 @@ class ZarrEpisodeWriter:
         action_gripper: np.ndarray,
         state_obstacle: np.ndarray,
     ) -> None:
-        """Buffer one timestep of data.  Flushes automatically every *flush_every* steps."""
+        """한 타임스텝의 데이터를 버퍼링합니다. 매 *flush_every* 단계마다 자동으로 플러시됩니다."""
         self._state_joints_buf.append(state_joints.astype(np.float32, copy=False))
         self._state_ee_buf.append(state_ee.astype(np.float32, copy=False))
         if self.cube_dim > 0:
@@ -327,7 +330,7 @@ class ZarrEpisodeWriter:
             self.flush()
 
     def flush(self) -> None:
-        """Write buffered data to disk."""
+        """버퍼링된 데이터를 디스크에 씁니다."""
         if not self._state_joints_buf:
             return
 
@@ -364,7 +367,7 @@ class ZarrEpisodeWriter:
         self._state_obstacle_buf.clear()
 
     def end_episode(self) -> None:
-        """Flush and record an episode boundary."""
+        """플러시를 수행하고 에피소드 경계를 기록합니다."""
         self.flush()
         end_idx = int(self.state_joints_arr.shape[0])
         m0 = self.ep_ends_arr.shape[0]
@@ -372,7 +375,7 @@ class ZarrEpisodeWriter:
         self.ep_ends_arr[m0] = end_idx
 
     def discard_episode(self) -> None:
-        """Roll back all data recorded since the last ``end_episode()`` call."""
+        """마지막 ``end_episode()`` 호출 이후 기록된 모든 데이터를 롤백합니다."""
         self._state_joints_buf.clear()
         self._state_ee_buf.clear()
         self._state_cube_buf.clear()
