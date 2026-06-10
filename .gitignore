@@ -6,3 +6,4 @@ __pycache__/
 .DS_Store
 data/slides/*/raw/
 data/slides/*/ko/
+.claude/
