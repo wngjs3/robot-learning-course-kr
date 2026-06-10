@@ -1,0 +1,25 @@
+# 강의/게스트 영상 메타데이터 (원본: https://cvg.ethz.ch/lectures/Robot-Learning/)
+VIDEOS = [
+    # (key, youtube_id, title_en, title_ko, kind)
+    ("lec01", "X0k14u6pSxw", "Introduction to Robot Learning", "로봇 러닝 입문", "lecture"),
+    ("lec02", "5-Bb84eTTqQ", "Robot Control & MDPs", "로봇 제어와 마르코프 결정 과정(MDP)", "lecture"),
+    ("lec03", "Ef4R5s1LqoQ", "Imitation Learning", "모방 학습", "lecture"),
+    ("lec04", "90raNpc11tQ", "Reinforcement Learning I", "강화 학습 I", "lecture"),
+    ("lec05", "AdTGz8YnnlE", "Reinforcement Learning II", "강화 학습 II", "lecture"),
+    ("lec06", "qd6Ldsuu46I", "Generative Models", "생성 모델", "lecture"),
+    ("lec07", "imSTfMJjp7M", "Sequence Modeling and Transformers", "시퀀스 모델링과 트랜스포머", "lecture"),
+    ("lec08", "cTTmUZlOF2s", "World Models", "월드 모델", "lecture"),
+    ("lec09", "dtofzDY9zuo", "Generalist Robot Policies", "범용 로봇 정책", "lecture"),
+    ("lec10", "CxhrjQuGEuE", "Embodied Reasoning and Test-time Scaling", "체화된 추론과 테스트타임 스케일링", "lecture"),
+    ("lec11", "eL4lcy1KNzE", "Frontiers & Open Problems", "최전선과 미해결 문제들", "lecture"),
+    ("guest02", "aG8NPTPhwkE", "Guest Lecture: Abhishek Gupta (UW)", "게스트 강연: Abhishek Gupta (워싱턴대 교수)", "guest"),
+    ("guest03", "qvTP6T5oq1w", "Guest Lecture: Danfei Xu (Georgia Tech)", "게스트 강연: Danfei Xu (조지아텍 교수)", "guest"),
+    ("guest04", "fHHLmTu9sFk", "Guest Lecture: Aviral Kumar (CMU & Google DeepMind)", "게스트 강연: Aviral Kumar (CMU 교수 & Google DeepMind)", "guest"),
+    ("guest05", "CPmTpXA5azw", "Guest Lecture: Andrew Wagenmaker (UC Berkeley)", "게스트 강연: Andrew Wagenmaker (UC 버클리 포스닥)", "guest"),
+    ("guest06", "tvFvIEOBKfM", "Guest Lecture: Cheng Chi (Sunday Robotics)", "게스트 강연: Cheng Chi (Sunday Robotics 공동창업자)", "guest"),
+    ("guest07", "VS7Ulaugevg", "Guest Lecture: Ted Xiao (Prometheus)", "게스트 강연: Ted Xiao (Prometheus 공동창업자)", "guest"),
+    ("guest08", "fqkp_wkov6M", "Guest Lecture: Scott Reed (NVIDIA GEAR Lab)", "게스트 강연: Scott Reed (NVIDIA GEAR Lab 수석연구원)", "guest"),
+    ("guest09", "pzolgvyWEFY", "Guest Lecture: Quan Vuong (Physical Intelligence)", "게스트 강연: Quan Vuong (Physical Intelligence 공동창업자)", "guest"),
+    ("guest10", "oBEkY6NeE_o", "Guest Lecture: Archit Sharma (Google DeepMind)", "게스트 강연: Archit Sharma (Google DeepMind 연구원)", "guest"),
+    ("guest11", "0XB7fNS_ONg", "Guest Lecture: Lucas Beyer (Meta Superintelligence Labs)", "게스트 강연: Lucas Beyer (Meta Superintelligence Labs)", "guest"),
+]

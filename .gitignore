@@ -1,0 +1,8 @@
+.venv/
+scripts/.env
+data/cache/
+data/raw/
+__pycache__/
+.DS_Store
+data/slides/*/raw/
+data/slides/*/ko/

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Robot Learning 한국어 — 기초에서 파운데이션 모델까지</title>
+  <meta name="description" content="ETH Zurich Robot Learning 강의(Oier Mees)의 비공식 한국어 학습 사이트. 전 강의 영상에 한국어 해설과 자막을 제공합니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="index.html"><span class="dot">RL</span> Robot Learning <span style="color:var(--accent);">한국어</span></a>
+    <div class="nav-links">
+      <a href="#weeks">강의 일정</a>
+      <a href="#tutorials">실습</a>
+      <a href="#credit">소개 · 크레딧</a>
+      <a class="cta" href="https://cvg.ethz.ch/lectures/Robot-Learning/" target="_blank" rel="noopener">원본 사이트 ↗</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="container">
+    <span class="hero-badge">🇨🇭 ETH Zurich · 2026 봄학기 · 한국어 학습판</span>
+    <h1>Robot Learning<br /><span class="grad">기초에서 파운데이션 모델까지</span></h1>
+    <p class="lead">
+      모방 학습과 강화 학습의 기본기부터 Vision-Language-Action(VLA) 모델과
+      로보틱스 파운데이션 모델까지 — Oier Mees 교수의 ETH Zurich 강의 전체를
+      한국어 시간대별 해설·자막과 함께 공부할 수 있습니다.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="lecture.html?id=lec01">▶ 1강부터 시작하기</a>
+      <a class="btn btn-ghost" href="#weeks">전체 커리큘럼 보기</a>
+    </div>
+    <div class="hero-meta">
+      <span>Catalogue: <a href="https://www.vorlesungen.ethz.ch/Vorlesungsverzeichnis/lerneinheit.view?semkez=2026S&ansicht=ALLE&lerneinheitId=201901&lang=en" target="_blank" rel="noopener"><b>263-5911-00L</b></a></span>
+      <span>원본 Course GitHub: <a href="https://github.com/mees-robot-learning-course/ethz-course-2026" target="_blank" rel="noopener"><b>mees-robot-learning-course/ethz-course-2026</b></a></span>
+      <span>한국어판 GitHub: <a href="https://github.com/wngjs3/robot-learning-course-kr" target="_blank" rel="noopener"><b>wngjs3/robot-learning-course-kr</b></a></span>
+    </div>
+  </div>
+</header>
+
+<section class="block" id="objectives">
+  <div class="container">
+    <span class="sec-label">Course Objectives</span>
+    <h2 class="sec-title">이 강의에서 배우는 것</h2>
+    <p class="sec-desc">
+      고전적 기법부터 대규모 모델의 최신 성과까지, 현대 로봇 러닝을 한 학기에 관통하는 커리큘럼입니다.
+    </p>
+    <div class="objectives">
+      <div class="obj-card">
+        <div class="num">1</div>
+        <h3>핵심 원리 이해</h3>
+        <p>모방 학습, 강화 학습, 정책 학습(policy learning)의 핵심 원리를 이해합니다.</p>
+      </div>
+      <div class="obj-card">
+        <div class="num">2</div>
+        <h3>직접 구현</h3>
+        <p>시뮬레이션과 실제 로봇 위에서 기본적인 로봇 러닝 시스템을 직접 구현합니다.</p>
+      </div>
+      <div class="obj-card">
+        <div class="num">3</div>
+        <h3>최신 모델 탐구</h3>
+        <p>최신 Vision-Language-Action(VLA) 모델과 로보틱스 파운데이션 모델을 탐구합니다.</p>
+      </div>
+      <div class="obj-card">
+        <div class="num">4</div>
+        <h3>파이프라인 설계</h3>
+        <p>인지·제어·멀티모달 추론을 통합하는 확장 가능한 로봇 러닝 파이프라인을 설계하고 평가합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block soft" id="weeks">
+  <div class="container">
+    <span class="sec-label">Lecture Schedule</span>
+    <h2 class="sec-title">강의 일정</h2>
+    <p class="sec-desc">
+      매주 핵심 주제 강의 후 학생 주도의 논문 토론이 이어지고, 일부 주차에는 해당 분야 최고 전문가의
+      게스트 강연이 함께합니다. 카드를 눌러 한국어 해설과 함께 영상을 시청하세요.
+    </p>
+    <div class="weeks" id="week-list"><!-- JS 렌더링 --></div>
+  </div>
+</section>
+
+<section class="block" id="tutorials">
+  <div class="container">
+    <span class="sec-label">Thursday Practice</span>
+    <h2 class="sec-title">실습 · 코딩 과제</h2>
+    <p class="sec-desc">
+      매주 목요일 실습 세션에서는 조교가 핵심 내용을 요약하고 과제를 소개한 뒤, 풀이를 함께 도와줍니다.
+      과제 코드는 공식 GitHub 저장소에 공개되어 있어 누구나 따라 할 수 있습니다.
+    </p>
+    <table class="tut-table">
+      <thead><tr><th>주차</th><th>주제</th><th>자료</th><th>마감</th></tr></thead>
+      <tbody id="tut-body"><!-- JS 렌더링 --></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="block soft" id="credit">
+  <div class="container">
+    <span class="sec-label">About · Credit</span>
+    <h2 class="sec-title">이 사이트에 대하여</h2>
+    <div class="credit-card">
+      <p>
+        이 사이트는 <b>ETH Zurich</b>의 <b>Robot Learning: From Fundamentals to Foundation Models</b>
+        (2026 봄학기, 강의자 <a href="https://www.oiermees.com" target="_blank" rel="noopener">Oier Mees</a>) 강의를
+        한국 학생들이 쉽게 공부할 수 있도록 만든 <b>비공식 한국어 학습 자료</b>입니다.
+        원저자 Oier Mees 교수의 사전 허락을 받아 제작되었습니다.
+      </p>
+      <p>
+        모든 강의 영상·슬라이드·과제의 저작권은 원저자와 ETH Zurich CVG(Computer Vision and Geometry Group)에 있으며,
+        이 사이트는 원본 자료로 연결되는 링크와 함께 한국어 해설·자막(AI 번역 + 감수)을 제공합니다.
+        번역 오류가 있을 수 있으니 중요한 내용은 원문을 함께 확인해 주세요.
+      </p>
+      <div class="credit-links">
+        <a class="chip" href="https://cvg.ethz.ch/lectures/Robot-Learning/" target="_blank" rel="noopener">📄 원본 강의 페이지</a>
+        <a class="chip" href="https://www.oiermees.com" target="_blank" rel="noopener">👤 Oier Mees</a>
+        <a class="chip" href="https://github.com/mees-robot-learning-course/ethz-course-2026" target="_blank" rel="noopener">💻 공식 GitHub</a>
+        <a class="chip" href="https://www.youtube.com/watch?v=X0k14u6pSxw" target="_blank" rel="noopener">▶ YouTube 강의 영상</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <span>한국어 번역 · 정리: Juheon Choi (KAIST) — 원저작물 © Oier Mees & ETH Zurich CVG</span>
+    <span>Translated with permission · Powered by Gemini</span>
+  </div>
+</footer>
+
+<script src="assets/js/course-data.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
