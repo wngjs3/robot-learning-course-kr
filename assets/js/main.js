@@ -12,7 +12,7 @@
     let thumb;
     if (key || video) {
       const fallback = video ? `this.onerror=null;this.src='https://i.ytimg.com/vi/${video}/hqdefault.jpg';` : "this.style.display='none';";
-      const src = key ? `data/slides/${key}/web/000.webp` : `https://i.ytimg.com/vi/${video}/hqdefault.jpg`;
+      const src = key ? `data/slides/${key}/thumb.webp` : `https://i.ytimg.com/vi/${video}/hqdefault.jpg`;
       const img = `<img loading="lazy" src="${src}" alt="" onerror="${fallback}" />`;
       thumb = key
         ? `<a class="lec-thumb" href="lecture.html?id=${key}">${img}<span class="lec-thumb-play">▶</span></a>`

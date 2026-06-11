@@ -20,19 +20,32 @@ def build(key):
     os.makedirs(web_dir, exist_ok=True)
     slides = json.load(open(os.path.join(base, "slides.json")))
 
+    # 카메라 컷(사람/강의실 화면) 제외 목록
+    excl_path = os.path.join(base, "exclude.json")
+    exclude = set(json.load(open(excl_path))) if os.path.exists(excl_path) else set()
+
     out = []
     for s in slides:
+        name = s["file"].replace(".png", ".webp")
+        dst = os.path.join(web_dir, name)
+        if s["i"] in exclude:
+            if os.path.exists(dst):
+                os.remove(dst)
+            continue
         src = os.path.join(ko_dir, s["file"])
         if not os.path.exists(src):
             continue
-        name = s["file"].replace(".png", ".webp")
-        dst = os.path.join(web_dir, name)
         if not os.path.exists(dst):
             img = Image.open(src)
             if img.width > 1280:
                 img = img.resize((1280, int(img.height * 1280 / img.width)))
             img.save(dst, "WEBP", quality=82)
         out.append({"i": s["i"], "start": s["start"], "file": "web/" + name})
+
+    # 목록 첫 슬라이드를 썸네일로 복사 (카메라 컷이 0번이어도 안전)
+    if out:
+        import shutil
+        shutil.copy(os.path.join(base, out[0]["file"]), os.path.join(base, "thumb.webp"))
 
     js = (
         "window.__SLIDES = window.__SLIDES || {};\n"

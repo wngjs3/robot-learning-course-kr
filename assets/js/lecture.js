@@ -73,6 +73,7 @@
     el("slides-tab").style.display = "";
     el("stage-pane").style.display = "";
     el("stage").classList.remove("no-slide");
+    updateStageHeight();
     showStageSlide(0);
     panels.slides.innerHTML =
       `<div class="slides-note">AI(Gemini)가 원본 슬라이드를 한국어로 번역해 다시 그린 이미지입니다. 클릭하면 해당 구간으로 이동합니다.</div>` +
@@ -136,6 +137,20 @@
   const stage = el("stage");
   const saved = parseFloat(localStorage.getItem("stage-split"));
   if (saved >= 25 && saved <= 75) stage.style.setProperty("--split", saved + "%");
+
+  // 무대 높이 = 넓은 쪽 패널이 16:9를 유지할 때의 높이 (좁은 쪽은 그 높이에 맞춰 표시)
+  function updateStageHeight() {
+    if (window.innerWidth <= 980) { stage.style.removeProperty("--stage-h"); return; }
+    const w = stage.getBoundingClientRect().width;
+    const hasSlide = !stage.classList.contains("no-slide");
+    if (!hasSlide) { stage.style.removeProperty("--stage-h"); return; }
+    const split = parseFloat(stage.style.getPropertyValue("--split")) || 58;
+    const wider = Math.max(split, 100 - split) / 100;
+    const h = Math.min((w - 14) * wider * 9 / 16, window.innerHeight * 0.8);
+    stage.style.setProperty("--stage-h", h + "px");
+  }
+  window.addEventListener("resize", updateStageHeight);
+  updateStageHeight();
   const divider = el("stage-divider");
   divider.addEventListener("pointerdown", (e) => {
     e.preventDefault();
@@ -147,6 +162,7 @@
       let pct = ((ev.clientX - rect.left) / rect.width) * 100;
       pct = Math.round(Math.min(75, Math.max(25, pct)) * 10) / 10;
       stage.style.setProperty("--split", pct + "%");
+      updateStageHeight();
     };
     const up = (ev) => {
       divider.releasePointerCapture(e.pointerId);

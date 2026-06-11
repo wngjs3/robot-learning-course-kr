@@ -306,6 +306,8 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
 .video-shell {
   background: #000; border-radius: 16px; overflow: hidden;
   box-shadow: var(--shadow-md); aspect-ratio: 16 / 9; position: relative;
+  /* 무대 높이는 JS가 '넓은 쪽 패널' 기준으로 계산 — 영상을 줄이면 슬라이드가 커짐 */
+  width: 100%; height: var(--stage-h, auto);
 }
 .video-shell iframe, .video-shell #yt-player { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
@@ -481,8 +483,9 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   .lec-left, .lec-right { position: static; }
   .lec-right { max-height: 70vh; }
   .stage { flex-direction: column; gap: 12px; }
-  .stage-video { flex: none; max-width: 100%; }
+  .stage-video { flex: none; width: 100%; max-width: 100%; }
   .stage-divider { display: none; }
+  .video-shell { height: auto; aspect-ratio: 16 / 9; }
   .slide-shell { aspect-ratio: 16 / 9; height: auto; }
   .nav-links a:not(.cta) { display: none; }
   section.block { padding: 52px 0; }
