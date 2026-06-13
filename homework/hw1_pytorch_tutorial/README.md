@@ -9,16 +9,16 @@
 리포지토리 루트 디렉토리에서 다음을 실행합니다:
 
 ```bash
-# Create a virtual environment with Python 3.12
+# Python 3.12로 가상 환경 생성
 uv venv --python 3.12
 
-# Activate the environment
-# On macOS/Linux:
+# 환경 활성화
+# macOS/Linux:
 source .venv/bin/activate
-# On Windows:
+# Windows:
 # .venv\Scripts\activate
 
-# Install dependencies
+# 의존성 설치
 uv pip install torch torchvision jupyter
 ```
 
