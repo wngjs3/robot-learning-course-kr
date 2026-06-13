@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>태스크 무관 오프라인 강화학습을 위한 잠재 계획 (Latent Plans for Task-Agnostic Offline Reinforcement Learning) — Robot Learning 논문 한국어판</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" />
-<link rel="stylesheet" href="../assets/css/style.css?v=2" />
-<link rel="stylesheet" href="../assets/css/paper.css?v=2" />
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../assets/css/style.css?v=2" rel="stylesheet"/>
+<link href="../assets/css/paper.css?v=2" rel="stylesheet"/>
 </head>
 <body class="paper-page">
 <div class="paper-shell">
-  <div class="paper-top">
-    <a href="../index.html">← Robot Learning 홈</a>
-  </div>
-  <header class="paper-head">
-    <div class="paper-week">Week 5 · 논문 토론</div>
-    <h1>태스크 무관 오프라인 강화학습을 위한 잠재 계획 (Latent Plans for Task-Agnostic Offline Reinforcement Learning)</h1>
-    <div class="paper-orig-title">Latent Plans for Task Agnostic Offline RL <span>— Rosete-Beas et al., 2022</span></div>
-    <div class="paper-links">
-      <a class="chip" href="https://arxiv.org/pdf/2209.08959" target="_blank" rel="noopener">원문 보기 ↗</a>
-    </div>
-    <p class="paper-note">이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
+<div class="paper-top">
+<a href="../index.html">← Robot Learning 홈</a>
+</div>
+<header class="paper-head">
+<div class="paper-week">Week 5 · 논문 토론</div>
+<h1>태스크 무관 오프라인 강화학습을 위한 잠재 계획 (Latent Plans for Task-Agnostic Offline Reinforcement Learning)</h1>
+<div class="paper-orig-title">Latent Plans for Task Agnostic Offline RL <span>— Rosete-Beas et al., 2022</span></div>
+<div class="paper-links">
+<a class="chip" href="https://arxiv.org/pdf/2209.08959" rel="noopener" target="_blank">원문 보기 ↗</a>
+</div>
+<p class="paper-note">이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
     그림·수식은 원문( ar5iv )에서 가져왔으며, 저작권은 원저자에게 있습니다.</p>
-  </header>
-  <article class="paper-body">
+</header>
+<article class="paper-body">
 <article class="ltx_document ltx_authors_1line"><span class="ltx_note ltx_role_footnotetext" id="footnotex1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_note_type">footnotetext: </span>Equal Contribution</span></span></span>
-
 <div class="ltx_authors">
 <span class="ltx_creator ltx_role_author">
 <span class="ltx_personname">
@@ -689,7 +688,6 @@ Erick Rosete-Beas<sup class="ltx_sup" id="id8.8.id1"><span class="ltx_text ltx_f
 <div class="ltx_para ltx_noindent" id="S6.p2">
 <p class="ltx_p" id="S6.p2.1">TACO-RL은 매우 유능하지만 몇 가지 한계점이 존재한다. 에이전트에게 작업을 지정하려면 테스트 시점에 현재 장면과 일치하는 적절한 목표 이미지를 제공해야 한다. 게다가 서로 다른 시간 지평을 가진 스킬들을 시퀀싱할 때 작업 진행 상황을 추적하는 것이 유용할 수 있다. 한계점에 대해서는 부록 <a class="ltx_ref" href="#Sx1.SS8" title="H Limitations ‣ Appendix ‣ Latent Plans for Task-Agnostic Offline Reinforcement Learning"><span class="ltx_text ltx_ref_tag">H</span></a>에서 더 자세히 논의한다. 그러나 전반적으로, 우리는 로봇 러닝을 확장하는 방향으로 모방 학습과 오프라인 강화학습 방법이 융합되는 것에 대해 고무되어 있다.</p>
 </div>
-
 <section class="ltx_subsubsection" id="S6.SS0.SSSx1">
 <h4 class="ltx_title ltx_title_subsubsection">감사의 말</h4>
 <div class="ltx_para ltx_noindent" id="S6.SS0.SSSx1.p1">
@@ -1468,7 +1466,6 @@ Robotics (ISER)</em>, La Valletta, Malta, 2021.
 </li>
 </ul>
 </section>
-
 <section class="ltx_section" id="Sx1">
 <h2 class="ltx_title ltx_title_section">부록</h2>
 <section class="ltx_subsection" id="Sx1.SS1">
@@ -1617,7 +1614,7 @@ Starts or finishes recording a play data episode</td>
 <li class="ltx_item" id="Sx1.I2.i2" style="list-style-type:none;">
 <span class="ltx_tag ltx_tag_item">•</span>
 <div class="ltx_para" id="Sx1.I2.i2.p1">
-<p class="ltx_p" id="Sx1.I2.i2.p1.3">Learning rates <math alttext="-" class="ltx_Math" display="inline" id="Sx1.I2.i2.p1.1.m1.1"><semantics id="Sx1.I2.i2.p1.1.m1.1a"><mo id="Sx1.I2.i2.p1.1.m1.1.1" xref="Sx1.I2.i2.p1.1.m1.1.1.cmml">−</mo><annotation-xml encoding="MathML-Content" id="Sx1.I2.i2.p1.1.m1.1b"><minus id="Sx1.I2.i2.p1.1.m1.1.1.cmml" xref="Sx1.I2.i2.p1.1.m1.1.1"></minus></annotation-xml><annotation encoding="application/x-tex" id="Sx1.I2.i2.p1.1.m1.1c">-</annotation></semantics></math> Q-function: <math alttext="3e-4" class="ltx_Math" display="inline" id="Sx1.I2.i2.p1.2.m2.1"><semantics id="Sx1.I2.i2.p1.2.m2.1a"><mrow id="Sx1.I2.i2.p1.2.m2.1.1" xref="Sx1.I2.i2.p1.2.m2.1.1.cmml"><mrow id="Sx1.I2.i2.p1.2.m2.1.1.2" xref="Sx1.I2.i2.p1.2.m2.1.1.2.cmml"><mn id="Sx1.I2.i2.p1.2.m2.1.1.2.2" xref="Sx1.I2.i2.p1.2.m2.1.1.2.2.cmml">3</mn><mo id="Sx1.I2.i2.p1.2.m2.1.1.2.1" lspace="0em" rspace="0em" xref="Sx1.I2.i2.p1.2.m2.1.1.2.1.cmml">​</mo><mi id="Sx1.I2.i2.p1.2.m2.1.1.2.3" xref="Sx1.I2.i2.p1.2.m2.1.1.2.3.cmml">e</mi></mrow><mo id="Sx1.I2.i2.p1.2.m2.1.1.1" xref="Sx1.I2.i2.p1.2.m2.1.1.1.cmml">−</mo><mn id="Sx1.I2.i2.p1.2.m2.1.1.3" xref="Sx1.I2.i2.p1.2.m2.1.1.3.cmml">4</mn></mrow><annotation-xml encoding="MathML-Content" id="Sx1.I2.i2.p1.2.m2.1b"><apply id="Sx1.I2.i2.p1.2.m2.1.1.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1"><minus id="Sx1.I2.i2.p1.2.m2.1.1.1.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.1"></minus><apply id="Sx1.I2.i2.p1.2.m2.1.1.2.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.2"><times id="Sx1.I2.i2.p1.2.m2.1.1.2.1.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.2.1"></times><cn id="Sx1.I2.i2.p1.2.m2.1.1.2.2.cmml" type="integer" xref="Sx1.I2.i2.p1.2.m2.1.1.2.2">3</cn><ci id="Sx1.I2.i2.p1.2.m2.1.1.2.3.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.2.3">𝑒</ci></apply><cn id="Sx1.I2.i2.p1.2.m2.1.1.3.cmml" type="integer" xref="Sx1.I2.i2.p1.2.m2.1.1.3">4</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="Sx1.I2.i2.p1.2.m2.1c">3e-4</annotation></semantics></math>, Policy: <math alttext="1e-4" class="ltx_Math" display="inline" id="Sx1.I2.i2.p1.3.m3.1"><semantics id="Sx1.I2.i2.p1.3.m3.1a"><mrow id="Sx1.I2.i2.p1.3.m3.1.1" xref="Sx1.I2.i2.p1.3.m3.1.1.cmml"><mrow id="Sx1.I2.i2.p1.3.m3.1.1.2" xref="Sx1.I2.i2.p1.3.m3.1.1.2.cmml"><mn id="Sx1.I2.i2.p1.3.m3.1.1.2.2" xref="Sx1.I2.i2.p1.3.m3.1.1.2.2.cmml">1</mn><mo id="Sx1.I2.i2.p1.3.m3.1.1.2.1" lspace="0em" rspace="0em" xref="Sx1.I2.i2.p1.3.m3.1.1.2.1.cmml">​</mo><mi id="Sx1.I2.i2.p1.3.m3.1.1.2.3" xref="Sx1.I2.i2.p1.3.m3.1.1.2.3.cmml">e</mi></mrow><mo id="Sx1.I2.i2.p1.3.m3.1.1.1" xref="Sx1.I2.i2.p1.3.m3.1.1.1.cmml">−</mo><mn id="Sx1.I2.i2.p1.3.m3.1.1.3" xref="Sx1.I2.i2.p1.3.m3.1.1.3.cmml">4</mn></mrow><annotation-xml encoding="MathML-Content" id="Sx1.I2.i2.p1.3.m3.1b"><apply id="Sx1.I2.i2.p1.3.m3.1.1.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1"><minus id="Sx1.I2.i2.p1.3.m3.1.1.1.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.1"></minus><apply id="Sx1.I2.i2.p1.3.m3.1.1.2.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.2"><times id="Sx1.I2.i2.p1.3.m3.1.1.2.1.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.2.1"></times><cn id="Sx1.I2.i2.p1.3.m3.1.1.2.2.cmml" type="integer" xref="Sx1.I2.i2.p1.3.m3.1.1.2.2">1</cn><ci id="Sx1.I2.i2.p1.3.m3.1.1.2.3.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.2.3">𝑒</ci></apply><cn id="Sx1.I2.i2.p1.3.m3.1.1.3.cmml" type="integer" xref="Sx1.I2.i2.p1.3.m3.1.1.3">4</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="Sx1.I2.i2.p1.3.m3.1c">1e-4</annotation></semantics></math>,</p>
+<p class="ltx_p" id="Sx1.I2.i2.p1.3">학습률 <math alttext="-" class="ltx_Math" display="inline" id="Sx1.I2.i2.p1.1.m1.1"><semantics id="Sx1.I2.i2.p1.1.m1.1a"><mo id="Sx1.I2.i2.p1.1.m1.1.1" xref="Sx1.I2.i2.p1.1.m1.1.1.cmml">−</mo><annotation-xml encoding="MathML-Content" id="Sx1.I2.i2.p1.1.m1.1b"><minus id="Sx1.I2.i2.p1.1.m1.1.1.cmml" xref="Sx1.I2.i2.p1.1.m1.1.1"></minus></annotation-xml><annotation encoding="application/x-tex" id="Sx1.I2.i2.p1.1.m1.1c">-</annotation></semantics></math> Q-함수: <math alttext="3e-4" class="ltx_Math" display="inline" id="Sx1.I2.i2.p1.2.m2.1"><semantics id="Sx1.I2.i2.p1.2.m2.1a"><mrow id="Sx1.I2.i2.p1.2.m2.1.1" xref="Sx1.I2.i2.p1.2.m2.1.1.cmml"><mrow id="Sx1.I2.i2.p1.2.m2.1.1.2" xref="Sx1.I2.i2.p1.2.m2.1.1.2.cmml"><mn id="Sx1.I2.i2.p1.2.m2.1.1.2.2" xref="Sx1.I2.i2.p1.2.m2.1.1.2.2.cmml">3</mn><mo id="Sx1.I2.i2.p1.2.m2.1.1.2.1" lspace="0em" rspace="0em" xref="Sx1.I2.i2.p1.2.m2.1.1.2.1.cmml">​</mo><mi id="Sx1.I2.i2.p1.2.m2.1.1.2.3" xref="Sx1.I2.i2.p1.2.m2.1.1.2.3.cmml">e</mi></mrow><mo id="Sx1.I2.i2.p1.2.m2.1.1.1" xref="Sx1.I2.i2.p1.2.m2.1.1.1.cmml">−</mo><mn id="Sx1.I2.i2.p1.2.m2.1.1.3" xref="Sx1.I2.i2.p1.2.m2.1.1.3.cmml">4</mn></mrow><annotation-xml encoding="MathML-Content" id="Sx1.I2.i2.p1.2.m2.1b"><apply id="Sx1.I2.i2.p1.2.m2.1.1.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1"><minus id="Sx1.I2.i2.p1.2.m2.1.1.1.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.1"></minus><apply id="Sx1.I2.i2.p1.2.m2.1.1.2.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.2"><times id="Sx1.I2.i2.p1.2.m2.1.1.2.1.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.2.1"></times><cn id="Sx1.I2.i2.p1.2.m2.1.1.2.2.cmml" type="integer" xref="Sx1.I2.i2.p1.2.m2.1.1.2.2">3</cn><ci id="Sx1.I2.i2.p1.2.m2.1.1.2.3.cmml" xref="Sx1.I2.i2.p1.2.m2.1.1.2.3">𝑒</ci></apply><cn id="Sx1.I2.i2.p1.2.m2.1.1.3.cmml" type="integer" xref="Sx1.I2.i2.p1.2.m2.1.1.3">4</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="Sx1.I2.i2.p1.2.m2.1c">3e-4</annotation></semantics></math>, 정책: <math alttext="1e-4" class="ltx_Math" display="inline" id="Sx1.I2.i2.p1.3.m3.1"><semantics id="Sx1.I2.i2.p1.3.m3.1a"><mrow id="Sx1.I2.i2.p1.3.m3.1.1" xref="Sx1.I2.i2.p1.3.m3.1.1.cmml"><mrow id="Sx1.I2.i2.p1.3.m3.1.1.2" xref="Sx1.I2.i2.p1.3.m3.1.1.2.cmml"><mn id="Sx1.I2.i2.p1.3.m3.1.1.2.2" xref="Sx1.I2.i2.p1.3.m3.1.1.2.2.cmml">1</mn><mo id="Sx1.I2.i2.p1.3.m3.1.1.2.1" lspace="0em" rspace="0em" xref="Sx1.I2.i2.p1.3.m3.1.1.2.1.cmml">​</mo><mi id="Sx1.I2.i2.p1.3.m3.1.1.2.3" xref="Sx1.I2.i2.p1.3.m3.1.1.2.3.cmml">e</mi></mrow><mo id="Sx1.I2.i2.p1.3.m3.1.1.1" xref="Sx1.I2.i2.p1.3.m3.1.1.1.cmml">−</mo><mn id="Sx1.I2.i2.p1.3.m3.1.1.3" xref="Sx1.I2.i2.p1.3.m3.1.1.3.cmml">4</mn></mrow><annotation-xml encoding="MathML-Content" id="Sx1.I2.i2.p1.3.m3.1b"><apply id="Sx1.I2.i2.p1.3.m3.1.1.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1"><minus id="Sx1.I2.i2.p1.3.m3.1.1.1.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.1"></minus><apply id="Sx1.I2.i2.p1.3.m3.1.1.2.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.2"><times id="Sx1.I2.i2.p1.3.m3.1.1.2.1.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.2.1"></times><cn id="Sx1.I2.i2.p1.3.m3.1.1.2.2.cmml" type="integer" xref="Sx1.I2.i2.p1.3.m3.1.1.2.2">1</cn><ci id="Sx1.I2.i2.p1.3.m3.1.1.2.3.cmml" xref="Sx1.I2.i2.p1.3.m3.1.1.2.3">𝑒</ci></apply><cn id="Sx1.I2.i2.p1.3.m3.1.1.3.cmml" type="integer" xref="Sx1.I2.i2.p1.3.m3.1.1.3">4</cn></apply></annotation-xml><annotation encoding="application/x-tex" id="Sx1.I2.i2.p1.3.m3.1c">1e-4</annotation></semantics></math>,</p>
 </div>
 </li>
 <li class="ltx_item" id="Sx1.I2.i3" style="list-style-type:none;">
@@ -1940,7 +1937,7 @@ TACO-RL은 <a class="ltx_ref" href="#Sx1.T5" title="In F.2 Maze2D ‣ F Addition
 <div about="" class="ltx_rdf" content="Proceedings of the 6th Conference on Robot Learning (CoRL 2022)" property="dcterms:subject"></div>
 <div about="" class="ltx_rdf" property="dcterms:title"></div>
 </article>
-  </article>
+</article>
 </div>
 </body>
 </html>

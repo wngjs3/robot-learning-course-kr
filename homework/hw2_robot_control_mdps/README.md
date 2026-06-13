@@ -1,4 +1,4 @@
-# Homework 2: Robot Control and MDP
+# 과제 2: 로봇 제어와 MDP
 
 * **비디오 결과물은 3개 실습의 모든 비디오 요구사항을 포함하는 비디오 형식으로 업로드해야 하며, 총 길이는 5분 30초 미만(보너스 질문 제외 시 4분 30초 미만)이어야 합니다.**
 * **총 비디오 크기가 100MB를 초과하는 경우, 더 작은 크기의 비디오 여러 개로 나누어 Gradescope에 업로드해 주십시오.**
@@ -10,12 +10,12 @@
 이 설정은 다양한 Linux 배포판과 Windows에서 테스트되었으며, 설치 가이드에서 이를 다루고 있습니다. MacOS 사용자인 경우, CAB H 56 및 CAB H 57에 준비되어 있는 Linux 배포판 컴퓨터를 사용하시는 것을 강력히 권장합니다.
 실습은 CPU 환경에서 테스트되었으므로 GPU 접근은 필요하지 않습니다.
 
-# General Guidelines of Answering Theoretical Questions in Videos
+# 비디오로 이론 문제에 답할 때의 일반 지침
 
 이론 질문의 목적은 주제에 대한 여러분의 이해도를 확인하는 것입니다. 따라서 답변은 간결하게 유지해야 하며, 답변이 맞기만 하면 만점을 부여합니다.
 답변을 장황하게 늘어놓거나 모든 시나리오를 다루려고 노력할 필요는 없습니다. 비디오 제한 시간을 초과하면 점수가 깎일 수 있습니다.
 
-# Exercise 1: Design Keypoints in Workspace and Implement Inverse Kinematics
+# 실습 1: 작업 공간의 키포인트 설계 및 역기구학(Inverse Kinematics) 구현
 
 이 실습에서는 3D 작업 공간(Workspace)에서 베르누이 레미니스케이트(Lemniscate of Bernoulli, 무한대 기호) 형태의 키포인트(Keypoint) 세트를 설계하고, 로봇의 말단 장치(End-effector)가 이 키포인트들을 추적할 수 있도록 로봇의 관절 공간(Joint space)을 얻기 위한 역운동학(Inverse Kinematics, IK)을 구현합니다.
 
@@ -42,7 +42,7 @@ python scripts/inverse_kinematics.py
 
 이론 질문은 짧고 직접적인 답변만 요구합니다. 각 질문은 1문장으로 답변하는 것을 권장합니다.
 
-## Examples of off-the-shelve IK solvers
+## 기성(off-the-shelf) IK 솔버 예시
 https://github.com/stack-of-tasks/pinocchio
 
 https://github.com/kevinzakka/mink
@@ -53,7 +53,7 @@ https://github.com/kevinzakka/mink
 3. **이론 질문:** 비디오에 이론 질문에 대한 답변이 포함되어야 합니다.
 
 
-# Exercise 2: Trajectory Generation and PID Control
+# 실습 2: 궤적 생성과 PID 제어
 
 이 실습에서는 중간 로봇 움직임을 제어하면서 경유지(Waypoint) 궤적을 생성하는 방법을 배웁니다. 먼저, 부드러운 움직임을 보장하는 경유지를 생성하는 방법을 배우고, 이어서 궤적을 따르기 위한 제어 법칙(Control law)을 정의합니다.
 
@@ -140,7 +140,7 @@ PID 게인 선택에 대한 감을 잡기 위해, 게인 선택이 경유지 추
 3. **이론 질문:** 비디오에 이론 질문에 대한 답변이 포함되어야 합니다.
 
 
-# Exercise 3: Training a Policy for Waypoints Tracking
+# 실습 3: 경유점(Waypoint) 추종 정책 학습
 
 이 실습에서는 마르코프 결정 과정(Markov Decision Process, MDP)의 시뮬레이션을 다루고, 무작위로 선택된 경유지를 추적하도록 강화 학습(Reinforcement Learning, RL) 정책(Policy)을 훈련합니다.
 이전 실습과 비교하여 파이프라인도 변경되었으며 다음과 같은 구조를 가집니다:

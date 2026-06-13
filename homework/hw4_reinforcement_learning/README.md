@@ -1,4 +1,4 @@
-# Homework 4: Reinforcement Learning
+# 과제 4: 강화 학습
 
 - **개별적으로 해결해야 합니다. 표절 검사가 수행됩니다.**   
 

@@ -59,7 +59,7 @@ uv pip install -e .
 **원격 조작 제어법 (Teleoperation controls)**
 원격 조작 스크립트를 실행할 때, 로봇 팔의 말단 효과기 위치 제어(`configure_keys.py`에서 지정한 키 사용) 외에 다음과 같은 제어 기능을 사용할 수 있습니다:
 
-| Action | Recommended Key | Description |
+| 동작 | 권장 키 | 설명 |
 |--------|----------------|-------------|
 | `record` | Space | 녹화 시작/정지 토글. 한 번 누르면 에피소드 녹화를 시작하고, 다시 누르면 일시 정지합니다. |
 | `end_episode` | Enter | 현재 녹화된 에피소드를 종료 및 저장하고, 다음 에피소드를 위해 환경을 초기화(Reset)합니다. |
@@ -121,7 +121,7 @@ python student_eval/run_eval --exercise 2 --checkpoint <path to your ckpt>
 - 이 실습이 얼마나 쉽게 느껴지는지에 따라, DAgger가 왜 매우 유용한 도구인지, 동시에 실제로는 왜 매우 자원 집약적인지 이해할 수도 있고 그렇지 못할 수도 있습니다.
 
 
-### Exercise 3 (Competition!): Multicube Goal-Conditioned Imitation Learning
+### 실습 3 (경진대회!): 멀티큐브 목표 조건부 모방 학습
 
 본 실습에서는 동일한 정책을 사용하여 여러 작업을 해결할 수 있는 목표 조건부 정책(Goal-conditioned Policy)을 학습시킵니다. 단일 행동을 학습하는 대신, 로봇은 작업 정보를 입력으로 받아 그에 맞게 행동해야 합니다.
 Gradescope에 리더보드가 운영됩니다.

@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>저비용 하드웨어를 활용한 정밀 양손 조작 학습 — Robot Learning 논문 한국어판</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" />
-<link rel="stylesheet" href="../assets/css/style.css?v=2" />
-<link rel="stylesheet" href="../assets/css/paper.css?v=2" />
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../assets/css/style.css?v=2" rel="stylesheet"/>
+<link href="../assets/css/paper.css?v=2" rel="stylesheet"/>
 </head>
 <body class="paper-page">
 <div class="paper-shell">
-  <div class="paper-top">
-    <a href="../index.html">← Robot Learning 홈</a>
-  </div>
-  <header class="paper-head">
-    <div class="paper-week">Week 7 · 논문 토론</div>
-    <h1>저비용 하드웨어를 활용한 정밀 양손 조작 학습</h1>
-    <div class="paper-orig-title">Learning Fine-Grained Bimanual Manipulation (ALOHA) <span>— Zhao et al., 2023</span></div>
-    <div class="paper-links">
-      <a class="chip" href="https://arxiv.org/abs/2304.13705" target="_blank" rel="noopener">원문 보기 ↗</a>
-    </div>
-    <p class="paper-note">이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
+<div class="paper-top">
+<a href="../index.html">← Robot Learning 홈</a>
+</div>
+<header class="paper-head">
+<div class="paper-week">Week 7 · 논문 토론</div>
+<h1>저비용 하드웨어를 활용한 정밀 양손 조작 학습</h1>
+<div class="paper-orig-title">Learning Fine-Grained Bimanual Manipulation (ALOHA) <span>— Zhao et al., 2023</span></div>
+<div class="paper-links">
+<a class="chip" href="https://arxiv.org/abs/2304.13705" rel="noopener" target="_blank">원문 보기 ↗</a>
+</div>
+<p class="paper-note">이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
     그림·수식은 원문( ar5iv )에서 가져왔으며, 저작권은 원저자에게 있습니다.</p>
-  </header>
-  <article class="paper-body">
+</header>
+<article class="paper-body">
 <article class="ltx_document ltx_authors_1line">
-
 <div class="ltx_authors">
 <span class="ltx_creator ltx_role_author">
 <span class="ltx_personname">Tony Z. Zhao<sup class="ltx_sup" id="id8.8.id1">1</sup>   
@@ -235,8 +234,7 @@ BC의 주요 단점은 이전 타임스텝의 오류가 누적되어 로봇이 �
 </figure>
 </section>
 <section class="ltx_section" id="S4">
-<h2 class="ltx_title ltx_title_section"><span class="ltx_tag ltx_tag_section">IV </span><span class="ltx_text ltx_font_smallcaps" id="S4.1.1">Action Chunking with Transformers</span>
-</h2>
+<h2 class="ltx_title ltx_title_section"><span class="ltx_tag ltx_tag_section">IV </span><span class="ltx_text ltx_font_smallcaps" id="S4.1.1">트랜스포머를 이용한 행동 청킹</span></h2>
 <div class="ltx_para" id="S4.p1">
 <p class="ltx_p" id="S4.p1.1">섹션 <a class="ltx_ref" href="#S5" title="V Experiments ‣ Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"><span class="ltx_text ltx_ref_tag">V</span></a>에서 살펴보겠지만, 기존의 모방 학습(imitation learning) 알고리즘은 고주파 제어와 폐루프(closed-loop) 피드백이 필요한 미세 조작 작업에서 성능이 저하된다. 따라서 우리는 <span class="ltx_text ltx_font_italic" id="S4.p1.1.2">ALOHA</span>로 수집한 데이터를 활용하기 위해 새로운 알고리즘인 <span class="ltx_text ltx_font_italic" id="S4.p1.1.1">Action Chunking with Transformers (ACT)</span>를 개발했다.
 먼저 ACT의 학습 파이프라인을 요약한 후, 각각의 설계 선택 사항에 대해 자세히 알아본다.</p>
@@ -603,17 +601,17 @@ CVAE 디코더(즉, 정책)는 현재 관측과 <math alttext="z" class="ltx_Mat
 <h3 class="ltx_title ltx_title_subsection"><span class="ltx_tag ltx_tag_subsection"><span class="ltx_text" id="S5.SS1.5.1.1">V-A</span> </span><span class="ltx_text ltx_font_italic" id="S5.SS1.6.2">작업</span>
 </h3>
 <div class="ltx_para" id="S5.SS1.p1">
-<p class="ltx_p" id="S5.SS1.p1.1">All 8 tasks require fine-grained, bimanual manipulation, and are illustrated in Figure <a class="ltx_ref" href="#S4.F4" title="Figure 4 ‣ IV-C Implementing ACT ‣ IV Action Chunking with Transformers ‣ Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"><span class="ltx_text ltx_ref_tag">4</span></a>.
-For <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.1">Slide Ziploc</span>, the right gripper needs to accurately grasp the slider of the ziploc bag and open it, with the left gripper securing the body of the bag.
-For <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.2">Slot Battery</span>, the right gripper needs to first place the battery into the slot of the remote controller, then using the tip of fingers to delicately push in the edge of the battery, until it is fully inserted. Because the spring inside the battery slot causes the remote controller to move in the opposite direction during insertion, the left gripper pushes down on the remote to keep it in place.
-For <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.3">Open Cup</span>, the goal is to open the lid of a small condiment cup. Because of the cup’s small size, the grippers cannot grasp the body of the cup by just approaching it from the side. Therefore we leverage both grippers: the right fingers first lightly tap near the edge of the cup to tip it over, and then nudge it into the open left gripper. This nudging step requires high precision and closing the loop on visual perception. The left gripper then closes gently and lifts the cup off the table, followed by the right finger prying open the lid, which also requires precision to not miss the lid or damage the cup.
-The goal of <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.4">Thread Velcro</span> is to insert one end of a velcro cable tie into the small loop attached to other end. The left gripper needs to first pick up the velcro tie from the table, followed by the right gripper pinching the tail of the tie in mid-air. Then, both arms coordinate to insert one end of the velcro tie into the other in mid-air. The loop measures 3mm x 25mm, while the velcro tie measures 2mm x 10-25mm depending on the position. For this task to be successful, the robot must use visual feedback to correct for perturbations with each grasp,
-as even a few millimeters of error during the first grasp will compound in the second grasp mid-air, giving more than a 10mm deviation in the insertion phase.
-For <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.5">Prep Tape</span>, the goal is to hang a small segment of the tape on the edge of a cardboard box. The right gripper first grasps the tape and cuts it with the tape dispenser’s blade, and then hands the tape segment to the left gripper mid-air. Next, both arms approach the box, the left arm gently lays the tape segment on the box surface, and the right fingers push down on the tape to prevent slipping, followed by the left arm opening its gripper to release the tape. Similar to <span class="ltx_text ltx_font_italic" id="S5.SS1.p1.1.6">Thread Velcro</span>, this task requires multiple steps of delicate coordination between the two arms.
-For <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.7">Put On Shoe</span>, the goal is to put the shoe on a fixed manniquin foot, and secure it with the shoe’s velcro strap. The arms would first need to grasp the tongue and collar of the shoe respectively, lift it up and approach the foot. Putting the shoe on is challenging because of the tight fitting: the arms would need to coordinate carefully to nudge the foot in, and both grasps need to be robust enough to counteract the friction between the sock and shoe. Then, the left arm goes around to the bottom of the shoe to support it from dropping, followed by the right arm flipping the velcro strap and pressing it against the shoe to secure. The task is only considered successful if the shoe clings to the foot after both arms releases.
-For the simulated task <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.8">Transfer Cube</span>, the right arm needs to first pick up the red cube lying on the table, then place it inside the gripper of the other arm. Due to the small clearance between the cube and the left gripper (around 1cm), small errors could result in collisions and task failure.
-For the simulated task <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.9">Bimanual Insertion</span>, the left and right arms need to pick up the socket and peg respectively, and then insert in mid-air so the peg touches the “pins” inside the socket. The clearance is around 5mm in the insertion phase.
-For all 8 tasks, the initial placement of the objects is either varied randomly along the 15cm white reference line (real-world tasks), or uniformly in 2D regions (simulated tasks). We provide illustrations of both the initial positions and the subtasks in Figure <a class="ltx_ref" href="#S4.F4" title="Figure 4 ‣ IV-C Implementing ACT ‣ IV Action Chunking with Transformers ‣ Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"><span class="ltx_text ltx_ref_tag">4</span></a> and <a class="ltx_ref" href="#S4.F5" title="Figure 5 ‣ IV-C Implementing ACT ‣ IV Action Chunking with Transformers ‣ Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"><span class="ltx_text ltx_ref_tag">5</span></a>. Our evaluation will additionally report the performance for each of these subtasks.</p>
+<p class="ltx_p" id="S5.SS1.p1.1">8가지 작업 모두 정밀한 양손 조작을 요구하며, 이는 Figure <a class="ltx_ref" href="#S4.F4" title="Figure 4 ‣ IV-C Implementing ACT ‣ IV Action Chunking with Transformers ‣ Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"><span class="ltx_text ltx_ref_tag">4</span></a>에 시각화되어 있다.
+<span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.1">Slide Ziploc</span>의 경우, 우측 그리퍼가 지퍼백의 슬라이더를 정확하게 잡고 열어야 하며, 이때 좌측 그리퍼는 지퍼백의 본체를 고정해야 한다.
+<span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.2">Slot Battery</span>의 경우, 우측 그리퍼가 먼저 배터리를 리모컨의 슬롯에 넣은 다음, 손가락 끝을 사용하여 배터리 가장자리를 섬세하게 밀어 넣어 완전히 삽입해야 한다. 배터리 슬롯 내부의 스프링으로 인해 삽입 중에 리모컨이 반대 방향으로 움직이므로, 좌측 그리퍼가 리모컨을 아래로 눌러 제자리에 고정한다.
+<span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.3">Open Cup</span>의 목표는 작은 양념 컵의 뚜껑을 여는 것이다. 컵의 크기가 작기 때문에 그리퍼가 단순히 측면에서 접근하는 것만으로는 컵 본체를 잡을 수 없다. 따라서 양쪽 그리퍼를 모두 활용한다. 우측 손가락이 먼저 컵 가장자리 근처를 가볍게 톡 쳐서 컵을 쓰러뜨린 다음, 열려 있는 좌측 그리퍼 쪽으로 살짝 밀어 넣는다. 이 밀어 넣는 단계는 높은 정밀도와 시각적 인지에 대한 폐루프 제어를 요구한다. 그런 다음 좌측 그리퍼가 부드럽게 닫히며 컵을 테이블에서 들어 올리고, 이어서 우측 손가락이 뚜껑을 들어 올려 여는데, 이 또한 뚜껑을 놓치거나 컵을 손상시키지 않기 위해 정밀함이 필요하다.
+<span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.4">Thread Velcro</span>의 목표는 벨크로 케이블 타이의 한쪽 끝을 다른 쪽 끝에 달린 작은 루프에 삽입하는 것이다. 좌측 그리퍼가 먼저 테이블에서 벨크로 타이를 집어 올려야 하며, 이어서 우측 그리퍼가 공중에서 타이의 끝부분을 꼬집어 잡아야 한다. 그런 다음 양팔이 협조하여 공중에서 벨크로 타이의 한쪽 끝을 다른 쪽 끝에 삽입한다. 루프의 크기는 3mm x 25mm인 반면, 벨크로 타이는 위치에 따라 2mm x 10-25mm이다. 이 작업이 성공하려면 로봇은 시각적 피드백을 사용하여 각 파지 시 발생하는 섭동을 보정해야 한다.
+첫 번째 파지 시 단 몇 밀리미터의 오차만 발생해도 공중에서의 두 번째 파지 시 오차가 누적되어 삽입 단계에서 10mm 이상의 편차가 발생하기 때문이다.
+<span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.5">Prep Tape</span>의 목표는 테이프의 작은 조각을 판지 상자의 가장자리에 붙이는 것이다. 우측 그리퍼가 먼저 테이프를 잡고 테이프 디스펜서의 칼날로 자른 다음, 공중에서 테이프 조각을 좌측 그리퍼에 전달한다. 다음으로 양팔이 상자에 접근하여, 좌측 팔이 테이프 조각을 상자 표면에 부드럽게 놓으면 우측 손가락이 테이프를 아래로 눌러 미끄러짐을 방지하고, 이어서 좌측 팔이 그리퍼를 열어 테이프를 놓는다. <span class="ltx_text ltx_font_italic" id="S5.SS1.p1.1.6">Thread Velcro</span>와 유사하게, 이 작업은 양팔 간의 여러 단계에 걸친 섬세한 협조를 요구한다.
+<span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.7">Put On Shoe</span>의 목표는 고정된 마네킹 발에 신발을 신기고 신발의 벨크로 스트랩으로 고정하는 것이다. 양팔은 먼저 신발의 설포(tongue)와 칼라(collar)를 각각 잡고 들어 올려 발에 접근해야 한다. 신발을 신기는 것은 꽉 끼는 특성 때문에 까다롭다. 발을 밀어 넣기 위해 양팔이 정교하게 협조해야 하며, 양쪽 파지 모두 양말과 신발 사이의 마찰력에 저항할 수 있을 만큼 충분히 견고해야 한다. 그런 다음 좌측 팔이 신발 바닥 쪽으로 돌아가 신발이 떨어지지 않도록 받치고, 이어서 우측 팔이 벨크로 스트랩을 젖혀 신발에 눌러 고정한다. 이 작업은 양팔이 모두 놓은 후에도 신발이 발에 밀착되어 있어야만 성공으로 간주된다.
+시뮬레이션 작업인 <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.8">Transfer Cube</span>의 경우, 우측 팔이 먼저 테이블에 놓인 빨간색 큐브를 집어 올린 다음, 다른 쪽 팔의 그리퍼 내부에 놓아야 한다. 큐브와 좌측 그리퍼 사이의 여유 공간이 좁기 때문에(약 1cm), 작은 오차로도 충돌이 발생하여 작업이 실패할 수 있다.
+시뮬레이션 작업인 <span class="ltx_text ltx_font_bold ltx_font_italic" id="S5.SS1.p1.1.9">Bimanual Insertion</span>의 경우, 좌측 및 우측 팔이 각각 소켓과 페그를 집어 올린 다음, 공중에서 삽입하여 페그가 소켓 내부의 "핀"에 닿도록 해야 한다. 삽입 단계에서의 여유 공간은 약 5mm이다.
+8가지 작업 모두에서 물체의 초기 배치는 15cm 흰색 기준선을 따라 무작위로 변경되거나(실제 세계 작업), 2D 영역 내에서 균일하게 변경된다(시뮬레이션 작업). 초기 위치와 하위 작업 모두에 대한 시각 자료를 Figure <a class="ltx_ref" href="#S4.F4" title="Figure 4 ‣ IV-C Implementing ACT ‣ IV Action Chunking with Transformers ‣ Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"><span class="ltx_text ltx_ref_tag">4</span></a> 및 <a class="ltx_ref" href="#S4.F5" title="Figure 5 ‣ IV-C Implementing ACT ‣ IV Action Chunking with Transformers ‣ Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"><span class="ltx_text ltx_ref_tag">5</span></a>에 제공한다. 본 평가에서는 추가적으로 이러한 각 하위 작업에 대한 성능을 보고한다.</p>
 </div>
 <div class="ltx_para" id="S5.SS1.p2">
 <p class="ltx_p" id="S5.SS1.p2.1">이러한 작업을 해결하는 데 필요한 섬세한 양손 제어 외에도, 우리가 사용하는 물체들은 상당한 인지적 난제를 제시한다.
@@ -1709,8 +1707,6 @@ review.
 </li>
 </ul>
 </section>
-
-
 <section class="ltx_subsection" id="A0.SS1">
 <h3 class="ltx_title ltx_title_subsection"><span class="ltx_tag ltx_tag_subsection"><span class="ltx_text" id="A0.SS1.5.1.1">-A</span> </span><span class="ltx_text ltx_font_italic" id="A0.SS1.6.2">ALOHA와 기존 원격 조작 시스템의 비교</span>
 </h3>
@@ -2054,10 +2050,9 @@ VINN의 경우, 최근접 이웃을 검색할 때 사용되는 $k$는 원래 논
 </table>
 <figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_table"><span class="ltx_text" id="A0.T7.4.1.1" style="font-size:90%;">표 VII</span>: </span><span class="ltx_text" id="A0.T7.5.2" style="font-size:90%;">RT-1의 하이퍼파라미터.</span></figcaption>
 </figure>
-
 </section>
 </article>
-  </article>
+</article>
 </div>
 </body>
 </html>

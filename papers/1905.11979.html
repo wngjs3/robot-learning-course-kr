@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>모방 학습에서의 인과적 혼동 (Causal Confusion in Imitation Learning) — Robot Learning 논문 한국어판</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" />
-<link rel="stylesheet" href="../assets/css/style.css?v=2" />
-<link rel="stylesheet" href="../assets/css/paper.css?v=2" />
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../assets/css/style.css?v=2" rel="stylesheet"/>
+<link href="../assets/css/paper.css?v=2" rel="stylesheet"/>
 </head>
 <body class="paper-page">
 <div class="paper-shell">
-  <div class="paper-top">
-    <a href="../index.html">← Robot Learning 홈</a>
-  </div>
-  <header class="paper-head">
-    <div class="paper-week">Week 3 · 논문 토론</div>
-    <h1>모방 학습에서의 인과적 혼동 (Causal Confusion in Imitation Learning)</h1>
-    <div class="paper-orig-title">Causal Confusion in Imitation Learning <span>— de Haan et al., 2019</span></div>
-    <div class="paper-links">
-      <a class="chip" href="https://arxiv.org/abs/1905.11979" target="_blank" rel="noopener">원문 보기 ↗</a>
-    </div>
-    <p class="paper-note">이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
+<div class="paper-top">
+<a href="../index.html">← Robot Learning 홈</a>
+</div>
+<header class="paper-head">
+<div class="paper-week">Week 3 · 논문 토론</div>
+<h1>모방 학습에서의 인과적 혼동 (Causal Confusion in Imitation Learning)</h1>
+<div class="paper-orig-title">Causal Confusion in Imitation Learning <span>— de Haan et al., 2019</span></div>
+<div class="paper-links">
+<a class="chip" href="https://arxiv.org/abs/1905.11979" rel="noopener" target="_blank">원문 보기 ↗</a>
+</div>
+<p class="paper-note">이 번역은 AI(Gemini)로 생성된 비공식 번역으로 오역이 있을 수 있습니다.
     그림·수식은 원문( ar5iv )에서 가져왔으며, 저작권은 원저자에게 있습니다.</p>
-  </header>
-  <article class="paper-body">
+</header>
+<article class="paper-body">
 <article class="ltx_document ltx_authors_1line">
 <div class="ltx_para" id="p1">
 <span class="ltx_ERROR undefined" id="p1.1">\stackMath</span><span class="ltx_note ltx_role_footnotetext" id="footnotex1"><sup class="ltx_note_mark">1</sup><span class="ltx_note_outer"><span class="ltx_note_content"><sup class="ltx_note_mark">1</sup><span class="ltx_note_type">footnotetext: </span>Work mostly done while at Berkeley AI Research.</span></span></span>
 </div>
-
 <div class="ltx_authors">
 <span class="ltx_creator ltx_role_author">
 <span class="ltx_personname">Pim de Haan<sup class="ltx_sup" id="id7.7.id1"><span class="ltx_text ltx_font_italic" id="id7.7.id1.1">∗</span></sup><sup class="ltx_sup" id="id8.8.id2">1</sup>, Dinesh Jayaraman<sup class="ltx_sup" id="id9.9.id3"><span class="ltx_text ltx_font_italic" id="id9.9.id3.1">†‡</span></sup>, Sergey Levine<sup class="ltx_sup" id="id10.10.id4">†</sup>
@@ -367,11 +366,10 @@
 <section class="ltx_section" id="S5">
 <h2 class="ltx_title ltx_title_section"><span class="ltx_tag ltx_tag_section">5 </span>실험 (Experiments)</h2>
 <div class="ltx_para" id="S5.p1">
-<p class="ltx_p" id="S5.p1.1">We now evaluate the solution described in Sec <a class="ltx_ref" href="#S4" title="4 Resolving Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">4</span></a> on the five tasks (MountainCar, Hopper, and 3 Atari games) described in Sec <a class="ltx_ref" href="#S3.SS2" title="3.2 Causal Misidentification in Policy Learning Benchmarks and Realistic Settings ‣ 3 The Phenomenon of Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">3.2</span></a>. In particular, recall that <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.1" style="font-size:90%;">confounded</span> performed significantly worse than <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.2" style="font-size:90%;">original</span> across all tasks. In our experiments, we seek to answer the following questions: <span class="ltx_text ltx_font_bold" id="S5.p1.1.3">(1)</span> Does our targeted intervention-based solution to causal misidentification bridge the gap between <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.4" style="font-size:90%;">confounded</span> and <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.5" style="font-size:90%;">original</span>? <span class="ltx_text ltx_font_bold" id="S5.p1.1.6">(2)</span> How quickly does performance improve with intervention? <span class="ltx_text ltx_font_bold" id="S5.p1.1.7">(3)</span> Do both intervention modes (expert query, policy execution) described in Sec <a class="ltx_ref" href="#S4.SS2" title="4.2 Targeted Intervention ‣ 4 Resolving Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">4.2</span></a> resolve causal misidentification? <span class="ltx_text ltx_font_bold" id="S5.p1.1.8">(4)</span> Does our approach in fact recover the true causal graph? <span class="ltx_text ltx_font_bold" id="S5.p1.1.9">(5)</span> Are disentangled state representations necessary?</p>
+<p class="ltx_p" id="S5.p1.1">이제 Sec <a class="ltx_ref" href="#S4" title="4 Resolving Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">4</span></a>에서 설명한 해결책을 Sec <a class="ltx_ref" href="#S3.SS2" title="3.2 Causal Misidentification in Policy Learning Benchmarks and Realistic Settings ‣ 3 The Phenomenon of Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">3.2</span></a>에서 기술한 다섯 가지 태스크(MountainCar, Hopper 및 3개의 Atari 게임)에서 평가한다. 특히, 모든 태스크에서 <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.1" style="font-size:90%;">confounded</span>가 <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.2" style="font-size:90%;">original</span>보다 성능이 현저히 떨어졌음을 상기하라. 본 실험에서는 다음과 같은 질문에 답하고자 한다. <span class="ltx_text ltx_font_bold" id="S5.p1.1.3">(1)</span> 인과적 오식별에 대한 본 연구의 표적 개입 기반 해결책이 <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.4" style="font-size:90%;">confounded</span>와 <span class="ltx_text ltx_font_smallcaps" id="S5.p1.1.5" style="font-size:90%;">original</span> 간의 격차를 줄이는가? <span class="ltx_text ltx_font_bold" id="S5.p1.1.6">(2)</span> 개입에 따라 성능이 얼마나 빠르게 향상되는가? <span class="ltx_text ltx_font_bold" id="S5.p1.1.7">(3)</span> Sec <a class="ltx_ref" href="#S4.SS2" title="4.2 Targeted Intervention ‣ 4 Resolving Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">4.2</span></a>에서 설명한 두 가지 개입 모드(전문가 질의, 정책 실행)가 모두 인과적 오식별을 해결하는가? <span class="ltx_text ltx_font_bold" id="S5.p1.1.8">(4)</span> 본 연구의 접근 방식이 실제로 참인 인과 그래프를 복원하는가? <span class="ltx_text ltx_font_bold" id="S5.p1.1.9">(5)</span> 얽힘이 해제된 상태 표현(disentangled state representations)이 필수적인가?</p>
 </div>
 <div class="ltx_para" id="S5.p2">
-<p class="ltx_p" id="S5.p2.1">In each of the two intervention modes,
-we compare two variants of our method: <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.1" style="font-size:90%;">unif-intervention</span> and <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.2" style="font-size:90%;">disc-intervention</span>. They only differ in the training of the graph-parameterized mixture-of-policies <math alttext="f_{\phi}" class="ltx_Math" display="inline" id="S5.p2.1.m1.1"><semantics id="S5.p2.1.m1.1a"><msub id="S5.p2.1.m1.1.1" xref="S5.p2.1.m1.1.1.cmml"><mi id="S5.p2.1.m1.1.1.2" xref="S5.p2.1.m1.1.1.2.cmml">f</mi><mi id="S5.p2.1.m1.1.1.3" xref="S5.p2.1.m1.1.1.3.cmml">ϕ</mi></msub><annotation-xml encoding="MathML-Content" id="S5.p2.1.m1.1b"><apply id="S5.p2.1.m1.1.1.cmml" xref="S5.p2.1.m1.1.1"><csymbol cd="ambiguous" id="S5.p2.1.m1.1.1.1.cmml" xref="S5.p2.1.m1.1.1">subscript</csymbol><ci id="S5.p2.1.m1.1.1.2.cmml" xref="S5.p2.1.m1.1.1.2">𝑓</ci><ci id="S5.p2.1.m1.1.1.3.cmml" xref="S5.p2.1.m1.1.1.3">italic-ϕ</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S5.p2.1.m1.1c">f_{\phi}</annotation></semantics></math>—while <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.3" style="font-size:90%;">unif-intervention</span> samples causal graphs uniformly, <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.4" style="font-size:90%;">disc-intervention</span> uses the variational causal discovery approach mentioned in Sec <a class="ltx_ref" href="#S4.SS1" title="4.1 Causal Graph-Parameterized Policy Learning ‣ 4 Resolving Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">4.1</span></a>, and described in detail in Appendix <a class="ltx_ref" href="#A4" title="Appendix D Variational Causal Discovery ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">D</span></a>.</p>
+<p class="ltx_p" id="S5.p2.1">두 가지 개입 모드 각각에서, 본 연구는 제안하는 방법의 두 가지 변형인 <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.1" style="font-size:90%;">unif-intervention</span>과 <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.2" style="font-size:90%;">disc-intervention</span>을 비교한다. 이 둘은 그래프 매개변수화된 혼합 정책(mixture-of-policies) <math alttext="f_{\phi}" class="ltx_Math" display="inline" id="S5.p2.1.m1.1"><semantics id="S5.p2.1.m1.1a"><msub id="S5.p2.1.m1.1.1" xref="S5.p2.1.m1.1.1.cmml"><mi id="S5.p2.1.m1.1.1.2" xref="S5.p2.1.m1.1.1.2.cmml">f</mi><mi id="S5.p2.1.m1.1.1.3" xref="S5.p2.1.m1.1.1.3.cmml">ϕ</mi></msub><annotation-xml encoding="MathML-Content" id="S5.p2.1.m1.1b"><apply id="S5.p2.1.m1.1.1.cmml" xref="S5.p2.1.m1.1.1"><csymbol cd="ambiguous" id="S5.p2.1.m1.1.1.1.cmml" xref="S5.p2.1.m1.1.1">subscript</csymbol><ci id="S5.p2.1.m1.1.1.2.cmml" xref="S5.p2.1.m1.1.1.2">𝑓</ci><ci id="S5.p2.1.m1.1.1.3.cmml" xref="S5.p2.1.m1.1.1.3">italic-ϕ</ci></apply></annotation-xml><annotation encoding="application/x-tex" id="S5.p2.1.m1.1c">f_{\phi}</annotation></semantics></math>의 학습에서만 차이가 난다. <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.3" style="font-size:90%;">unif-intervention</span>은 인과 그래프를 균등하게 샘플링하는 반면, <span class="ltx_text ltx_font_smallcaps" id="S5.p2.1.4" style="font-size:90%;">disc-intervention</span>은 Sec <a class="ltx_ref" href="#S4.SS1" title="4.1 Causal Graph-Parameterized Policy Learning ‣ 4 Resolving Causal Misidentification ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">4.1</span></a>에서 언급되고 Appendix <a class="ltx_ref" href="#A4" title="Appendix D Variational Causal Discovery ‣ Causal Confusion in Imitation Learning"><span class="ltx_text ltx_ref_tag">D</span></a>에 자세히 기술된 변분 인과 발견(variational causal discovery) 방법을 사용한다.</p>
 </div>
 <figure class="ltx_figure" id="S5.F6">
 <div class="ltx_flex_figure">
@@ -1313,7 +1311,6 @@ Bernard Widrow and Fred W Smith.
 </li>
 </ul>
 </section>
-
 <section class="ltx_appendix" id="A1">
 <h2 class="ltx_title ltx_title_appendix"><span class="ltx_tag ltx_tag_appendix">부록 A </span>전문가 시연</h2>
 <div class="ltx_para" id="A1.p1">
@@ -1597,7 +1594,6 @@ Hopper에는 TRPO <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" 
 <figure class="ltx_figure" id="A7.F13"><img alt="Refer to caption" class="ltx_graphics ltx_centering ltx_img_landscape" height="153" id="A7.F13.g1" src="img/1905.11979/26.png" width="230"/>
 <figcaption class="ltx_caption ltx_centering"><span class="ltx_tag ltx_tag_figure"><span class="ltx_text" id="A7.F13.2.1.1" style="font-size:90%;">Figure 13</span>: </span><span class="ltx_text" id="A7.F13.3.2" style="font-size:90%;">GAIL 학습 중 보상.</span></figcaption>
 </figure>
-
 </section>
 <section class="ltx_appendix" id="A8">
 <h2 class="ltx_title ltx_title_appendix"><span class="ltx_tag ltx_tag_appendix">부록 H </span>강화학습으로서의 개입 사후 확률 추론</h2>
@@ -1655,10 +1651,9 @@ Hopper에는 TRPO <cite class="ltx_cite ltx_citemacro_cite">[<a class="ltx_ref" 
 </tr></tbody>
 </table>
 </div>
-
 </section>
 </article>
-  </article>
+</article>
 </div>
 </body>
 </html>
