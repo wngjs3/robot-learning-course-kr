@@ -28,7 +28,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: "Nanum Gothic", -apple-system, BlinkMacSystemFont,
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont,
     "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--ink);
