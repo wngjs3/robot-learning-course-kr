@@ -278,7 +278,18 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
 /* ============================================================
    강의 재생 페이지
    ============================================================ */
-.lecture-page { background: var(--bg-soft); min-height: 100vh; }
+.lecture-page {
+  --ink: #111827;
+  --ink-soft: #4b5563;
+  --ink-faint: #6b7280;
+  --line: #e5e7eb;
+  --accent: var(--ink);
+  --accent-ink: var(--ink);
+  --green: var(--ink-soft);
+  --amber: var(--ink-soft);
+  background: var(--bg-soft);
+  min-height: 100vh;
+}
 .lec-header { padding: 26px 0 18px; }
 .lec-crumb { font-size: 0.84rem; color: var(--ink-faint); font-weight: 600; }
 .lec-crumb a { color: var(--ink-faint); }
@@ -302,7 +313,7 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   display: flex; align-items: center; justify-content: center;
 }
 .stage-divider span {
-  width: 4px; height: 56px; border-radius: 2px; background: #cdd8e6;
+  width: 4px; height: 56px; border-radius: 2px; background: #d1d5db;
   transition: background 0.12s;
 }
 .stage-divider:hover span, .stage.dragging .stage-divider span { background: var(--accent); }
@@ -332,7 +343,7 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
 .slide-tools {
   position: absolute; top: 10px; right: 10px; z-index: 6;
   display: flex; align-items: center; gap: 6px;
-  background: rgba(15, 27, 45, 0.65); backdrop-filter: blur(4px);
+  background: rgba(17, 24, 39, 0.72); backdrop-filter: blur(4px);
   border-radius: 6px; padding: 4px 8px;
   opacity: 0.25; transition: opacity 0.15s;
 }
@@ -343,10 +354,9 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   padding: 4px 8px; border-radius: 4px;
 }
 .slide-tools button:hover { background: rgba(255, 255, 255, 0.18); }
-.slide-tools #slide-pos { color: #cfdbeb; font-size: 0.75rem; font-weight: 700; min-width: 44px; text-align: center; }
+.slide-tools #slide-pos { color: #e5e7eb; font-size: 0.75rem; font-weight: 700; min-width: 44px; text-align: center; }
 .slide-tools .follow { font-size: 0.72rem; }
-.slide-tools .follow.on { color: #7dffc4; }
-.slide-tools .follow.off { color: #ffd27d; }
+.slide-tools .follow.on, .slide-tools .follow.off { color: #fff; }
 
 .lec-layout {
   display: grid; grid-template-columns: minmax(0, 5fr) minmax(320px, 7fr);
@@ -367,7 +377,7 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   font-size: clamp(15px, 1.4vw, 19px); font-weight: 700; line-height: 1.5;
   transition: opacity 0.15s ease;
 }
-.cc-strip.empty span { opacity: 0.35; font-weight: 600; font-size: 0.88rem; color: #9fb0c5; }
+.cc-strip.empty span { opacity: 0.35; font-weight: 600; font-size: 0.88rem; color: #d1d5db; }
 .cc-strip.hidden { display: none; }
 .cc-bar {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
@@ -411,7 +421,7 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
 .toggle input { accent-color: var(--accent); width: 15px; height: 15px; }
 .panel { overflow-y: auto; padding: 8px; flex: 1; }
 .panel::-webkit-scrollbar { width: 8px; }
-.panel::-webkit-scrollbar-thumb { background: #d6deea; border-radius: 4px; }
+.panel::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
 /* 챕터(해설) 아이템 */
 .chapter-item {
