@@ -5,8 +5,7 @@
   // 본강의와 게스트 강연을 동등한 '강의 행'으로 렌더링
   function lectureRow(badge, badgeClass, titleHtml, subHtml, key, video) {
     const actions = [];
-    if (key) actions.push(`<a class="chip play" href="lecture.html?id=${key}">▶ 강의 보기</a>`);
-    if (video) actions.push(`<a class="chip" href="https://www.youtube.com/watch?v=${video}" target="_blank" rel="noopener">유튜브 원본 ↗</a>`);
+    if (key) actions.push(`<a class="chip play" href="lecture.html?id=${key}">강의 보기</a>`);
 
     // 썸네일: 한국어 번역 타이틀 슬라이드 → 없으면 유튜브 썸네일 → 그것도 없으면 플레이스홀더
     let thumb;

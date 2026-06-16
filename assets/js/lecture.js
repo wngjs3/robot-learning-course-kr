@@ -27,10 +27,10 @@
 
   const metaRow = document.getElementById("lec-meta-row");
   const metaChips = [];
-  metaChips.push(`<a class="chip" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">유튜브 원본 보기 ↗</a>`);
   if (!isGuest && week.guest && week.guest.key) metaChips.push(`<a class="chip guest-chip" href="lecture.html?id=${week.guest.key}">게스트 강연: ${esc(week.guest.name)}</a>`);
   if (isGuest && week.key) metaChips.push(`<a class="chip" href="lecture.html?id=${week.key}">본강의: ${esc(week.title_ko)}</a>`);
   metaRow.innerHTML = metaChips.join("");
+  metaRow.style.display = metaChips.length ? "" : "none";
 
   // 이전/다음
   const order = PLAY_ORDER, idx = order.indexOf(id);
