@@ -78,18 +78,25 @@ a:hover { text-decoration: underline; }
 /* ---------- 히어로 ---------- */
 .hero {
   position: relative;
-  padding: 110px 0 90px;
-  /* 원본 강의 사이트의 로봇 데모 모자이크 — 어두운 오버레이로 선명하게 */
+  min-height: clamp(360px, 42vw, 560px);
+  padding: 0;
   background:
-    linear-gradient(100deg,
-      rgba(7, 12, 22, 0.88) 0%,
-      rgba(7, 12, 22, 0.72) 50%,
-      rgba(7, 12, 22, 0.42) 100%),
+    linear-gradient(rgba(7, 12, 22, 0.3), rgba(7, 12, 22, 0.3)),
     url("../images/robots.webp") center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  text-align: center;
   overflow: hidden;
 }
 .hero-grid-bg { display: none; }
-.hero .container { position: relative; }
+.hero .container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-block: 96px;
+}
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
   background: rgba(255, 255, 255, 0.1); color: #e8eefb;
@@ -100,17 +107,23 @@ a:hover { text-decoration: underline; }
   margin-bottom: 22px;
 }
 .hero h1 {
-  font-size: clamp(2rem, 4.6vw, 3.2rem);
-  font-weight: 800; letter-spacing: -0.03em; line-height: 1.22;
-  max-width: 760px; color: #fff;
+  color: #fff;
+  font-size: clamp(2.6rem, 8vw, 6.8rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
+  max-width: none;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.28);
+  white-space: nowrap;
 }
-.hero h1 .grad {
-  background: linear-gradient(100deg, #9db9ff 10%, #c4adff 90%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.hero p.lead {
-  margin-top: 20px; max-width: 640px;
-  color: rgba(235, 241, 250, 0.88); font-size: 1.08rem;
+.hero-person {
+  color: #fff;
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.1;
+  margin-top: 22px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
 }
 .hero-actions { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
 .btn {
@@ -489,5 +502,6 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   .slide-shell { aspect-ratio: 16 / 9; height: auto; }
   .nav-links a:not(.cta) { display: none; }
   section.block { padding: 52px 0; }
-  .hero { padding: 60px 0 50px; }
+  .hero { min-height: 360px; }
+  .hero .container { padding-block: 78px; }
 }
