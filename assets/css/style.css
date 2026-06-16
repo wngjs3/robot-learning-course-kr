@@ -504,6 +504,7 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   font-family: inherit;
 }
 .feedback-fab {
+  position: relative;
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -518,6 +519,17 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   box-shadow: 0 8px 24px rgba(17, 24, 39, 0.22);
 }
 .feedback-fab:hover { background: #000; }
+.feedback-widget.has-selection .feedback-fab::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #16a34a;
+  border: 2px solid #fff;
+}
 .feedback-panel {
   position: absolute;
   right: 0;
@@ -561,15 +573,43 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   line-height: 1;
 }
 .feedback-close:hover { color: var(--ink); border-color: var(--ink); }
+.feedback-guide {
+  margin: -2px 0 10px;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
 .feedback-selection {
   margin-bottom: 10px;
-  padding: 8px 10px;
+  padding: 9px 10px;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: #f9fafb;
   color: var(--ink-soft);
-  font-size: 0.78rem;
   line-height: 1.45;
+}
+.feedback-selection[data-empty="false"] {
+  border-color: #111827;
+  background: #fff;
+  color: var(--ink);
+}
+.feedback-selection-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.feedback-selection[data-empty="false"] .feedback-selection-label {
+  color: var(--ink);
+}
+.feedback-selection-text {
+  max-height: 116px;
+  overflow: auto;
+  color: inherit;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
 }
 .feedback-form { display: flex; flex-direction: column; gap: 10px; }
 .feedback-form label {

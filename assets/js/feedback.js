@@ -161,7 +161,11 @@
       '    <strong>문제 신고</strong>',
       '    <button class="feedback-close" type="button" aria-label="닫기">×</button>',
       '  </div>',
-      '  <p class="feedback-selection" hidden></p>',
+      '  <p class="feedback-guide">문제 부분을 드래그한 뒤 신고하면 선택한 텍스트와 페이지 정보가 함께 접수됩니다.</p>',
+      '  <div class="feedback-selection" data-empty="true">',
+      '    <span class="feedback-selection-label">선택한 내용</span>',
+      '    <p class="feedback-selection-text">드래그한 텍스트가 여기에 표시됩니다.</p>',
+      '  </div>',
       '  <form class="feedback-form">',
       '    <input class="feedback-hidden" name="website" tabindex="-1" autocomplete="off" />',
       '    <label>내용<textarea name="message" rows="5" placeholder="오타, 번역 오류, 링크 문제 등을 적어주세요." required></textarea></label>',
@@ -184,39 +188,57 @@
     const website = form.elements.website;
     const status = root.querySelector(".feedback-status");
     const selectionBox = root.querySelector(".feedback-selection");
+    const selectionText = root.querySelector(".feedback-selection-text");
     const pageType = document.body.className || "page";
     let capturedSelection = null;
     let lastSelection = null;
 
-    document.addEventListener("selectionchange", () => {
+    function rememberSelection() {
       const meta = selectionMeta();
-      if (meta && meta.text && !meta.inFeedbackWidget) lastSelection = meta;
-    });
-
-    function rememberSelectionBeforeWidgetFocus() {
-      const meta = selectionMeta();
-      if (meta && meta.text && !meta.inFeedbackWidget) lastSelection = meta;
+      if (!meta || !meta.text || meta.inFeedbackWidget) return false;
+      lastSelection = cleanSelection(meta);
+      root.classList.add("has-selection");
+      fab.setAttribute("title", "선택한 텍스트와 함께 신고");
+      return true;
     }
-    document.addEventListener("mouseup", rememberSelectionBeforeWidgetFocus, true);
-    document.addEventListener("keyup", rememberSelectionBeforeWidgetFocus, true);
-    window.setInterval(rememberSelectionBeforeWidgetFocus, 700);
+
+    function rememberSelectionSoon() {
+      rememberSelection();
+      window.setTimeout(rememberSelection, 0);
+      window.setTimeout(rememberSelection, 80);
+      window.setTimeout(rememberSelection, 180);
+    }
+
+    function renderSelection(selection) {
+      if (selection && selection.text) {
+        selectionBox.dataset.empty = "false";
+        selectionText.textContent = selection.text.slice(0, 420);
+      } else {
+        selectionBox.dataset.empty = "true";
+        selectionText.textContent = "드래그한 텍스트가 여기에 표시됩니다.";
+      }
+    }
+
+    document.addEventListener("selectionchange", rememberSelectionSoon);
+    document.addEventListener("mouseup", rememberSelectionSoon);
+    document.addEventListener("pointerup", rememberSelectionSoon);
+    document.addEventListener("touchend", rememberSelectionSoon);
+    document.addEventListener("keyup", rememberSelectionSoon);
+    window.setInterval(rememberSelection, 600);
 
     function openPanel() {
+      rememberSelection();
       const currentSelection = selectionMeta();
       const selectionSource = currentSelection && !currentSelection.inFeedbackWidget
-        ? currentSelection
+        ? cleanSelection(currentSelection)
         : lastSelection;
-      capturedSelection = cleanSelection(selectionSource);
-      if (capturedSelection && capturedSelection.text) {
-        selectionBox.hidden = false;
-        selectionBox.textContent = "선택된 텍스트: " + capturedSelection.text.slice(0, 220);
-      } else {
-        selectionBox.hidden = true;
-        selectionBox.textContent = "";
-      }
+      capturedSelection = selectionSource || null;
+      renderSelection(capturedSelection);
       root.classList.add("open");
       panel.setAttribute("aria-hidden", "false");
-      status.textContent = ENDPOINT ? "GitHub issue로 등록됩니다" : "로컬 테스트 모드";
+      status.textContent = capturedSelection && capturedSelection.text
+        ? "선택한 텍스트도 함께 접수됩니다"
+        : (ENDPOINT ? "GitHub issue로 등록됩니다" : "로컬 테스트 모드");
       setTimeout(() => textarea.focus(), 0);
     }
 
@@ -225,8 +247,8 @@
       panel.setAttribute("aria-hidden", "true");
     }
 
-    fab.addEventListener("pointerdown", rememberSelectionBeforeWidgetFocus);
-    fab.addEventListener("mousedown", rememberSelectionBeforeWidgetFocus);
+    fab.addEventListener("pointerdown", rememberSelection);
+    fab.addEventListener("mousedown", rememberSelection);
     fab.addEventListener("click", () => {
       if (root.classList.contains("open")) closePanel();
       else openPanel();
