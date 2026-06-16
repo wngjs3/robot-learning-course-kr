@@ -4,19 +4,19 @@
    ============================================================ */
 :root {
   --bg: #ffffff;
-  --bg-soft: #f7f9fc;
+  --bg-soft: #ffffff;
   --bg-card: #ffffff;
   --ink: #0f1b2d;
   --ink-soft: #4b5a6e;
   --ink-faint: #8494a7;
-  --line: #e6ebf2;
+  --line: #e5e7eb;
   --accent: #2356e6;
-  --accent-soft: #eef3fe;
+  --accent-soft: #ffffff;
   --accent-ink: #1a44b8;
   --green: #0e9f6e;
-  --green-soft: #e6f7f1;
+  --green-soft: #ffffff;
   --amber: #b45309;
-  --amber-soft: #fdf3e7;
+  --amber-soft: #ffffff;
   --radius: 8px;
   --shadow-sm: 0 1px 2px rgba(15, 27, 45, 0.05);
   --shadow-md: 0 6px 24px -8px rgba(15, 27, 45, 0.12);
@@ -146,7 +146,7 @@ a:hover { text-decoration: underline; }
 
 /* ---------- 섹션 공통 ---------- */
 section.block { padding: 72px 0; }
-section.block.soft { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+section.block.soft { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .sec-label {
   color: var(--accent); font-weight: 800; font-size: 0.82rem;
   letter-spacing: 0.08em; text-transform: uppercase;
@@ -175,7 +175,7 @@ section.block.soft { background: var(--bg-soft); border-top: 1px solid var(--lin
 .week-head { display: flex; align-items: flex-start; gap: 18px; }
 .week-num {
   flex: none; width: 52px; height: 52px; border-radius: 8px;
-  background: var(--accent-soft); border: 1px solid #dbe5fc;
+  background: var(--accent-soft); border: 1px solid var(--line);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   color: var(--accent-ink); line-height: 1.1;
 }
@@ -209,8 +209,8 @@ a.lec-thumb:hover .lec-thumb-play { opacity: 1; }
   display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.02em;
   padding: 3px 10px; border-radius: 4px; text-align: center; margin-bottom: 4px;
 }
-.lec-badge.main { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid #dbe5fc; }
-.lec-badge.guest { background: var(--green-soft); color: var(--green); border: 1px solid #c4ecdd; }
+.lec-badge.main { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--line); }
+.lec-badge.guest { background: var(--green-soft); color: var(--ink-soft); border: 1px solid var(--line); }
 .lec-row-main { flex: 1; min-width: 0; }
 .lec-row-title { font-size: 1.08rem; font-weight: 800; letter-spacing: -0.015em; }
 .lec-row-title a { color: var(--ink); }
@@ -230,9 +230,9 @@ a.lec-thumb:hover .lec-thumb-play { opacity: 1; }
   border: 1px solid var(--line); color: var(--ink-soft); background: #fff;
 }
 .chip:hover { text-decoration: none; border-color: var(--accent); color: var(--accent-ink); }
-.chip.play { background: var(--accent); border-color: var(--accent); color: #fff; }
-.chip.play:hover { background: var(--accent-ink); }
-.chip.guest-chip { background: var(--green-soft); border-color: #c4ecdd; color: var(--green); }
+.chip.play { background: var(--ink); border-color: var(--ink); color: #fff; }
+.chip.play:hover { background: #22324d; border-color: #22324d; }
+.chip.guest-chip { background: var(--green-soft); border-color: var(--line); color: var(--ink-soft); }
 .chip.guest-chip:hover { border-color: var(--green); }
 .week-papers { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
 .week-papers summary {
@@ -249,7 +249,7 @@ a.lec-thumb:hover .lec-thumb-play { opacity: 1; }
   font-size: 0.8rem; font-weight: 800; color: var(--green);
   background: var(--green-soft); padding: 1px 7px; border-radius: 4px; margin-left: 4px;
 }
-.week-papers li .paper-ko-link:hover { text-decoration: none; background: #d2f3e5; }
+.week-papers li .paper-ko-link:hover { text-decoration: underline; background: #fff; }
 /* ---------- 실습 테이블 ---------- */
 .tut-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 30px;
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
@@ -264,8 +264,8 @@ a.lec-thumb:hover .lec-thumb-play { opacity: 1; }
 
 /* ---------- 크레딧 ---------- */
 .credit-card {
-  margin-top: 30px; background: linear-gradient(135deg, #f6f9ff, #fdfbff);
-  border: 1px solid #e0e8f8; border-radius: var(--radius); padding: 32px;
+  margin-top: 30px; background: #fff;
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 32px;
 }
 .credit-card p { color: var(--ink-soft); font-size: 0.95rem; max-width: 760px; }
 .credit-card p + p { margin-top: 10px; }
@@ -419,11 +419,11 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   border: 1px solid transparent; transition: background 0.12s;
 }
 .chapter-item:hover { background: var(--bg-soft); }
-.chapter-item.active { background: var(--accent-soft); border-color: #d8e3fc; }
+.chapter-item.active { background: var(--accent-soft); border-color: var(--line); }
 .chapter-item .ch-time {
   font-size: 0.76rem; font-weight: 800; color: var(--accent-ink);
   font-variant-numeric: tabular-nums;
-  background: #fff; border: 1px solid #dbe5fc; padding: 2px 8px; border-radius: 6px;
+  background: #fff; border: 1px solid var(--line); padding: 2px 8px; border-radius: 6px;
 }
 .chapter-item.active .ch-time { background: var(--accent); color: #fff; border-color: var(--accent); }
 .chapter-item h4 { font-size: 0.97rem; font-weight: 800; margin-top: 8px; letter-spacing: -0.01em; }
@@ -447,13 +447,13 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
 /* 슬라이드 탭 */
 .slides-note {
   font-size: 0.8rem; color: var(--ink-faint); padding: 10px 14px;
-  background: var(--amber-soft); border: 1px solid #f3e3c8; border-radius: var(--radius); margin: 6px 6px 10px;
+  background: var(--amber-soft); border: 1px solid var(--line); border-radius: var(--radius); margin: 6px 6px 10px;
 }
 .slide-item {
   padding: 10px; border-radius: var(--radius); cursor: pointer; border: 1px solid transparent;
 }
 .slide-item:hover { background: var(--bg-soft); }
-.slide-item.active { background: var(--accent-soft); border-color: #d8e3fc; }
+.slide-item.active { background: var(--accent-soft); border-color: var(--line); }
 .slide-item .slide-meta { margin-bottom: 6px; }
 .slide-item img {
   width: 100%; border-radius: 8px; border: 1px solid var(--line); display: block;
