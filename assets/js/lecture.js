@@ -1,6 +1,84 @@
 // 강의 재생 페이지: 유튜브 임베드 + 시간 동기화 한국어 해설/자막
 (function () {
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const mathCommands = {
+    alpha: "α", beta: "β", gamma: "γ", delta: "δ", epsilon: "ε", lambda: "λ",
+    mu: "μ", phi: "φ", pi: "π", rho: "ρ", sigma: "σ", tau: "τ", theta: "θ", omega: "ω",
+    nabla: "∇", cdot: "·", times: "×", circ: "°", leq: "≤", geq: "≥", neq: "≠",
+    approx: "≈", infty: "∞", to: "→", rightarrow: "→", leftarrow: "←",
+    arg: "arg", max: "max", min: "min", argmax: "argmax", log: "log", tanh: "tanh",
+  };
+  const readMathGroup = (s, i) => {
+    if (s[i] !== "{") return [s[i] || "", Math.min(s.length, i + 1)];
+    let depth = 1, j = i + 1;
+    while (j < s.length && depth) {
+      if (s[j] === "{") depth++;
+      else if (s[j] === "}") depth--;
+      j++;
+    }
+    return [s.slice(i + 1, depth ? j : j - 1), j];
+  };
+  const readMathAtom = (s, i) => {
+    if (s[i] === "{") return readMathGroup(s, i);
+    if (s[i] === "\\") {
+      const m = s.slice(i + 1).match(/^[A-Za-z]+/);
+      if (m) return [s.slice(i, i + m[0].length + 1), i + m[0].length + 1];
+      return [s.slice(i, Math.min(s.length, i + 2)), Math.min(s.length, i + 2)];
+    }
+    return [s[i] || "", Math.min(s.length, i + 1)];
+  };
+  const renderMathParts = (expr) => {
+    let out = "", i = 0;
+    while (i < expr.length) {
+      const ch = expr[i];
+      if (ch === "_" || ch === "^") {
+        const [body, next] = readMathAtom(expr, i + 1);
+        out += `<${ch === "_" ? "sub" : "sup"}>${renderMathParts(body)}</${ch === "_" ? "sub" : "sup"}>`;
+        i = next;
+      } else if (ch === "\\") {
+        const m = expr.slice(i + 1).match(/^[A-Za-z]+/);
+        if (!m) {
+          out += esc(expr[i + 1] || "");
+          i += 2;
+          continue;
+        }
+        const name = m[0];
+        i += name.length + 1;
+        if (["left", "right"].includes(name)) continue;
+        if (["mathbb", "mathcal", "mathrm"].includes(name)) {
+          const [body, next] = readMathGroup(expr, i);
+          out += renderMathParts(body);
+          i = next;
+        } else {
+          out += esc(mathCommands[name] || name);
+        }
+      } else if (ch === "{") {
+        const [body, next] = readMathGroup(expr, i);
+        out += renderMathParts(body);
+        i = next;
+      } else if (ch === "}") {
+        i++;
+      } else {
+        out += esc(ch);
+        i++;
+      }
+    }
+    return out;
+  };
+  const renderInlineMath = (text) => {
+    const s = String(text || "");
+    let out = "", i = 0;
+    while (i < s.length) {
+      const start = s.indexOf("$", i);
+      if (start < 0) return out + esc(s.slice(i));
+      const end = s.indexOf("$", start + 1);
+      if (end < 0) return out + esc(s.slice(i));
+      out += esc(s.slice(i, start));
+      out += `<span class="math-inline">${renderMathParts(s.slice(start + 1, end).trim())}</span>`;
+      i = end + 1;
+    }
+    return out;
+  };
   const fmt = (s) => {
     s = Math.max(0, Math.floor(s));
     const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
@@ -121,7 +199,7 @@
   const CC_IDLE = "재생하면 이 자리에 한국어 자막이 표시됩니다";
   function setCaption(text) {
     ccStrip.classList.toggle("empty", !text);
-    ccText.textContent = text || CC_IDLE;
+    ccText.innerHTML = text ? renderInlineMath(text) : esc(CC_IDLE);
   }
   setCaption("");
   const ccToggle = el("cc-toggle");
@@ -212,7 +290,7 @@
       `<div class="chapter-item" data-i="${i}" data-start="${c.start}">
          <span class="ch-time">${fmt(c.start)}</span>
          <h4>${esc(c.title)}</h4>
-         <p>${esc(c.explain)}</p>
+         <p>${renderInlineMath(c.explain)}</p>
        </div>`).join("");
     chapterEls = [...panels.chapters.querySelectorAll(".chapter-item")];
     chapterEls.forEach((n) => n.addEventListener("click", () => seek(+n.dataset.start)));
@@ -221,7 +299,7 @@
     panels.subs.innerHTML = DATA.blocks.map((b, i) =>
       `<div class="sub-item" data-i="${i}" data-start="${b.start}">
          <span class="sub-time">${fmt(b.start)}</span>
-         <span class="sub-text">${esc(b.ko)}<span class="en-text">${esc(b.en)}</span></span>
+         <span class="sub-text">${renderInlineMath(b.ko)}<span class="en-text">${renderInlineMath(b.en)}</span></span>
        </div>`).join("");
     blockEls = [...panels.subs.querySelectorAll(".sub-item")];
     blockEls.forEach((n) => n.addEventListener("click", () => seek(+n.dataset.start)));
@@ -229,11 +307,11 @@
     // 요약
     panels.summary.innerHTML = `<div class="summary-pane">
       <h4>강의 한눈에 보기</h4>
-      <p>${esc(DATA.summary)}</p>
+      <p>${renderInlineMath(DATA.summary)}</p>
       <h4>핵심 포인트</h4>
-      <ul class="takeaway-list">${DATA.takeaways.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+      <ul class="takeaway-list">${DATA.takeaways.map((t) => `<li>${renderInlineMath(t)}</li>`).join("")}</ul>
       <h4>핵심 용어</h4>
-      ${DATA.terms.map((t) => `<div class="term-item"><b>${esc(t.ko)}</b><span class="term-en">${esc(t.term)}</span><p>${esc(t.desc)}</p></div>`).join("")}
+      ${DATA.terms.map((t) => `<div class="term-item"><b>${esc(t.ko)}</b><span class="term-en">${esc(t.term)}</span><p>${renderInlineMath(t.desc)}</p></div>`).join("")}
     </div>`;
   }
 
@@ -294,7 +372,7 @@
       if (ci >= 0) {
         box.style.display = "";
         el("now-title").textContent = DATA.chapters[ci].title;
-        el("now-explain").textContent = DATA.chapters[ci].explain;
+        el("now-explain").innerHTML = renderInlineMath(DATA.chapters[ci].explain);
       }
       scrollActiveIntoView();
     }

@@ -377,6 +377,20 @@ footer .container { display: flex; justify-content: space-between; gap: 16px; fl
   font-size: clamp(15px, 1.4vw, 19px); font-weight: 700; line-height: 1.5;
   transition: opacity 0.15s ease;
 }
+.math-inline {
+  display: inline-block;
+  font-family: ui-serif, "Times New Roman", Times, serif;
+  font-style: italic;
+  white-space: nowrap;
+}
+.math-inline sub,
+.math-inline sup {
+  font-size: 0.72em;
+  line-height: 0;
+}
+.cc-strip .math-inline { color: inherit; }
+.cc-strip .math-inline sub,
+.cc-strip .math-inline sup { color: inherit; }
 .cc-strip.empty span { opacity: 0.35; font-weight: 600; font-size: 0.88rem; color: #d1d5db; }
 .cc-strip.hidden { display: none; }
 .cc-bar {
